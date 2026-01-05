@@ -522,3 +522,54 @@ export async function sendNewUserWelcome(params: {
     html,
   });
 }
+
+export async function sendWelcomeEmail(params: {
+  to: string;
+  name: string;
+  confirmationUrl: string;
+}) {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #0E3244; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #5B8A9A 0%, #7DCFB6 100%); color: white; padding: 40px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: white; padding: 30px; border: 1px solid #e0e0e0; }
+    .button { display: inline-block; background: #5B8A9A; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="margin:0; font-size: 28px;">Pura Vida ${params.name}!</h1>
+      <p style="margin:10px 0 0 0; font-size: 16px;">Gracias por registrarte en Mai Ke Kai</p>
+    </div>
+    <div class="content">
+      <p>Tu cuenta ha sido creada exitosamente. Para confirmar tu correo electrónico y activar tu cuenta, haz clic en el botón de abajo:</p>
+
+      <div style="text-align: center;">
+        <a href="${params.confirmationUrl}" class="button">Confirmar mi Cuenta</a>
+      </div>
+
+      <p>Si no creaste una cuenta en Mai Ke Kai, puedes ignorar este email.</p>
+    </div>
+    <div class="footer">
+      <p>Mai Ke Kai Surf House | Tamarindo, Costa Rica<br>
+      <a href="https://maikekai.com" style="color: #5B8A9A;">www.maikekai.com</a></p>
+      <p style="margin-top: 10px;">Pura Vida! 🌊🏄</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  return sendEmail({
+    to: params.to,
+    subject: `Bienvenido a Mai Ke Kai - Confirma tu correo electrónico`,
+    html,
+  });
+}
