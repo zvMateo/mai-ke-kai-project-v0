@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, CreditCard, Lock, Shield, Loader2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Shield, Loader2 } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import type { BookingData } from "./booking-flow";
 import { createBookingWithCheckout } from "@/lib/actions/checkout";
@@ -39,98 +39,50 @@ export function PaymentStep({
   const tax = subtotal * 0.13;
   const total = subtotal + tax;
 
-  const handleGreenPayPayment = async () => {
+  const handleTilopayPayment = async () => {
     try {
       setIsProcessing(true);
       setError(null);
 
-      // First create the booking
-      const result = await createBookingWithCheckout({
-        checkIn: bookingData.checkIn.toISOString().split("T")[0],
-        checkOut: bookingData.checkOut.toISOString().split("T")[0],
-        guestsCount: bookingData.guests,
-        rooms: bookingData.rooms.map((room) => ({
-          roomId: room.roomId,
-          bedId: room.bedId,
-          pricePerNight: room.pricePerNight,
-        })),
-        services: bookingData.extras.map((extra) => ({
-          serviceId: extra.serviceId,
-          quantity: extra.quantity,
-          priceAtBooking: extra.price,
-          scheduledDate: extra.date,
-        })),
-        specialRequests: bookingData.guestInfo?.specialRequests,
-        guestInfo: {
-          email: bookingData.guestInfo?.email || "",
-          fullName: `${bookingData.guestInfo?.firstName || ""} ${
-            bookingData.guestInfo?.lastName || ""
-          }`.trim(),
-          phone: bookingData.guestInfo?.phone,
-          nationality: bookingData.guestInfo?.nationality,
-        },
-      });
-
-      // Store booking ID for completion
-      setBookingId(result.bookingId);
-
-      // Create GreenPay payment
-      const greenpayResponse = await fetch("/api/greenpay/create-payment", {
+      const response = await fetch("/api/tilopay/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: total,
-          currency: "USD",
-          orderId: result.bookingId,
-          description: `Reserva Mai Ke Kai House - ${result.bookingId.slice(
-            0,
-            8
-          )}`,
-          customerEmail: bookingData.guestInfo?.email || "",
-          customerName: `${bookingData.guestInfo?.firstName || ""} ${
-            bookingData.guestInfo?.lastName || ""
-          }`.trim(),
-          metadata: {
-            bookingId: result.bookingId,
-            hotel: "Mai Ke Kai House",
-          },
-          cardDetails: {
-            cardNumber: "4111111111111111", // Test card number
-            cardHolder: `${bookingData.guestInfo?.firstName || ""} ${
-              bookingData.guestInfo?.lastName || ""
-            }`.trim(),
-            expirationDate: "12/25", // Test expiration
-            cvv: "123", // Test CVV
+          bookingData: {
+            checkIn: bookingData.checkIn.toISOString().split("T")[0],
+            checkOut: bookingData.checkOut.toISOString().split("T")[0],
+            guestsCount: bookingData.guests,
+            rooms: bookingData.rooms.map((room) => ({
+              roomId: room.roomId,
+              bedId: room.bedId,
+              pricePerNight: room.pricePerNight,
+            })),
+            services: bookingData.extras.map((extra) => ({
+              serviceId: extra.serviceId,
+              quantity: extra.quantity,
+              priceAtBooking: extra.price,
+              scheduledDate: extra.date,
+            })),
+            guestInfo: {
+              email: bookingData.guestInfo?.email || "",
+              fullName: `${bookingData.guestInfo?.firstName || ""} ${bookingData.guestInfo?.lastName || ""}`.trim(),
+              phone: bookingData.guestInfo?.phone,
+              nationality: bookingData.guestInfo?.nationality,
+            },
           },
         }),
       });
 
-      const greenpayData = await greenpayResponse.json().catch(() => {
-        throw new Error("Error de comunicación con el servidor de pago");
-      });
+      const data = await response.json();
 
-      if (!greenpayResponse.ok) {
-        throw new Error(
-          greenpayData.error || "Error al crear el pago con GreenPay"
-        );
-      }
-
-      if (greenpayData.success) {
-        // For GreenPay, payment is processed immediately
-        // Redirect to success page
-        window.location.href = `/booking/success?order=${result.bookingId}`;
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        throw new Error("No se pudo procesar el pago con GreenPay");
+        throw new Error(data.error || "No se recibió URL de pago");
       }
     } catch (err) {
-      console.error("Error creating GreenPay checkout:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Error al procesar el pago con GreenPay. Por favor intenta de nuevo."
-      );
+      console.error("Error creando pago Tilopay:", err);
+      setError(err instanceof Error ? err.message : "Error al procesar el pago. Por favor intenta de nuevo.");
     } finally {
       setIsProcessing(false);
     }
@@ -138,7 +90,7 @@ export function PaymentStep({
 
   const handleProceedToPayment = () => {
     if (!acceptTerms) return;
-    handleGreenPayPayment();
+    handleTilopayPayment();
   };
 
   return (
@@ -210,11 +162,11 @@ export function PaymentStep({
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
-              Pago con GreenPay
+              Pago con Tilopay
             </h4>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Procesamiento seguro con GreenPay</li>
-              <li>• Acepta tarjetas Visa, Mastercard y más</li>
+              <li>• Procesamiento seguro con Tilopay</li>
+              <li>• Acepta tarjetas Visa, Mastercard y SINPE Móvil</li>
               <li>• Confirmación automática de reserva</li>
               <li>• Protección SSL y encriptación</li>
             </ul>
@@ -225,7 +177,7 @@ export function PaymentStep({
             <Shield className="w-5 h-5 text-primary shrink-0" />
             <p className="text-sm text-muted-foreground">
               Tu pago está protegido con encriptación SSL. Procesamos pagos de
-              forma segura con GreenPay.
+              forma segura con Tilopay.
             </p>
           </div>
 
@@ -278,8 +230,8 @@ export function PaymentStep({
             </>
           ) : (
             <>
-              <Lock className="mr-2 w-4 h-4" />
-              Pagar con GreenPay
+              <CreditCard className="mr-2 w-4 h-4" />
+              Pagar con Tilopay
             </>
           )}
         </Button>
