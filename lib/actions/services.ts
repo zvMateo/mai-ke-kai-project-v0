@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 import type { Service, ServiceCategory } from "@/types/database"
 
@@ -69,7 +70,8 @@ export async function createService(data: {
 }) {
   console.log("[createService] Received data:", JSON.stringify(data, null, 2))
   
-  const supabase = await createClient()
+  // Usar admin client para bypass RLS
+  const supabase = createAdminClient()
 
   // Validar y sanitizar datos
   const sanitizedData = {
@@ -107,7 +109,8 @@ export async function updateService(serviceId: string, data: Partial<{
   image_url: string | null;
   is_active: boolean;
 }>) {
-  const supabase = await createClient()
+  // Usar admin client para bypass RLS
+  const supabase = createAdminClient()
 
   // Validar y sanitizar datos
   const sanitizedData: Record<string, any> = {}
@@ -134,13 +137,13 @@ export async function updateService(serviceId: string, data: Partial<{
 
 // Admin: Toggle service active status
 export async function toggleServiceStatus(serviceId: string, isActive: boolean) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase.from("services").update({ is_active: isActive }).eq("id", serviceId)
 
   if (error) {
     console.error("Error toggling service status:", error)
-    throw new Error("Failed to toggle service status")
+    throw new Error("Failed to toggle service status: " + error.message)
   }
 
   revalidatePath("/admin/services")
@@ -149,13 +152,13 @@ export async function toggleServiceStatus(serviceId: string, isActive: boolean) 
 
 // Admin: Delete service
 export async function deleteService(serviceId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase.from("services").delete().eq("id", serviceId)
 
   if (error) {
     console.error("Error deleting service:", error)
-    throw new Error("Failed to delete service")
+    throw new Error("Failed to delete service: " + error.message)
   }
 
   revalidatePath("/admin/services")
