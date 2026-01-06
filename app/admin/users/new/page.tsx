@@ -22,7 +22,7 @@ export default async function NewUserPage() {
         </p>
       </div>
 
-      <UserForm />
+      <UserForm mode="create" />
     </>
   );
 }

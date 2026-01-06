@@ -2,7 +2,7 @@
 
 **Proyecto:** Mai Ke Kai Property Management System (PMS)  
 **Cliente:** Hostel & Surf Camp en Tamarindo, Costa Rica  
-**Stack Tecnológico:** Next.js 16, React 19, Supabase, Stripe, PayPal, Resend, Cloudinary  
+**Stack Tecnológico:** Next.js 16, React 19, Supabase, tilopay, Resend, Cloudinary  
 **Fecha:** Diciembre 2025
 
 ---
@@ -47,12 +47,14 @@ Mai Ke Kai es un hostel y surf camp ubicado en Tamarindo, Costa Rica, que combin
 ### 1. Alojamiento (18 Personas)
 
 #### Tipos de Habitación:
+
 - **Dormitorio Mixto Compartido** - 10 camas
 - **Cuarto Privado** - 4 personas
 - **Cuarto Femenino** - 4 personas
 - **Habitación Familiar** - 4 personas
 
 #### Servicios Incluidos:
+
 - Desayuno
 - Aire acondicionado (A/C)
 - Baño con ducha caliente
@@ -60,6 +62,7 @@ Mai Ke Kai es un hostel y surf camp ubicado en Tamarindo, Costa Rica, que combin
 - Espacios comunes
 
 #### Sistema de Precios Dinámicos:
+
 ```
 +60 días antes → Precio máximo (Rack Rate)
 <60 días antes → Precio competitivo (Competitive Rate) -10%
@@ -67,6 +70,7 @@ Mai Ke Kai es un hostel y surf camp ubicado en Tamarindo, Costa Rica, que combin
 ```
 
 #### Temporadas:
+
 - **Alta:** 27 diciembre - tercer domingo de abril
 - **Media:** Resto del año (excepto baja)
 - **Baja:** Septiembre y Octubre
@@ -74,6 +78,7 @@ Mai Ke Kai es un hostel y surf camp ubicado en Tamarindo, Costa Rica, que combin
 ### 2. Servicios (Tours y Transporte)
 
 #### Transporte:
+
 - **Aeropuerto Liberia ↔ Tamarindo:** $40 compartido / $90 privado (hasta 3 personas)
 - **Tamarindo → Santa Teresa/Samara/Nosara:** $55 compartido
 - **Tamarindo → La Fortuna:** $90 compartido
@@ -82,6 +87,7 @@ Mai Ke Kai es un hostel y surf camp ubicado en Tamarindo, Costa Rica, que combin
 - **Aeropuerto San José ↔ Tamarindo:** $90 compartido
 
 #### Tours y Actividades:
+
 - **Lección de Surf (Popular):** $60 - 2 horas, max 4 personas/instructor, equipo incluido
 - **Sunset Catamarán (Popular):** $95 - Todo incluido, barra libre, snorkel, kayaks
 - **Buceo Islas Catalinas:** $135 certificado / $175 no certificado
@@ -107,11 +113,13 @@ Todos los paquetes son **personalizables** y los servicios también se venden **
 ### 4. Programa de Fidelidad (Loyalty Points)
 
 #### Sistema de Acumulación:
+
 - **1 punto por cada $10 gastados** en cualquier servicio
 - Los puntos se acumulan automáticamente para usuarios registrados
 - Sistema alcanzable y motivador
 
 #### Recompensas Canjeables:
+
 - Indumentaria Mai Ke Kai
 - Stickers y merchandising
 - Actividades y tours
@@ -121,6 +129,7 @@ Todos los paquetes son **personalizables** y los servicios también se venden **
 - Descuentos en servicios
 
 #### Restricciones:
+
 - Puntos usables principalmente en **temporada media/baja**
 - Puntos transferibles entre usuarios
 - Sin fecha de expiración
@@ -128,6 +137,7 @@ Todos los paquetes son **personalizables** y los servicios también se venden **
 ### 5. Sistema de Reservas
 
 #### Canales de Reserva:
+
 1. **Directa** (sitio web propio) - Sin comisiones
 2. **Booking.com** - Mayor porcentaje
 3. **Hostelworld** - Segundo en importancia
@@ -136,19 +146,20 @@ Todos los paquetes son **personalizables** y los servicios también se venden **
 6. **Redes sociales** (Instagram, WhatsApp, email)
 
 #### Política de Reserva Directa:
+
 - Nombre completo del titular
 - Fechas de estancia
 - **Depósito no reembolsable** por adelantado
 - Datos completos antes de confirmar
 
 #### Política de Cancelación:
+
 - **Cancelación gratuita** hasta 5 días antes del check-in
 - **Sin reembolso** con menos de 5 días
 
 ### 6. Métodos de Pago
 
-- **Stripe** - Sin recargo, procesamiento instantáneo
-- **PayPal** - +10% de recargo
+- **tilopay** - Sin recargo, procesamiento instantáneo
 - **Efectivo** - Colones, Dólares americanos, Euros (in-situ)
 - **Transferencia Bancaria** - Sin recargo
 - **Sinpe Móvil** - Método nacional de Costa Rica
@@ -158,6 +169,7 @@ Todos los paquetes son **personalizables** y los servicios también se venden **
 Sistema de check-in digital previo a la llegada:
 
 #### Datos Requeridos:
+
 - Nombre completo
 - Número de pasaporte
 - Fecha de nacimiento
@@ -166,6 +178,7 @@ Sistema de check-in digital previo a la llegada:
 - Firma digital
 
 #### Funcionalidades:
+
 - Formulario completable 24h antes del check-in
 - Upload de foto del pasaporte (opcional)
 - Firma digital del contrato
@@ -173,6 +186,7 @@ Sistema de check-in digital previo a la llegada:
 - Información de acompañantes
 
 #### Beneficios:
+
 - Agiliza el proceso de llegada
 - Reduce trabajo de voluntarios
 - Mejora la experiencia del huésped
@@ -182,6 +196,7 @@ Sistema de check-in digital previo a la llegada:
 Los voluntarios son parte fundamental de la operación:
 
 #### Responsabilidades:
+
 - Turnos de día (3 voluntarios simultáneos)
 - Limpieza de habitaciones y áreas comunes
 - Recepción de huéspedes
@@ -190,6 +205,7 @@ Los voluntarios son parte fundamental de la operación:
 - Responder dudas básicas de huéspedes
 
 #### Gestión por Staff:
+
 - **Tuti (Dueña):** Selección, horarios y supervisión de voluntarios
 - **Mati (Dueño):** Lecciones de surf y turnos compartidos
 
@@ -214,8 +230,7 @@ Backend:
 └── Row Level Security (RLS)
 
 Integraciones:
-├── Stripe (Pagos)
-├── PayPal (Pagos alternativos)
+├── tilopay (Pagos)
 ├── Resend (Emails transaccionales)
 ├── Cloudinary (Imágenes)
 └── Supabase Auth (Autenticación)
@@ -257,8 +272,7 @@ mai-ke-kai-project/
 │   │   └── [bookingId]/
 │   ├── packages/                 # Página de paquetes
 │   ├── api/                      # API Routes
-│   │   ├── stripe/webhook/
-│   │   ├── paypal/webhook/
+│   │   ├── tilopay/webhook/
 │   │   └── auth/welcome-email/
 │   └── page.tsx                  # Landing page
 │
@@ -305,6 +319,7 @@ mai-ke-kai-project/
 ### 1. Guest (Huésped)
 
 **Permisos:**
+
 - Ver landing page pública
 - Realizar reservas (con o sin registro)
 - Check-in online
@@ -314,6 +329,7 @@ mai-ke-kai-project/
 - Ver historial de transacciones
 
 **Dashboard:** `/dashboard`
+
 - Mis Reservas
 - Puntos de Fidelidad
 - Recompensas Disponibles
@@ -322,6 +338,7 @@ mai-ke-kai-project/
 ### 2. Volunteer (Voluntario)
 
 **Permisos:**
+
 - Ver dashboard de llegadas/salidas del día
 - Ver lista de huéspedes actuales
 - Procesar check-in de huéspedes
@@ -329,6 +346,7 @@ mai-ke-kai-project/
 - **NO puede:** Editar precios, crear servicios, ver reportes financieros
 
 **Dashboard:** `/volunteer`
+
 - Llegadas de Hoy
 - Salidas de Hoy
 - Huéspedes Actuales
@@ -337,6 +355,7 @@ mai-ke-kai-project/
 ### 3. Staff (Personal)
 
 **Permisos:**
+
 - Todo lo de Volunteer +
 - Acceso completo al admin panel
 - Crear y editar habitaciones
@@ -355,6 +374,7 @@ mai-ke-kai-project/
 ### 4. Admin (Administrador)
 
 **Permisos:**
+
 - Todos los permisos de Staff +
 - Gestionar usuarios staff/volunteer
 - Acceso a configuración del sistema
@@ -381,7 +401,7 @@ mai-ke-kai-project/
    ↓
 6. Usuario completa formulario de datos personales
    ↓
-7. Usuario selecciona método de pago (Stripe/PayPal)
+7. Usuario selecciona método de pago (Tilopay)
    ↓
 8. Pago procesado → Webhook actualiza estado
    ↓
@@ -450,60 +470,60 @@ mai-ke-kai-project/
    - Servicios más vendidos
    ↓
 3. Opciones de gestión:
-   
+
    HABITACIONES:
    - Crear nueva habitación
    - Editar habitación existente
    - Subir imágenes (Cloudinary)
    - Configurar capacidad y camas
    - Eliminar habitación
-   
+
    SERVICIOS:
    - Crear nuevo servicio/tour
    - Editar servicio existente
    - Subir imagen del servicio
    - Definir precio y categoría
    - Eliminar servicio
-   
+
    PAQUETES:
    - Crear paquete surf + alojamiento
    - Definir duración (2n, 3n, 4n, 5n)
    - Configurar precio y servicios incluidos
    - Marcar como "popular" o "para parejas"
    - Editar/eliminar paquetes
-   
+
    PRECIOS:
    - Ver tabla de precios por habitación
    - Editar precios por temporada (alta/media/baja)
    - Configurar rack rate, competitive, last minute
    - Auto-fill descuentos predefinidos
-   
+
    LOYALTY:
    - Crear recompensas canjeables
    - Definir puntos requeridos
    - Configurar cantidad disponible
    - Activar/desactivar recompensas
    - Ver historial de canjes
-   
+
    RESERVAS:
    - Ver todas las reservas
    - Filtrar por estado (pendiente/confirmada/cancelada)
    - Cambiar estado manualmente
    - Ver detalles completos
    - Crear reserva manual
-   
+
    BLOQUEOS:
    - Bloquear fechas por mantenimiento
    - Bloquear habitaciones específicas
    - Ver calendario de disponibilidad
-   
+
    HUÉSPEDES:
    - Ver listado de todos los huéspedes
    - Buscar por nombre/email
    - Ver historial de reservas
    - Cambiar rol (guest → volunteer)
    - Ver puntos de fidelidad
-   
+
    REPORTES:
    - Ingresos por período
    - Servicios más vendidos
@@ -574,12 +594,14 @@ mai-ke-kai-project/
 ### 1. Supabase (Base de Datos + Auth)
 
 **Uso:**
+
 - PostgreSQL database
 - Autenticación email/password
 - Row Level Security (RLS)
 - Storage (futuro: archivos de check-in)
 
 **Configuración:**
+
 ```env
 SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_ANON_KEY=eyJxxx...
@@ -589,25 +611,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 ```
 
 **Triggers Automáticos:**
+
 - `on_auth_user_created` → Sincroniza auth.users → public.users
 - `update_updated_at` → Actualiza timestamps automáticamente
 
-### 2. Stripe (Procesamiento de Pagos)
+### 2. Tilopay (Procesamiento de Pagos)
 
 **Uso:**
+
 - Pagos principales sin recargo
 - Checkout embebido
 - Webhooks para actualizar estado de reservas
 
-**Configuración:**
-```env
-STRIPE_SECRET_KEY=sk_test_xxx
-STRIPE_PUBLISHABLE_KEY=pk_test_xxx
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
-STRIPE_WEBHOOK_SECRET=whsec_xxx
-```
-
 **Eventos Escuchados:**
+
 - `checkout.session.completed` → Confirma reserva
 - `payment_intent.succeeded` → Marca como pagado
 - `payment_intent.payment_failed` → Notifica error
@@ -615,11 +632,13 @@ STRIPE_WEBHOOK_SECRET=whsec_xxx
 ### 3. PayPal (Pago Alternativo)
 
 **Uso:**
+
 - Opción de pago con +10% recargo
 - Checkout directo
 - Webhooks para confirmación
 
 **Configuración:**
+
 ```env
 PAYPAL_CLIENT_ID=xxx
 PAYPAL_CLIENT_SECRET=xxx
@@ -627,11 +646,13 @@ PAYPAL_MODE=sandbox # o live
 ```
 
 **Eventos Escuchados:**
+
 - `PAYMENT.CAPTURE.COMPLETED` → Confirma reserva + suma puntos
 
 ### 4. Resend (Emails Transaccionales)
 
 **Uso:**
+
 - Confirmación de reserva
 - Alerta a staff de nueva reserva
 - Recordatorio de check-in (24h antes)
@@ -639,6 +660,7 @@ PAYPAL_MODE=sandbox # o live
 - Confirmación de canje de puntos
 
 **Configuración:**
+
 ```env
 RESEND_API_KEY=re_xxx
 EMAIL_FROM=noreply@maikekai.com
@@ -646,6 +668,7 @@ STAFF_EMAIL=info@maikekai.com
 ```
 
 **Templates Incluidos:**
+
 - `BookingConfirmationEmail` - Para huésped
 - `StaffBookingAlertEmail` - Para personal
 - `CheckInReminderEmail` - 24h antes
@@ -655,6 +678,7 @@ STAFF_EMAIL=info@maikekai.com
 ### 5. Cloudinary (Gestión de Imágenes)
 
 **Uso:**
+
 - Upload de imágenes de habitaciones
 - Upload de imágenes de servicios
 - Upload de imágenes de paquetes
@@ -662,6 +686,7 @@ STAFF_EMAIL=info@maikekai.com
 - Optimización automática
 
 **Configuración:**
+
 ```env
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=xxx
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=mai-ke-kai-upload
@@ -670,6 +695,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 **Preset Configurado:**
+
 - Folder: `mai-ke-kai/`
 - Signing mode: Unsigned (para uploads del navegador)
 - Auto-generate public ID
@@ -682,6 +708,7 @@ CLOUDINARY_API_SECRET=xxx
 ### Esquema de Tablas
 
 #### users
+
 ```sql
 - id (UUID, PK)
 - email (TEXT, UNIQUE)
@@ -699,6 +726,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### rooms
+
 ```sql
 - id (UUID, PK)
 - name (TEXT)
@@ -716,6 +744,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### season_pricing
+
 ```sql
 - id (UUID, PK)
 - room_id (UUID, FK → rooms)
@@ -729,6 +758,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### services
+
 ```sql
 - id (UUID, PK)
 - name (TEXT)
@@ -743,6 +773,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### surf_packages
+
 ```sql
 - id (UUID, PK)
 - name (TEXT)
@@ -758,6 +789,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### bookings
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK → users)
@@ -768,7 +800,7 @@ CLOUDINARY_API_SECRET=xxx
 - payment_status (ENUM: pending, paid, refunded)
 - total_amount (NUMERIC)
 - paid_amount (NUMERIC)
-- payment_method (ENUM: stripe, paypal, cash, transfer)
+- payment_method (ENUM: tilopay, cash, transfer)
 - booking_source (ENUM: direct, booking_com, hostelworld, airbnb)
 - special_requests (TEXT)
 - created_at (TIMESTAMPTZ)
@@ -776,6 +808,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### booking_rooms
+
 ```sql
 - id (UUID, PK)
 - booking_id (UUID, FK → bookings)
@@ -788,6 +821,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### booking_services
+
 ```sql
 - id (UUID, PK)
 - booking_id (UUID, FK → bookings)
@@ -798,6 +832,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### loyalty_rewards
+
 ```sql
 - id (UUID, PK)
 - name (TEXT)
@@ -812,6 +847,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### loyalty_transactions
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK → users)
@@ -824,6 +860,7 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### room_blocks
+
 ```sql
 - id (UUID, PK)
 - room_id (UUID, FK → rooms, NULLABLE) -- NULL = todas las habitaciones
@@ -855,24 +892,26 @@ loyalty_rewards (1) ──< (N) loyalty_transactions
 El sistema implementa una estrategia de precios dinámica basada en:
 
 **Días hasta el check-in:**
+
 ```typescript
-const daysUntilCheckIn = daysBetween(today, checkIn)
+const daysUntilCheckIn = daysBetween(today, checkIn);
 
 if (daysUntilCheckIn > 60) {
-  price = rackRate // Precio máximo
+  price = rackRate; // Precio máximo
 } else if (daysUntilCheckIn > 10) {
-  price = competitiveRate // -10% aprox
+  price = competitiveRate; // -10% aprox
 } else {
-  price = lastMinuteRate // -20% aprox
+  price = lastMinuteRate; // -20% aprox
 }
 ```
 
 **Temporada:**
+
 ```typescript
-const season = getSeasonForDate(checkIn)
+const season = getSeasonForDate(checkIn);
 // season: 'high' | 'medium' | 'low'
 
-const pricing = seasonPricing[room_id][season]
+const pricing = seasonPricing[room_id][season];
 ```
 
 **Resultado:** Precios que maximizan ocupación y revenue.
@@ -881,15 +920,15 @@ const pricing = seasonPricing[room_id][season]
 
 ```typescript
 // Al completar pago (webhook)
-const pointsEarned = Math.floor(totalAmount / 10) // 1 punto / $10
+const pointsEarned = Math.floor(totalAmount / 10); // 1 punto / $10
 
 await addLoyaltyPoints({
   userId,
   points: pointsEarned,
-  type: 'earned',
+  type: "earned",
   description: `Booking #${bookingId}`,
-  bookingId
-})
+  bookingId,
+});
 ```
 
 **Transparencia:** El usuario ve cuántos puntos ganará ANTES de pagar.
@@ -900,13 +939,14 @@ await addLoyaltyPoints({
 // Componente de firma
 <SignatureCanvas
   onEnd={(signature) => {
-    saveSignature(signature)
-    markCheckInComplete()
+    saveSignature(signature);
+    markCheckInComplete();
   }}
 />
 ```
 
 **Beneficios:**
+
 - Reduce tiempo de llegada a 2 minutos
 - Datos completos antes de la llegada
 - Firma legalmente válida
@@ -921,17 +961,15 @@ Todos los emails usan React Email (JSX) con diseño responsive:
     <Heading>¡Reserva Confirmada!</Heading>
     <Text>Hola {guestName},</Text>
     <Text>Tu reserva en Mai Ke Kai está confirmada.</Text>
-    
+
     <Section>
       <Row>
         <Column>Check-in:</Column>
         <Column>{checkIn}</Column>
       </Row>
     </Section>
-    
-    <Button href={checkInUrl}>
-      Completar Check-in Online
-    </Button>
+
+    <Button href={checkInUrl}>Completar Check-in Online</Button>
   </Container>
 </Email>
 ```
@@ -956,33 +994,12 @@ Toda la seguridad está en la base de datos:
 -- Ejemplo: Solo el usuario puede ver sus propias reservas
 CREATE POLICY "Users can view own bookings"
 ON bookings FOR SELECT
-USING (auth.uid() = user_id OR 
+USING (auth.uid() = user_id OR
        EXISTS (
-         SELECT 1 FROM users 
-         WHERE id = auth.uid() 
+         SELECT 1 FROM users
+         WHERE id = auth.uid()
          AND role IN ('staff', 'admin')
        ));
-```
-
-### 7. Webhooks Resilientes
-
-Los webhooks de Stripe/PayPal están protegidos contra duplicados:
-
-```typescript
-// Verificar firma del webhook
-const signature = headers.get('stripe-signature')
-const event = stripe.webhooks.constructEvent(body, signature, secret)
-
-// Idempotencia
-const existingBooking = await supabase
-  .from('bookings')
-  .select('payment_status')
-  .eq('stripe_session_id', session.id)
-  .single()
-
-if (existingBooking.payment_status === 'paid') {
-  return new Response('Already processed', { status: 200 })
-}
 ```
 
 ### 8. Optimización de Imágenes Automática
@@ -992,9 +1009,9 @@ Todas las imágenes subidas a Cloudinary se optimizan:
 ```typescript
 const optimizedUrl = getOptimizedImageUrl(imageUrl, {
   width: 800,
-  quality: 'auto',
-  format: 'auto' // WebP si el navegador lo soporta
-})
+  quality: "auto",
+  format: "auto", // WebP si el navegador lo soporta
+});
 ```
 
 ---
@@ -1004,21 +1021,25 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 ### Dashboard Admin - Métricas en Tiempo Real
 
 1. **Ocupación Actual**
+
    - Habitaciones ocupadas vs disponibles
    - Porcentaje de ocupación
    - Proyección próximos 30 días
 
 2. **Ingresos del Mes**
+
    - Total facturado
    - Desglose por categoría (alojamiento, servicios, extras)
    - Comparación mes anterior
 
 3. **Servicios Más Vendidos**
+
    - Top 5 servicios
    - Cantidad vendida
    - Ingresos generados
 
 4. **Tasa de Reserva Directa**
+
    - % reservas directas vs OTAs
    - Objetivo: >50%
 
@@ -1040,6 +1061,7 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 ## 🚀 ROADMAP FUTURO
 
 ### Fase 1: Optimizaciones (Completado)
+
 - ✅ CRUD completo de habitaciones
 - ✅ CRUD completo de servicios
 - ✅ CRUD completo de paquetes
@@ -1050,12 +1072,14 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 - ✅ Check-in online
 
 ### Fase 2: Integraciones OTA (Futuro)
+
 - [ ] Channel Manager (conexión con Booking.com)
 - [ ] Sincronización automática de disponibilidad
 - [ ] Import de reservas de Hostelworld
 - [ ] Webhook de Airbnb
 
 ### Fase 3: Mejoras UX (Futuro)
+
 - [ ] App móvil nativa (React Native)
 - [ ] Chat en vivo con huéspedes
 - [ ] Sistema de reviews interno
@@ -1063,12 +1087,14 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 - [ ] Blog integrado
 
 ### Fase 4: Analytics Avanzado (Futuro)
+
 - [ ] Dashboard de BI con gráficos avanzados
 - [ ] Predicción de ocupación (ML)
 - [ ] Recomendaciones de precios dinámicos
 - [ ] Segmentación de clientes
 
 ### Fase 5: Marketing (Futuro)
+
 - [ ] Email marketing automatizado
 - [ ] Campañas de retargeting
 - [ ] Programa de referidos
@@ -1083,10 +1109,11 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 **Ubicación:** Tamarindo, Guanacaste, Costa Rica
 
 **Tecnologías Clave:**
+
 - Next.js 16
 - React 19
 - Supabase
-- Stripe + PayPal
+- Tilopay
 - Resend
 - Cloudinary
 
