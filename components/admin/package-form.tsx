@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "@/components/admin/image-upload"
 import { createPackage, updatePackage } from "@/lib/actions/packages"
-import type { SurfPackage } from "@/types/database"
+import type { SurfPackage, RoomType } from "@/types/database"
 import { X, Plus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
@@ -26,13 +26,28 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string
+    tagline: string
+    description: string
+    nights: number
+    surf_lessons: number
+    room_type: RoomType
+    includes: string[]
+    price: number
+    original_price: number
+    image_url: string
+    is_popular: boolean
+    is_for_two: boolean
+    is_active: boolean
+    display_order: number
+  }>({
     name: pkg?.name || "",
     tagline: pkg?.tagline || "",
     description: pkg?.description || "",
     nights: pkg?.nights || 1,
     surf_lessons: pkg?.surf_lessons || 0,
-    room_type: pkg?.room_type || "dorm",
+    room_type: (pkg?.room_type as RoomType) || "dorm",
     includes: pkg?.includes || [],
     price: pkg?.price || 0,
     original_price: pkg?.original_price || 0,
@@ -57,7 +72,7 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
         description: formData.description || null,
         nights: formData.nights,
         surf_lessons: formData.surf_lessons,
-        room_type: formData.room_type as SurfPackage["room_type"],
+        room_type: formData.room_type,
         includes: formData.includes,
         price: formData.price,
         original_price: formData.original_price || null,
@@ -157,7 +172,7 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
               <Label htmlFor="room_type">Room Type *</Label>
               <Select
                 value={formData.room_type}
-                onValueChange={(value) => setFormData({ ...formData, room_type: value })}
+                onValueChange={(value) => setFormData({ ...formData, room_type: value as RoomType })}
               >
                 <SelectTrigger id="room_type">
                   <SelectValue />
@@ -301,8 +316,8 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
         <CardContent>
           <ImageUpload
             folder="packages"
-            onUploadSuccess={(url) => setFormData({ ...formData, image_url: url })}
-            currentImageUrl={formData.image_url}
+            value={formData.image_url}
+            onChange={(url) => setFormData({ ...formData, image_url: url as string })}
           />
         </CardContent>
       </Card>

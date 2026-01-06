@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "@/components/admin/image-upload"
 import { createService, updateService } from "@/lib/actions/services"
-import type { Service } from "@/types/database"
+import type { Service, ServiceCategory } from "@/types/database"
 
 interface ServiceFormProps {
   service?: Service
@@ -24,10 +24,19 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string
+    description: string
+    category: ServiceCategory
+    price: number
+    duration_hours: number | null
+    max_participants: number | null
+    image_url: string
+    is_active: boolean
+  }>({
     name: service?.name || "",
     description: service?.description || "",
-    category: service?.category || "surf",
+    category: (service?.category as ServiceCategory) || "surf",
     price: service?.price || 0,
     duration_hours: service?.duration_hours || null,
     max_participants: service?.max_participants || null,
@@ -44,7 +53,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       const submitData = {
         name: formData.name,
         description: formData.description,
-        category: formData.category as Service["category"],
+        category: formData.category,
         price: formData.price,
         duration_hours: formData.duration_hours,
         max_participants: formData.max_participants,
@@ -89,7 +98,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
               <Label htmlFor="category">Category *</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
+                onValueChange={(value) => setFormData({ ...formData, category: value as ServiceCategory })}
               >
                 <SelectTrigger id="category">
                   <SelectValue />
@@ -181,8 +190,8 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
         <CardContent>
           <ImageUpload
             folder="services"
-            onUploadSuccess={(url) => setFormData({ ...formData, image_url: url })}
-            currentImageUrl={formData.image_url}
+            value={formData.image_url}
+            onChange={(url) => setFormData({ ...formData, image_url: url as string })}
           />
         </CardContent>
       </Card>

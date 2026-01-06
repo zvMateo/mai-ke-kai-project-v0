@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
-import type { User } from "@/types";
+import type { User, UserRole } from "@/types";
 
 interface UserFormProps {
   user?: User;
@@ -17,12 +17,17 @@ interface UserFormProps {
 
 export function UserForm({ user, mode = "create" }: UserFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    fullName: string;
+    email: string;
+    role: UserRole;
+    phone: string;
+    nationality: string;
+  }>({
     fullName: user?.full_name || "",
     email: user?.email || "",
-    role: user?.role || "volunteer",
+    role: (user?.role as UserRole) || "volunteer",
     phone: user?.phone || "",
     nationality: user?.nationality || "",
   });
@@ -32,7 +37,7 @@ export function UserForm({ user, mode = "create" }: UserFormProps) {
       setFormData({
         fullName: user.full_name || "",
         email: user.email || "",
-        role: user.role || "volunteer",
+        role: (user.role as UserRole) || "volunteer",
         phone: user.phone || "",
         nationality: user.nationality || "",
       });
@@ -88,9 +93,7 @@ export function UserForm({ user, mode = "create" }: UserFormProps) {
       <CardHeader>
         <CardTitle>{mode === "create" ? "Crear Usuario" : "Editar Usuario"}</CardTitle>
         <CardDescription>
-          {mode === "create"
-            ? "Completa los datos para crear una nueva cuenta"
-            : "Actualiza los datos del usuario"}
+          {mode === "create" ? "Completa los datos para crear una nueva cuenta" : "Actualiza los datos del usuario"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -123,7 +126,11 @@ export function UserForm({ user, mode = "create" }: UserFormProps) {
 
             <div className="space-y-2">
               <Label htmlFor="role">Rol *</Label>
-              <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })} disabled={loading}>
+              <Select
+                value={formData.role}
+                onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
+                disabled={loading}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
