@@ -4,22 +4,38 @@
 -- ============================================
 -- 1. LIMPIAR RESERVAS DE EJEMPLO
 -- ============================================
--- Solo elimina reservas de prueba (con emails de test)
+-- Eliminar reservas donde el usuario tiene email de test
 DELETE FROM booking_services WHERE booking_id IN (
-  SELECT id FROM bookings WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%'
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
 );
+
 DELETE FROM booking_rooms WHERE booking_id IN (
-  SELECT id FROM bookings WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%'
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
 );
+
 DELETE FROM check_in_data WHERE booking_id IN (
-  SELECT id FROM bookings WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%'
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
 );
-DELETE FROM bookings WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%';
+
+DELETE FROM loyalty_transactions WHERE booking_id IN (
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
+);
+
+DELETE FROM bookings WHERE user_id IN (
+  SELECT id FROM users WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%'
+);
 
 -- ============================================
 -- 2. LIMPIAR SERVICIOS DE EJEMPLO
 -- ============================================
--- Eliminar servicios que no son reales (los que tienen precio 0 o nombres de test)
 DELETE FROM services WHERE price = 0 OR name ILIKE '%test%' OR name ILIKE '%ejemplo%' OR name ILIKE '%demo%';
 
 -- ============================================
@@ -28,27 +44,53 @@ DELETE FROM services WHERE price = 0 OR name ILIKE '%test%' OR name ILIKE '%ejem
 DELETE FROM surf_packages WHERE name ILIKE '%test%' OR name ILIKE '%ejemplo%' OR name ILIKE '%demo%';
 
 -- ============================================
--- 4. LIMPIAR RECOMPENSAS DE FIDELIDAD
+-- 4. LIMPIAR USUARIOS DE EJEMPLO
 -- ============================================
--- Eliminar recompensas de ejemplo
-DELETE FROM loyalty_transactions WHERE description ILIKE '%test%' OR description ILIKE '%ejemplo%';
+-- Primero eliminar reservas de estos usuarios
+DELETE FROM booking_services WHERE booking_id IN (
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
+);
+
+DELETE FROM booking_rooms WHERE booking_id IN (
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
+);
+
+DELETE FROM check_in_data WHERE booking_id IN (
+  SELECT b.id FROM bookings b
+  INNER JOIN users u ON b.user_id = u.id
+  WHERE u.email LIKE '%test%' OR u.email LIKE '%example%' OR u.email LIKE '%demo%'
+);
+
+DELETE FROM bookings WHERE user_id IN (
+  SELECT id FROM users WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%'
+);
+
+-- Ahora eliminar los usuarios de ejemplo (que no tienen reservas)
+DELETE FROM users WHERE email LIKE '%test%' OR email LIKE '%example%' OR email LIKE '%demo%';
 
 -- ============================================
--- 5. VERIFICAR HABITACIONES
+-- 5. VERIFICAR DATOS REALES
 -- ============================================
--- Ver cuántas habitaciones hay
-SELECT id, name, type, capacity, is_active FROM rooms ORDER BY name;
+-- Ver habitaciones reales
+SELECT id, name, type, capacity, is_active FROM rooms WHERE is_active = true ORDER BY name;
 
--- ============================================
--- 6. VERIFICAR USUARIOS ADMIN
--- ============================================
--- Ver usuarios con rol admin
-SELECT id, email, full_name, role, created_at FROM users WHERE role = 'admin';
+-- Ver usuarios admins reales
+SELECT id, email, full_name, role FROM users WHERE role IN ('admin', 'staff') ORDER BY role;
+
+-- Contar servicios
+SELECT COUNT(*) as total_services FROM services WHERE is_active = true;
+
+-- Contar paquetes
+SELECT COUNT(*) as total_packages FROM surf_packages WHERE is_active = true;
 
 -- ============================================
 -- NOTAS:
 -- ============================================
--- - NO eliminar usuarios reales (especialmente admins)
--- - NO eliminar la tabla users completamente
--- - Los datos de habitaciones pueden quedarse si son真实的 (reales)
--- - Si hay datos de prueba, el admin puede borrarlos desde el panel
+-- - Los usuarios con rol 'admin' NO se eliminan
+-- - Las habitaciones no se eliminan (pueden ser reales)
+-- - Si hay datos que quieres eliminar, hazlo manualmente desde el admin panel
+
