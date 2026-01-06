@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
-import type { Service } from "@/types/database"
+import type { Service, ServiceCategory } from "@/types/database"
 
 // Get all active services
 export async function getServices() {
@@ -57,14 +57,35 @@ export async function getAllServices() {
 }
 
 // Admin: Create service
-export async function createService(data: Omit<Service, "id">) {
+export async function createService(data: {
+  name: string;
+  description: string | null;
+  category: ServiceCategory;
+  price: number;
+  duration_hours: number | null;
+  max_participants: number | null;
+  image_url: string | null;
+  is_active: boolean;
+}) {
   const supabase = await createClient()
 
-  const { data: service, error } = await supabase.from("services").insert(data).select().single()
+  // Validar y sanitizar datos
+  const sanitizedData = {
+    name: data.name.trim(),
+    description: data.description?.trim() || null,
+    category: data.category,
+    price: Number(data.price) || 0,
+    duration_hours: data.duration_hours ? Number(data.duration_hours) : null,
+    max_participants: data.max_participants ? Number(data.max_participants) : null,
+    image_url: data.image_url?.trim() || null,
+    is_active: Boolean(data.is_active),
+  }
+
+  const { data: service, error } = await supabase.from("services").insert(sanitizedData).select().single()
 
   if (error) {
     console.error("Error creating service:", error)
-    throw new Error("Failed to create service")
+    throw new Error("Failed to create service: " + error.message)
   }
 
   revalidatePath("/admin/services")
@@ -72,14 +93,35 @@ export async function createService(data: Omit<Service, "id">) {
 }
 
 // Admin: Update service
-export async function updateService(serviceId: string, data: Partial<Service>) {
+export async function updateService(serviceId: string, data: Partial<{
+  name: string;
+  description: string | null;
+  category: ServiceCategory;
+  price: number;
+  duration_hours: number | null;
+  max_participants: number | null;
+  image_url: string | null;
+  is_active: boolean;
+}>) {
   const supabase = await createClient()
 
-  const { data: service, error } = await supabase.from("services").update(data).eq("id", serviceId).select().single()
+  // Validar y sanitizar datos
+  const sanitizedData: Record<string, any> = {}
+
+  if (data.name !== undefined) sanitizedData.name = data.name.trim()
+  if (data.description !== undefined) sanitizedData.description = data.description?.trim() || null
+  if (data.category !== undefined) sanitizedData.category = data.category
+  if (data.price !== undefined) sanitizedData.price = Number(data.price) || 0
+  if (data.duration_hours !== undefined) sanitizedData.duration_hours = data.duration_hours ? Number(data.duration_hours) : null
+  if (data.max_participants !== undefined) sanitizedData.max_participants = data.max_participants ? Number(data.max_participants) : null
+  if (data.image_url !== undefined) sanitizedData.image_url = data.image_url?.trim() || null
+  if (data.is_active !== undefined) sanitizedData.is_active = Boolean(data.is_active)
+
+  const { data: service, error } = await supabase.from("services").update(sanitizedData).eq("id", serviceId).select().single()
 
   if (error) {
     console.error("Error updating service:", error)
-    throw new Error("Failed to update service")
+    throw new Error("Failed to update service: " + error.message)
   }
 
   revalidatePath("/admin/services")
