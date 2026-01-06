@@ -67,6 +67,8 @@ export async function createService(data: {
   image_url: string | null;
   is_active: boolean;
 }) {
+  console.log("[createService] Received data:", JSON.stringify(data, null, 2))
+  
   const supabase = await createClient()
 
   // Validar y sanitizar datos
@@ -81,10 +83,12 @@ export async function createService(data: {
     is_active: Boolean(data.is_active),
   }
 
+  console.log("[createService] Sanitized data:", JSON.stringify(sanitizedData, null, 2))
+
   const { data: service, error } = await supabase.from("services").insert(sanitizedData).select().single()
 
   if (error) {
-    console.error("Error creating service:", error)
+    console.error("[createService] Supabase error:", error)
     throw new Error("Failed to create service: " + error.message)
   }
 
