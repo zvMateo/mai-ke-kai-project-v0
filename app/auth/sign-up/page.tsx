@@ -1,82 +1,94 @@
 "use client"
 
-import type React from "react"
-
-import { createClient } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function SignUpPage() {
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const tokenFromURL = searchParams.get('token')
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  // Step 1 fields
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  // Step 2 fields
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [step2Error, setStep2Error] = useState<string | null>(null)
+  const [mainError, setMainError] = useState<string | null>(null)
+
+  // Step 2 flag when token present in URL
+  const isStep2 = Boolean(tokenFromURL)
+
+  const submitStep1 = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
-    setIsLoading(true)
-    setError(null)
-
-    if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden")
-      setIsLoading(false)
+    setMainError(null)
+    if (!fullName.trim() || !email.trim()) {
+      setMainError('Please enter your full name and email.')
       return
     }
-
-    if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres")
-      setIsLoading(false)
-      return
-    }
-
     try {
-      // Crear usuario SIN confirmar email (usaremos nuestro propio flujo)
-      const { data: { user }, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          email_confirm: false, // Deshabilitar confirmación automática de Supabase
-          data: {
-            full_name: fullName,
-          },
-        },
+      setLoading(true)
+      const res = await fetch('/api/auth/prepare-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: fullName.trim(), email: email.trim() }),
       })
-
-      if (signUpError) throw signUpError
-      if (!user) throw new Error("No se pudo crear el usuario")
-
-      // Generar token y enviar email de confirmación vía Resend
-      const response = await fetch("/api/auth/send-confirmation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          email,
-          name: fullName || email.split("@")[0],
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Error al enviar email de confirmación")
+      const data = await res.json()
+      if (res.ok && data.success !== false) {
+        // Navigate to same route with token to show Step 2
+        const t = data.token
+        if (t) {
+          router.push(`/auth/sign-up?token=${t}`)
+        } else {
+          setMainError('No token de confirmación recibido.')
+        }
+      } else {
+        setMainError(data.error || 'Error preparando el signup')
       }
-
-      // Redirigir a página de éxito
-      router.push("/auth/sign-up-success")
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ocurrió un error")
+    } catch (err) {
+      setMainError('Network error')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
+    }
+  }
+
+  const submitStep2 = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStep2Error(null)
+    if (!tokenFromURL) {
+      setStep2Error('Missing token')
+      return
+    }
+    if (!password || password.length < 6) {
+      setStep2Error('Password must be at least 6 characters')
+      return
+    }
+    if (password !== confirmPassword) {
+      setStep2Error('Passwords do not match')
+      return
+    }
+    try {
+      const res = await fetch('/api/auth/finalize-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenFromURL, password }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        router.push('/auth/login')
+      } else {
+        setStep2Error(data.error || 'Error finalizando signup')
+      }
+    } catch (err) {
+      setStep2Error('Network error')
     }
   }
 
@@ -94,97 +106,51 @@ export default function SignUpPage() {
               className="w-16 h-16 mb-4"
             />
           </Link>
-          <h1 className="font-heading text-2xl font-bold text-foreground">Únete a Mai Ke Kai</h1>
-          <p className="text-muted-foreground text-sm">Crea tu cuenta para comenzar tu aventura de surf</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">Join Mai Ke Kai</h1>
+          <p className="text-muted-foreground text-sm">Create your account to start your surf adventure</p>
         </div>
 
         <Card className="border-border/50 shadow-lg">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl font-heading">Crear Cuenta</CardTitle>
-            <CardDescription>Ingresa tus datos para registrarte</CardDescription>
+            <CardTitle className="text-xl font-heading">Create Account</CardTitle>
+            <CardDescription>Enter your details to register</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSignUp} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Nombre Completo</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="John Doe"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="h-11"
-                />
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Correo Electrónico</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-11"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Mínimo 6 caracteres"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-11"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-11"
-                />
-              </div>
-
-              {error && (
-                <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-                  {error}
+          {isStep2 ? (
+            <CardContent>
+              <form onSubmit={submitStep2} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" type="password" placeholder="Min 6 characters" required value={password} onChange={(e)=>setPassword(e.target.value)} className="h-11" />
                 </div>
-              )}
-
-              <Button type="submit" className="w-full h-11" disabled={isLoading}>
-                {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
-              </Button>
-
-              <p className="text-center text-sm text-muted-foreground">
-                ¿Ya tienes una cuenta?{" "}
-                <Link href="/auth/login" className="text-primary font-medium hover:underline">
-                  Iniciar Sesión
-                </Link>
-              </p>
-            </form>
-          </CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input id="confirmPassword" type="password" placeholder="Re-enter password" required value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} className="h-11" />
+                </div>
+                {step2Error && <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{step2Error}</div>}
+                <Button type="submit" className="w-full h-11">Create Account</Button>
+              </form>
+            </CardContent>
+          ) : (
+            <CardContent>
+              <form onSubmit={submitStep1} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input id="fullName" type="text" placeholder="John Doe" required value={fullName} onChange={(e)=>setFullName(e.target.value)} className="h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="you@example.com" required value={email} onChange={(e)=>setEmail(e.target.value)} className="h-11" />
+                </div>
+                {mainError && <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{mainError}</div>}
+                <Button type="submit" className="w-full h-11" disabled={loading}>{'Send Confirmation'}</Button>
+              </form>
+            </CardContent>
+          )}
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Al crear una cuenta, aceptas nuestros{" "}
-          <Link href="/terms" className="text-primary hover:underline">
-            Términos
-          </Link>{" "}
-          y{" "}
-          <Link href="/privacy" className="text-primary hover:underline">
-            Política de Privacidad
-          </Link>
+          <Link href="/terms" className="text-primary hover:underline">Terms</Link> — <Link href="/privacy" className="text-primary hover:underline">Privacy</Link>
         </p>
       </div>
     </div>

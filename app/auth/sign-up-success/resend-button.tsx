@@ -10,12 +10,12 @@ export function ResendConfirmationButton({ userEmail }: { userEmail: string }) {
 
   const handleResend = async () => {
     if (!userEmail) return
-    
+
     setIsLoading(true)
     setMessage("")
 
     try {
-      const response = await fetch("/api/auth/resend-confirmation", {
+      const response = await fetch("/api/auth/resend-pending", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: userEmail }),
@@ -24,12 +24,12 @@ export function ResendConfirmationButton({ userEmail }: { userEmail: string }) {
       const data = await response.json()
 
       if (response.ok) {
-        setMessage("¡Email reenviado! Revisa tu bandeja de entrada.")
+        setMessage("Confirmation email resent! Check your inbox.")
       } else {
-        setMessage(data.error || "Error al reenviar")
+        setMessage(data.error || "Error resending email")
       }
     } catch (error) {
-      setMessage("Error al reenviar email")
+      setMessage("Error resending email")
     } finally {
       setIsLoading(false)
     }
@@ -37,25 +37,25 @@ export function ResendConfirmationButton({ userEmail }: { userEmail: string }) {
 
   return (
     <div className="space-y-2">
-      <Button 
-        onClick={handleResend} 
+      <Button
+        onClick={handleResend}
         className="w-full"
         disabled={isLoading || !userEmail}
       >
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Enviando...
+            Sending...
           </>
         ) : (
           <>
             <RefreshCw className="mr-2 h-4 w-4" />
-            Reenviar Email de Confirmación
+            Resend Confirmation Email
           </>
         )}
       </Button>
       {message && (
-        <p className={`text-sm ${message.includes("¡") ? "text-green-600" : "text-red-600"}`}>
+        <p className={`text-sm ${message.includes("!") ? "text-green-600" : "text-red-600"}`}>
           {message}
         </p>
       )}
