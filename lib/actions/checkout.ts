@@ -28,7 +28,7 @@ interface CreateBookingResult {
   totalAmount: number;
 }
 
-// Create booking and return booking details (GreenPay payment handled separately)
+// Create booking and return booking details (Tilopay payment handled separately)
 export async function createBookingWithCheckout(
   input: CreateBookingInput
 ): Promise<CreateBookingResult> {

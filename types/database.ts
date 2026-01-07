@@ -87,8 +87,7 @@ export interface Booking {
   payment_status: PaymentStatus;
   total_amount: number;
   paid_amount: number;
-  greenpay_payment_id: string | null;
-  greenpay_transaction_id: string | null;
+  tilopay_transaction_id: string | null;
   special_requests: string | null;
   source: "direct" | "walk_in" | "phone" | "ota";
   created_at: string;

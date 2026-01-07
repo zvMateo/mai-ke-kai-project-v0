@@ -528,44 +528,171 @@ export async function sendWelcomeEmail(params: {
   name: string;
   confirmationUrl: string;
 }) {
-  const html = `
-<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a Mai Ke Kai</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #0E3244; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #5B8A9A 0%, #7DCFB6 100%); color: white; padding: 40px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { background: white; padding: 30px; border: 1px solid #e0e0e0; }
-    .button { display: inline-block; background: #5B8A9A; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
-    .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { 
+      background: linear-gradient(135deg, #5B8A9A 0%, #2C5F6E 100%);
+      padding: 40px 30px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .header img { max-width: 200px; height: auto; }
+    .banner {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .content { 
+      background: white; 
+      padding: 40px 30px; 
+      border-left: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+    }
+    .title { 
+      color: #0E3244; 
+      font-size: 28px; 
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .greeting { 
+      color: #5B8A9A; 
+      font-size: 18px; 
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .text { 
+      color: #444; 
+      font-size: 16px; 
+      line-height: 1.7; 
+      margin-bottom: 20px;
+    }
+    .button-container { text-align: center; margin: 35px 0; }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+      color: white !important;
+      padding: 16px 50px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(231, 111, 81, 0.3);
+      transition: transform 0.2s;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .info-box {
+      background: linear-gradient(135deg, #7DCFB6 0%, #5B8A9A 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+    }
+    .info-box h3 { color: white; margin-bottom: 15px; font-size: 18px; }
+    .info-box ul { list-style: none; }
+    .info-box li { 
+      color: white; 
+      padding: 8px 0; 
+      padding-left: 30px;
+      position: relative;
+      font-size: 15px;
+    }
+    .info-box li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: white;
+      font-weight: bold;
+    }
+    .footer { 
+      background: #0E3244; 
+      padding: 30px; 
+      text-align: center; 
+      border-radius: 0 0 8px 8px;
+    }
+    .footer p { color: #aaa; font-size: 14px; margin-bottom: 10px; }
+    .social-links { margin: 15px 0; }
+    .social-links a { 
+      color: #7DCFB6; 
+      margin: 0 10px; 
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .pura-vida { 
+      color: #F4A261; 
+      font-size: 24px; 
+      margin-top: 15px;
+    }
+    .divider { 
+      height: 1px; 
+      background: linear-gradient(90deg, transparent, #7DCFB6, transparent); 
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="margin:0; font-size: 28px;">Pura Vida ${params.name}!</h1>
-      <p style="margin:10px 0 0 0; font-size: 16px;">Gracias por registrarte en Mai Ke Kai</p>
+      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" />
     </div>
+    
+    <img 
+      class="banner" 
+      src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749845/email-banner-tamarindo_cupqjb.jpg" 
+      alt="Tamarindo, Costa Rica" 
+    />
+    
     <div class="content">
-      <p>Tu cuenta ha sido creada exitosamente. Para confirmar tu correo electrónico y activar tu cuenta, haz clic en el botón de abajo:</p>
-
-      <div style="text-align: center;">
-        <a href="${params.confirmationUrl}" class="button">Confirmar mi Cuenta</a>
+      <h1 class="title">¡Bienvenido a Mai Ke Kai! 🌊</h1>
+      <p class="greeting">Hola ${params.name},</p>
+      
+      <p class="text">
+        Tu aventura de surf en Tamarindo está por comenzar. Nos emociona mucho que te unas a nuestra familia.
+        Para comenzar a disfrutar de todas nuestras experiencias, primero confirma tu correo electrónico.
+      </p>
+      
+      <div class="button-container">
+        <a href="${params.confirmationUrl}" class="button">Confirmar Mi Cuenta</a>
       </div>
-
-      <p>Si no creaste una cuenta en Mai Ke Kai, puedes ignorar este email.</p>
+      
+      <div class="info-box">
+        <h3>¿Qué sigue después de confirmar?</h3>
+        <ul>
+          <li>Inicia sesión en tu cuenta</li>
+          <li>Explora nuestras habitaciones y paquetes de surf</li>
+          <li>Reserva tu primera experiencia de surf</li>
+          <li>Acumula puntos y canjea recompensas exclusivas</li>
+        </ul>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <p class="text">
+        Si no creaste una cuenta en Mai Ke Kai, puedes ignorar este email sin problemas.
+      </p>
     </div>
+    
     <div class="footer">
-      <p>Mai Ke Kai Surf House | Tamarindo, Costa Rica<br>
-      <a href="https://maikekai.com" style="color: #5B8A9A;">www.maikekai.com</a></p>
-      <p style="margin-top: 10px;">Pura Vida! 🌊🏄</p>
+      <p>Síguenos en redes sociales</p>
+      <div class="social-links">
+        <a href="https://instagram.com/maikekai">Instagram</a> |
+        <a href="https://facebook.com/maikekai">Facebook</a> |
+        <a href="https://wa.me/50612345678">WhatsApp</a>
+      </div>
+      <p>Mai Ke Kai Surf House | Tamarindo, Costa Rica</p>
+      <p><a href="https://maikekai.com" style="color: #5B8A9A;">www.maikekai.com</a></p>
+      <p class="pura-vida">¡Pura Vida! 🏄</p>
     </div>
   </div>
 </body>
-</html>
-  `;
+</html>`;
 
   return sendEmail({
     to: params.to,

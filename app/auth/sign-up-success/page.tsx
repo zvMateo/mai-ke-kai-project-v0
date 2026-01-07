@@ -1,10 +1,21 @@
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail } from "lucide-react"
+import { Mail, CheckCircle, RefreshCw, ArrowRight } from "lucide-react"
+import { ResendConfirmationButton } from "./resend-button"
 
-export default function SignUpSuccessPage() {
+export default async function SignUpSuccessPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Si ya confirmó, redirigir al dashboard
+  if (user?.email_confirmed_at) {
+    redirect("/dashboard")
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <div className="w-full max-w-md">
@@ -22,41 +33,51 @@ export default function SignUpSuccessPage() {
         </div>
 
         <Card className="border-border/50 shadow-lg text-center">
-          <CardHeader className="pb-4">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Mail className="w-8 h-8 text-primary" />
+          <CardHeader className="pb-2">
+            <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+              <Mail className="w-10 h-10 text-primary" />
             </div>
-            <CardTitle className="text-2xl font-heading">Check Your Email</CardTitle>
+            <CardTitle className="text-2xl font-heading">¡Casi Listo!</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              We&apos;ve sent you a confirmation email. Please click the link in the email to verify your account and
-              complete your registration.
+              Te hemos enviado un email de confirmación a tu correo electrónico.
             </p>
 
-            <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
-              <p>
-                Didn&apos;t receive the email? Check your spam folder or{" "}
-                <Link href="/auth/sign-up" className="text-primary hover:underline">
-                  try again
-                </Link>
-                .
-              </p>
+            <div className="bg-muted rounded-lg p-4 text-left space-y-2">
+              <p className="text-sm font-medium">Para completar tu registro:</p>
+              <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                <li>Abre el email desde tu bandeja de entrada</li>
+                <li>Haz clic en el botón "Confirmar Mi Cuenta"</li>
+                <li>¡Listo! Tu cuenta estará activa</li>
+              </ol>
             </div>
 
-            <Link href="/auth/login">
-              <Button variant="outline" className="w-full mt-4 bg-transparent">
-                Back to Sign In
-              </Button>
-            </Link>
+            <p className="text-xs text-muted-foreground">
+              ¿No ves el email? Revisa tu carpeta de spam o correo no deseado.
+            </p>
+
+            {/* Botón de reenvío - siempre visible */}
+            <div className="pt-4 border-t">
+              <ResendConfirmationButton userEmail={user?.email || ""} />
+            </div>
+
+            {/* Links */}
+            <div className="pt-4 flex flex-col gap-3">
+              <Link href="/auth/login">
+                <Button variant="outline" className="w-full">
+                  Volver a Iniciar Sesión
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="ghost" className="w-full">
+                  Volver al Inicio
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
-
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          <Link href="/" className="hover:text-primary">
-            ← Back to Mai Ke Kai
-          </Link>
-        </p>
       </div>
     </div>
   )

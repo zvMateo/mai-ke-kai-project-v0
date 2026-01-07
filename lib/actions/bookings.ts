@@ -349,26 +349,26 @@ export async function cancelBooking(
   let refundProcessed = false;
   let message = "";
 
-  // Process refund handling for GreenPay (manual process)
+  // Process refund handling for Tilopay (manual process)
   if (
     refundEligible &&
-    booking.greenpay_payment_id &&
+    booking.tilopay_transaction_id &&
     booking.paid_amount > 0
   ) {
-    // For GreenPay, refunds need to be processed manually through dashboard
+    // For Tilopay, refunds need to be processed manually through dashboard
     // Mark as requiring manual refund
     await supabase
       .from("bookings")
       .update({
-        payment_status: "refunded", // We'll mark as refunded, but it's manual
+        payment_status: "refunded",
         special_requests:
           (booking.special_requests || "") +
-          "\n[REFUND REQUIRED] Manual refund needed through GreenPay dashboard",
+          "\n[REFUND REQUIRED] Manual refund needed through Tilopay dashboard",
       })
       .eq("id", bookingId);
 
     refundProcessed = true;
-    message = `Reserva cancelada. Reembolso MANUAL requerido (${daysUntilCheckIn} días antes del check-in). Procesar a través del dashboard de GreenPay.`;
+    message = `Reserva cancelada. Reembolso MANUAL requerido (${daysUntilCheckIn} días antes del check-in). Procesar a través del dashboard de Tilopay.`;
   } else if (!refundEligible && booking.paid_amount > 0) {
     message = `Reserva cancelada SIN reembolso. Política: cancelaciones con menos de ${CANCELLATION_DAYS_THRESHOLD} días de anticipación no son reembolsables (${daysUntilCheckIn} días antes del check-in).`;
   } else {

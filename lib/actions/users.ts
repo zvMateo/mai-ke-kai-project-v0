@@ -182,3 +182,142 @@ export async function addLoyaltyPoints(userId: string, points: number, descripti
   revalidatePath("/admin/guests")
   return { success: true }
 }
+
+// ============================================
+// EMAIL CONFIRMATION FUNCTIONS
+// ============================================
+
+// Generate a confirmation token for a user
+export async function generateConfirmationToken(userId: string, email: string): Promise<string> {
+  const supabase = await createClient()
+
+  // Invalidate any existing tokens for this user
+  await supabase.from("email_confirmation_tokens").delete().eq("user_id", userId)
+
+  // Generate a unique token
+  const token = crypto.randomUUID()
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+
+  // Save token to database
+  const { error } = await supabase.from("email_confirmation_tokens").insert({
+    user_id: userId,
+    token,
+    expires_at: expiresAt.toISOString(),
+  })
+
+  if (error) {
+    console.error("Error generating confirmation token:", error)
+    throw new Error("Failed to generate confirmation token")
+  }
+
+  return token
+}
+
+// Verify a confirmation token and confirm the user's email
+export async function confirmEmail(token: string): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+
+  // Find the token
+  const { data: tokenData, error: tokenError } = await supabase
+    .from("email_confirmation_tokens")
+    .select("*, users!inner(email)")
+    .eq("token", token)
+    .is("used_at", null)
+    .single()
+
+  if (tokenError || !tokenData) {
+    return { success: false, error: "Token inválido o ya utilizado" }
+  }
+
+  // Check if token has expired
+  if (new Date(tokenData.expires_at) < new Date()) {
+    return { success: false, error: "Token expirado" }
+  }
+
+  // Mark token as used
+  const { error: updateError } = await supabase
+    .from("email_confirmation_tokens")
+    .update({ used_at: new Date().toISOString() })
+    .eq("id", tokenData.id)
+
+  if (updateError) {
+    console.error("Error marking token as used:", updateError)
+    return { success: false, error: "Error al confirmar email" }
+  }
+
+  // Confirm user in Supabase Auth
+  const { error: authError } = await supabase.auth.admin.updateUserById(tokenData.user_id, {
+    email_confirm: true,
+  })
+
+  if (authError) {
+    console.error("Error confirming user in Auth:", authError)
+    return { success: false, error: authError.message }
+  }
+
+  return { success: true }
+}
+
+// Resend confirmation email with rate limiting
+export async function resendConfirmationEmail(email: string): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+
+  // Find user by email in public.users table
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("id, email, full_name")
+    .eq("email", email)
+    .single()
+
+  if (userError || !user) {
+    return { success: false, error: "Usuario no encontrado" }
+  }
+
+  // Check rate limiting (2 re-sends per 30 minutes)
+  const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+  const { data: recentResends } = await supabase
+    .from("email_confirmation_tokens")
+    .select("resend_count, last_resend_at")
+    .eq("user_id", user.id)
+    .gte("last_resend_at", thirtyMinAgo)
+    .is("used_at", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single()
+
+  if (recentResends && recentResends.resend_count >= 2) {
+    return { success: false, error: "Límite de reenvíos alcanzado. Espera 30 minutos." }
+  }
+
+  // Invalidate existing tokens
+  await supabase.from("email_confirmation_tokens").delete().eq("user_id", user.id)
+
+  // Generate new token
+  const newToken = crypto.randomUUID()
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+  const newCount = recentResends ? recentResends.resend_count + 1 : 1
+
+  // Save new token with resend count
+  await supabase.from("email_confirmation_tokens").insert({
+    user_id: user.id,
+    token: newToken,
+    expires_at: expiresAt.toISOString(),
+    resend_count: newCount,
+    last_resend_at: new Date().toISOString(),
+  })
+
+  // Import sendWelcomeEmail dynamically to avoid circular dependency
+  const { sendWelcomeEmail } = await import("@/lib/email")
+
+  // Send confirmation email
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  const confirmationUrl = `${siteUrl}/auth/confirm?token=${newToken}`
+
+  await sendWelcomeEmail({
+    to: user.email,
+    name: user.full_name || user.email.split("@")[0],
+    confirmationUrl,
+  })
+
+  return { success: true }
+}

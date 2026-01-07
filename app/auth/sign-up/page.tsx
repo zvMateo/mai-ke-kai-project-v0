@@ -28,50 +28,53 @@ export default function SignUpPage() {
     setError(null)
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
+      setError("Las contraseñas no coinciden")
       setIsLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+      setError("La contraseña debe tener al menos 6 caracteres")
       setIsLoading(false)
       return
     }
 
     try {
-      const redirectUrl = process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`
-
-      const { error } = await supabase.auth.signUp({
+      // Crear usuario SIN confirmar email (usaremos nuestro propio flujo)
+      const { data: { user }, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
+          email_confirm: false, // Deshabilitar confirmación automática de Supabase
           data: {
             full_name: fullName,
           },
         },
       })
-      if (error) throw error
 
-      try {
-        await fetch("/api/auth/welcome-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            name: fullName || email.split("@")[0],
-            confirmationUrl: redirectUrl,
-          }),
-        })
-      } catch (emailError) {
-        console.error("Failed to send welcome email:", emailError)
-        // Don't block signup if email fails
+      if (signUpError) throw signUpError
+      if (!user) throw new Error("No se pudo crear el usuario")
+
+      // Generar token y enviar email de confirmación vía Resend
+      const response = await fetch("/api/auth/send-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          email,
+          name: fullName || email.split("@")[0],
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Error al enviar email de confirmación")
       }
 
+      // Redirigir a página de éxito
       router.push("/auth/sign-up-success")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      setError(error instanceof Error ? error.message : "Ocurrió un error")
     } finally {
       setIsLoading(false)
     }
@@ -91,19 +94,19 @@ export default function SignUpPage() {
               className="w-16 h-16 mb-4"
             />
           </Link>
-          <h1 className="font-heading text-2xl font-bold text-foreground">Join Mai Ke Kai</h1>
-          <p className="text-muted-foreground text-sm">Create your account to start your surf adventure</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">Únete a Mai Ke Kai</h1>
+          <p className="text-muted-foreground text-sm">Crea tu cuenta para comenzar tu aventura de surf</p>
         </div>
 
         <Card className="border-border/50 shadow-lg">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl font-heading">Create Account</CardTitle>
-            <CardDescription>Fill in your details to get started</CardDescription>
+            <CardTitle className="text-xl font-heading">Crear Cuenta</CardTitle>
+            <CardDescription>Ingresa tus datos para registrarte</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Nombre Completo</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -116,7 +119,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Correo Electrónico</Label>
                 <Input
                   id="email"
                   type="email"
@@ -129,11 +132,11 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Min. 6 characters"
+                  placeholder="Mínimo 6 caracteres"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -142,7 +145,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -153,16 +156,20 @@ export default function SignUpPage() {
                 />
               </div>
 
-              {error && <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>}
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                  {error}
+                </div>
+              )}
 
               <Button type="submit" className="w-full h-11" disabled={isLoading}>
-                {isLoading ? "Creating account..." : "Create Account"}
+                {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{" "}
+                ¿Ya tienes una cuenta?{" "}
                 <Link href="/auth/login" className="text-primary font-medium hover:underline">
-                  Sign in
+                  Iniciar Sesión
                 </Link>
               </p>
             </form>
@@ -170,13 +177,13 @@ export default function SignUpPage() {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          By creating an account, you agree to our{" "}
+          Al crear una cuenta, aceptas nuestros{" "}
           <Link href="/terms" className="text-primary hover:underline">
-            Terms
+            Términos
           </Link>{" "}
-          and{" "}
+          y{" "}
           <Link href="/privacy" className="text-primary hover:underline">
-            Privacy Policy
+            Política de Privacidad
           </Link>
         </p>
       </div>

@@ -20,22 +20,17 @@ NEXTAUTH_SECRET=development-secret-key-change-in-production
 
 # ============ EMAIL (RESEND) ============
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-EMAIL_FROM=Mai Ke Kai <onboarding@resend.dev>
+EMAIL_FROM=Mai Ke Kai <noreply@maikekai.com>
+REPLY_TO=maikekaisurfhouse@gmail.com
 STAFF_EMAIL=staff@maikekai.com
 RESEND_TEST_EMAIL=tu-email@ejemplo.com
 
 # ============ PAYMENTS ============
-# GreenPay (Costa Rican Payment Gateway)
-GREENPAY_SECRET=NHQ/KGq4hqCn77GDc29hVVIQUybw9JQO7WddWxBWBQs2q0CMvT4wqefhBvvhmeeSBGwWL2hcqGu/UMGF++jbJ2RLauxtbFwJyMEjyUSmo7Rv2AdUMOd3e+d32X4VfURDDS3N3ww/ArS3hcA5T0YHlpdXPRtZUiFddJkB7TDDL/Q=
-GREENPAY_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkGKEaMiOO63KzIwNFO302U+sQ
-NCJtfo61FGeAogMbFYUn2JRizJeXu/NF4rf/dGTi240+mTIXJtJsGXGGXtNerASV
-SAjr1Hb6fDX3xywBF7J3xagsmNaRPo+32A95VKYHtEP/fuC2Aoa2z1v6HGYZirJD
-/XdXs0nLasiDWyM36wIDAQAB
------END PUBLIC KEY-----
-GREENPAY_TERMINAL_ID=maikekai-aaed-BNCR-USD
-GREENPAY_MERCHANT_ID=79094965-8791-4567-a01d-c2001268e1cc
-GREENPAY_SANDBOX=true  # Set to false for production
+# Tilopay (Costa Rican Payment Gateway)
+NEXT_PUBLIC_TILOPAY_MERCHANT_ID=your-merchant-id
+NEXT_PUBLIC_TILOPAY_API_KEY=your-api-key
+TILOPAY_SECRET_KEY=your-secret-key
+TILOPAY_SANDBOX=true  # Set to false for production
 
 # ============ IMAGES (CLOUDINARY) ============
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
