@@ -201,8 +201,6 @@ export default async function LoyaltyPage() {
                                   name: reward.name,
                                   description: reward.description || "",
                                   points: reward.points_required,
-                                  icon: Icon,
-                                  category: reward.category,
                                 }}
                                 userPoints={points}
                                 canRedeem={canRedeem}
