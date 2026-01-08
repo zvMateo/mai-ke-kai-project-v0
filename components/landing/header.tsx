@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useTranslations } from "next-intl";
 import { UserMenu } from "@/components/user-menu";
+import { UserInitializer } from "@/components/user-initializer";
 import { useUserStore } from "@/lib/stores/user-store";
 
 interface HeaderProps {
@@ -39,14 +40,16 @@ export function Header({ locale = "en" }: HeaderProps) {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
-          : "bg-transparent"
-      )}
-    >
+    <>
+      <UserInitializer />
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          isScrolled
+            ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
+            : "bg-transparent"
+        )}
+      >
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -169,6 +172,7 @@ export function Header({ locale = "en" }: HeaderProps) {
         </div>
       </div>
     </header>
+    </>
   );
 }
 
