@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowRight, ArrowLeft, User, Mail, Phone, Globe, Star, LogIn } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import { useUserStore } from "@/lib/stores/user-store"
 import Link from "next/link"
 import type { BookingData } from "./booking-flow"
 
@@ -36,9 +36,7 @@ const countries = [
 ]
 
 export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userPoints, setUserPoints] = useState(0)
-  const [isLoadingUser, setIsLoadingUser] = useState(true)
+  const { profile, isAuthenticated, isLoading } = useUserStore()
 
   const [formData, setFormData] = useState({
     firstName: initialData?.firstName || "",
@@ -52,36 +50,18 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    async function fetchUserData() {
-      const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (user) {
-        const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
-
-        if (profile) {
-          setIsLoggedIn(true)
-          setUserPoints(profile.loyalty_points || 0)
-
-          // Pre-fill form with user data
-          const nameParts = (profile.full_name || "").split(" ")
-          setFormData((prev) => ({
-            ...prev,
-            firstName: nameParts[0] || prev.firstName,
-            lastName: nameParts.slice(1).join(" ") || prev.lastName,
-            email: profile.email || prev.email,
-            phone: profile.phone || prev.phone,
-            nationality: profile.nationality || prev.nationality,
-          }))
-        }
-      }
-      setIsLoadingUser(false)
+    if (isAuthenticated && profile && !isLoading) {
+      const nameParts = (profile.full_name || "").split(" ")
+      setFormData((prev) => ({
+        ...prev,
+        firstName: nameParts[0] || prev.firstName,
+        lastName: nameParts.slice(1).join(" ") || prev.lastName,
+        email: profile.email || prev.email,
+        phone: profile.phone || prev.phone,
+        nationality: profile.nationality || prev.nationality,
+      }))
     }
-
-    fetchUserData()
-  }, [])
+  }, [isAuthenticated, profile, isLoading])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -119,19 +99,19 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
         <CardTitle className="font-heading text-xl">Guest Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {!isLoadingUser && isLoggedIn && (
+        {!isLoading && isAuthenticated && (
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center gap-3">
             <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
               <Star className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="font-medium text-primary">You have {userPoints} loyalty points!</p>
+              <p className="font-medium text-primary">You have {profile?.loyalty_points || 0} loyalty points!</p>
               <p className="text-sm text-muted-foreground">Complete this booking to earn more points</p>
             </div>
           </div>
         )}
 
-        {!isLoadingUser && !isLoggedIn && (
+        {!isLoading && !isAuthenticated && (
           <div className="bg-muted/50 border border-border rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <LogIn className="w-5 h-5 text-muted-foreground" />
@@ -190,7 +170,7 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
                 onChange={(e) => updateField("email", e.target.value)}
                 className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
                 placeholder="john@example.com"
-                disabled={isLoggedIn} // Disable email field if logged in
+                disabled={isAuthenticated} // Disable email field if logged in
               />
             </div>
             {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}

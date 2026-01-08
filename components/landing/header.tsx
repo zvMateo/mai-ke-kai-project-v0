@@ -9,6 +9,8 @@ import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useTranslations } from "next-intl";
+import { UserMenu } from "@/components/user-menu";
+import { useUserStore } from "@/lib/stores/user-store";
 
 interface HeaderProps {
   locale?: string;
@@ -19,6 +21,7 @@ export function Header({ locale = "en" }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("nav");
   const tCommon = useTranslations("common");
+  const { isAuthenticated } = useUserStore();
 
   const navLinks = [
     { href: "#rooms", label: t("rooms") },
@@ -96,17 +99,21 @@ export function Header({ locale = "en" }: HeaderProps) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher currentLocale={locale} />
-          <Link href="/auth/login" className="hidden sm:block">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                !isScrolled && "text-white hover:text-white hover:bg-white/10"
-              )}
-            >
-              {t("login")}
-            </Button>
-          </Link>
+          {isAuthenticated ? (
+            <UserMenu isScrolled={isScrolled} />
+          ) : (
+            <Link href="/auth/login" className="hidden sm:block">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  !isScrolled && "text-white hover:text-white hover:bg-white/10"
+                )}
+              >
+                {t("login")}
+              </Button>
+            </Link>
+          )}
           <Link href="/booking">
             <Button
               size="sm"
@@ -142,11 +149,17 @@ export function Header({ locale = "en" }: HeaderProps) {
                   </Link>
                 ))}
                 <hr className="border-border" />
-                <Link href="/auth/login" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    {t("login")}
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <div className="flex items-center justify-center">
+                    <UserMenu />
+                  </div>
+                ) : (
+                  <Link href="/auth/login" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full bg-transparent">
+                      {t("login")}
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/booking" onClick={() => setIsOpen(false)}>
                   <Button className="w-full">{tCommon("bookNow")}</Button>
                 </Link>
