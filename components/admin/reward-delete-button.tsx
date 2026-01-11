@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Trash2 } from "lucide-react"
-import { deleteReward } from "@/lib/actions/loyalty"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useDeleteReward } from "@/lib/queries";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,33 +13,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface RewardDeleteButtonProps {
-  rewardId: string
-  rewardName: string
+  rewardId: string;
+  rewardName: string;
 }
 
-export function RewardDeleteButton({ rewardId, rewardName }: RewardDeleteButtonProps) {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+export function RewardDeleteButton({
+  rewardId,
+  rewardName,
+}: RewardDeleteButtonProps) {
+  const deleteReward = useDeleteReward();
 
-  const handleDelete = async () => {
-    setLoading(true)
-    try {
-      await deleteReward(rewardId)
-      router.refresh()
-    } catch (error) {
-      console.error("Failed to delete reward:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const handleDelete = () => {
+    deleteReward.mutate(rewardId);
+  };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive bg-transparent">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-destructive hover:text-destructive bg-transparent"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </AlertDialogTrigger>
@@ -49,20 +45,23 @@ export function RewardDeleteButton({ rewardId, rewardName }: RewardDeleteButtonP
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Reward</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{rewardName}"? This action cannot be undone.
+            Are you sure you want to delete "{rewardName}"? This action cannot
+            be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={deleteReward.isPending}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={loading}
+            disabled={deleteReward.isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {loading ? "Deleting..." : "Delete"}
+            {deleteReward.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

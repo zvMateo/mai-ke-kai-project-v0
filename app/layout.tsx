@@ -4,6 +4,7 @@ import { Poppins, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { Providers } from "./providers";
 import "./globals.css";
 
 // <CHANGE> Using Poppins for headings and Inter for body text - tropical/modern feel
@@ -59,9 +60,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${poppins.variable} ${inter.variable}`}>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <Providers>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

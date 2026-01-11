@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Users, Bed, ArrowRight, ArrowLeft, Plus, Minus, Loader2 } from "lucide-react"
+import { Users, Bed, ArrowRight, ArrowLeft, Plus, Minus, Loader2, AlertCircle } from "lucide-react"
 import { format } from "date-fns"
 import type { RoomSelection } from "./booking-flow"
-import { getRoomsWithPricing } from "@/lib/actions/rooms"
+import { useRoomsWithPricing } from "@/lib/queries"
 
 interface RoomSelectorProps {
   checkIn: Date
@@ -19,37 +19,11 @@ interface RoomSelectorProps {
   onBack: () => void
 }
 
-interface Room {
-  id: string
-  name: string
-  type: string
-  capacity: number
-  price_per_night: number
-  description: string | null
-  amenities: string[] | null
-  image_url: string | null
-  is_active: boolean
-}
-
 export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onComplete, onBack }: RoomSelectorProps) {
   const [selections, setSelections] = useState<RoomSelection[]>(selectedRooms)
-  const [rooms, setRooms] = useState<Room[]>([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchRooms() {
-      try {
-        const data = await getRoomsWithPricing(checkIn)
-        setRooms(data)
-      } catch (error) {
-        console.error("Error fetching rooms:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchRooms()
-  }, [checkIn])
+  // Use React Query for data fetching with automatic caching and retries
+  const { data: rooms = [], isLoading, error, refetch } = useRoomsWithPricing(checkIn)
 
   const updateSelection = (roomId: string, quantity: number) => {
     const room = rooms.find((r) => r.id === roomId)
@@ -86,10 +60,22 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
   const totalSelected = selections.reduce((sum, s) => sum + s.quantity, 0)
   const canContinue = totalSelected >= guests
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <AlertCircle className="w-8 h-8 text-destructive" />
+        <p className="text-muted-foreground">Failed to load rooms. Please try again.</p>
+        <Button variant="outline" onClick={() => refetch()}>
+          Retry
+        </Button>
       </div>
     )
   }

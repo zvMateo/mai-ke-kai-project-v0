@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { createReward, updateReward, type LoyaltyReward } from "@/lib/actions/loyalty"
+import { useCreateReward, useUpdateReward } from "@/lib/queries"
+import type { LoyaltyReward } from "@/lib/actions/loyalty"
 
 interface RewardFormProps {
   reward?: LoyaltyReward
@@ -19,48 +20,51 @@ interface RewardFormProps {
 
 export function RewardForm({ reward, mode }: RewardFormProps) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const createMutation = useCreateReward()
+  const updateMutation = useUpdateReward()
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string
+    description: string
+    points_required: number
+    category: LoyaltyReward["category"]
+    icon: string
+    is_active: boolean
+    quantity_available: number | null
+    display_order: number
+  }>({
     name: reward?.name || "",
     description: reward?.description || "",
     points_required: reward?.points_required || 100,
     category: reward?.category || "other",
     icon: reward?.icon || "gift",
     is_active: reward?.is_active ?? true,
-    quantity_available: reward?.quantity_available,
+    quantity_available: reward?.quantity_available ?? null,
     display_order: reward?.display_order || 0,
   })
 
+  const mutation = mode === "create" ? createMutation : updateMutation
+  const loading = mutation.isPending
+  const error = mutation.error?.message || null
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
 
-    try {
-      const submitData = {
-        name: formData.name,
-        description: formData.description || null,
-        points_required: formData.points_required,
-        category: formData.category as LoyaltyReward["category"],
-        icon: formData.icon,
-        is_active: formData.is_active,
-        quantity_available: formData.quantity_available,
-        display_order: formData.display_order,
-      }
+    const submitData = {
+      name: formData.name,
+      description: formData.description || null,
+      points_required: formData.points_required,
+      category: formData.category,
+      icon: formData.icon,
+      is_active: formData.is_active,
+      quantity_available: formData.quantity_available,
+      display_order: formData.display_order,
+    }
 
-      if (mode === "create") {
-        await createReward(submitData)
-      } else if (reward) {
-        await updateReward(reward.id, submitData)
-      }
-      router.push("/admin/loyalty")
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save reward")
-    } finally {
-      setLoading(false)
+    if (mode === "create") {
+      createMutation.mutate(submitData)
+    } else if (reward) {
+      updateMutation.mutate({ id: reward.id, ...submitData })
     }
   }
 
@@ -99,7 +103,7 @@ export function RewardForm({ reward, mode }: RewardFormProps) {
               <Label htmlFor="category">Category *</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
+                onValueChange={(value) => setFormData({ ...formData, category: value as LoyaltyReward["category"] })}
               >
                 <SelectTrigger id="category">
                   <SelectValue />

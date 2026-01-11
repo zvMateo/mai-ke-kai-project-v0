@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import { Upload, X, Loader2, ImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useUploadImage } from "@/lib/queries"
 
 interface ImageUploadProps {
   value?: string | string[]
@@ -24,60 +25,31 @@ export function ImageUpload({
   disabled = false,
   className,
 }: ImageUploadProps) {
-  const [uploading, setUploading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const uploadMutation = useUploadImage()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const images = Array.isArray(value) ? value : value ? [value] : []
+  const uploading = uploadMutation.isPending
+  const error = uploadMutation.error?.message || null
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return
 
-    setUploading(true)
-    setError(null)
+    const uploadedUrls: string[] = []
 
-    try {
-      // Check Cloudinary config
-      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
 
-      if (!cloudName || !uploadPreset) {
-        throw new Error("Cloudinary no está configurado. Contacta al administrador.")
+      try {
+        const result = await uploadMutation.mutateAsync({ file, folder })
+        uploadedUrls.push(result.url)
+      } catch {
+        // Error is already captured in mutation state
+        break
       }
+    }
 
-      const uploadedUrls: string[] = []
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-          throw new Error(`El archivo ${file.name} no es una imagen válida`)
-        }
-
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error(`El archivo ${file.name} es muy grande. Máximo 5MB.`)
-        }
-
-        const formData = new FormData()
-        formData.append("file", file)
-        formData.append("upload_preset", uploadPreset)
-        formData.append("folder", folder)
-
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: formData,
-        })
-
-        if (!response.ok) {
-          throw new Error("Error al subir la imagen a Cloudinary")
-        }
-
-        const data = await response.json()
-        uploadedUrls.push(data.secure_url)
-      }
-
+    if (uploadedUrls.length > 0) {
       // Update value
       if (multiple) {
         const newImages = [...images, ...uploadedUrls].slice(0, maxFiles)
@@ -85,14 +57,10 @@ export function ImageUpload({
       } else {
         onChange(uploadedUrls[0])
       }
-    } catch (err) {
-      console.error("Upload error:", err)
-      setError(err instanceof Error ? err.message : "Error al subir imagen")
-    } finally {
-      setUploading(false)
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""
-      }
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
     }
   }
 

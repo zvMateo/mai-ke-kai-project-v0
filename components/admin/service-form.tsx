@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "@/components/admin/image-upload"
-import { createService, updateService } from "@/lib/actions/services"
+import { useCreateService, useUpdateService } from "@/lib/queries"
 import type { Service, ServiceCategory } from "@/types/database"
 
 interface ServiceFormProps {
@@ -21,8 +21,10 @@ interface ServiceFormProps {
 
 export function ServiceForm({ service, mode }: ServiceFormProps) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
+  // React Query mutations with automatic cache invalidation and navigation
+  const createMutation = useCreateService()
+  const updateMutation = useUpdateService()
 
   const [formData, setFormData] = useState<{
     name: string
@@ -46,34 +48,28 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
 
-    try {
-      const submitData = {
-        name: formData.name,
-        description: formData.description,
-        category: formData.category,
-        price: formData.price,
-        duration_hours: formData.duration_hours,
-        max_participants: formData.max_participants,
-        image_url: formData.image_url || null,
-        is_active: formData.is_active,
-      }
+    const submitData = {
+      name: formData.name,
+      description: formData.description,
+      category: formData.category,
+      price: formData.price,
+      duration_hours: formData.duration_hours,
+      max_participants: formData.max_participants,
+      image_url: formData.image_url || null,
+      is_active: formData.is_active,
+    }
 
-      if (mode === "create") {
-        await createService(submitData)
-      } else if (service) {
-        await updateService(service.id, submitData)
-      }
-      router.push("/admin/services")
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save service")
-    } finally {
-      setLoading(false)
+    if (mode === "create") {
+      createMutation.mutate(submitData)
+    } else if (service) {
+      updateMutation.mutate({ id: service.id, ...submitData })
     }
   }
+
+  // Combine loading states from both mutations
+  const isLoading = createMutation.isPending || updateMutation.isPending
+  const error = createMutation.error || updateMutation.error
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -196,13 +192,17 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
         </CardContent>
       </Card>
 
-      {error && <div className="p-4 bg-destructive/10 text-destructive rounded-lg">{error}</div>}
+      {error && (
+        <div className="p-4 bg-destructive/10 text-destructive rounded-lg">
+          {error.message}
+        </div>
+      )}
 
       <div className="flex gap-4">
-        <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : mode === "create" ? "Create Service" : "Update Service"}
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : mode === "create" ? "Create Service" : "Update Service"}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()} disabled={loading}>
+        <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading}>
           Cancel
         </Button>
       </div>

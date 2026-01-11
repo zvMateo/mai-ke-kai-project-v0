@@ -1,21 +1,54 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { CalendarDays, Users, Bed, Sparkles } from "lucide-react"
-import { format } from "date-fns"
-import Image from "next/image"
-import type { BookingData, BookingStep } from "./booking-flow"
+"use client";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { CalendarDays, Users, Bed, Sparkles } from "lucide-react";
+import { format } from "date-fns";
+import Image from "next/image";
+import type { BookingData, BookingStep } from "./booking-flow";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queries";
 
 interface BookingSummaryProps {
-  bookingData: BookingData
-  nights: number
-  currentStep: BookingStep
+  bookingData: BookingData;
+  nights: number;
+  currentStep: BookingStep;
 }
 
-export function BookingSummary({ bookingData, nights, currentStep }: BookingSummaryProps) {
-  const roomsTotal = bookingData.rooms.reduce((sum, room) => sum + room.pricePerNight * room.quantity * nights, 0)
-  const extrasTotal = bookingData.extras.reduce((sum, extra) => sum + extra.price * extra.quantity, 0)
-  const subtotal = roomsTotal + extrasTotal
-  const tax = subtotal * 0.13
-  const total = subtotal + tax
+interface CachedSummary {
+  nights: number;
+  roomsTotal: number;
+  extrasTotal: number;
+  subtotal: number;
+  tax: number;
+  total: number;
+}
+
+export function BookingSummary({
+  bookingData,
+  nights,
+  currentStep,
+}: BookingSummaryProps) {
+  const queryClient = useQueryClient();
+  const cachedSummary = queryClient.getQueryData<CachedSummary>(
+    queryKeys.bookingFlow.summary()
+  );
+
+  const roomsTotal =
+    cachedSummary?.roomsTotal ??
+    bookingData.rooms.reduce(
+      (sum, room) => sum + room.pricePerNight * room.quantity * nights,
+      0
+    );
+  const extrasTotal =
+    cachedSummary?.extrasTotal ??
+    bookingData.extras.reduce(
+      (sum, extra) => sum + extra.price * extra.quantity,
+      0
+    );
+  const subtotal = cachedSummary?.subtotal ?? roomsTotal + extrasTotal;
+  const tax = cachedSummary?.tax ?? subtotal * 0.13;
+  const total = cachedSummary?.total ?? subtotal + tax;
+  const effectiveNights = cachedSummary?.nights ?? nights;
 
   return (
     <div className="sticky top-28">
@@ -28,9 +61,11 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
-            <h3 className="font-heading text-lg font-bold text-white">Mai Ke Kai</h3>
+            <h3 className="font-heading text-lg font-bold text-white">
+              Mai Ke Kai
+            </h3>
             <p className="text-white/80 text-sm">Surf House, Costa Rica</p>
           </div>
         </div>
@@ -41,9 +76,12 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
             <CalendarDays className="w-5 h-5 text-primary" />
             <div className="flex-1">
               <p className="font-medium text-foreground">
-                {format(bookingData.checkIn, "MMM dd")} - {format(bookingData.checkOut, "MMM dd, yyyy")}
+                {format(bookingData.checkIn, "MMM dd")} -{" "}
+                {format(bookingData.checkOut, "MMM dd, yyyy")}
               </p>
-              <p className="text-sm text-muted-foreground">{nights} nights</p>
+              <p className="text-sm text-muted-foreground">
+                {effectiveNights} nights
+              </p>
             </div>
           </div>
 
@@ -51,7 +89,9 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
           <div className="flex items-center gap-3 pb-4 border-b border-border">
             <Users className="w-5 h-5 text-primary" />
             <div>
-              <p className="font-medium text-foreground">{bookingData.guests} Guests</p>
+              <p className="font-medium text-foreground">
+                {bookingData.guests} Guests
+              </p>
             </div>
           </div>
 
@@ -60,15 +100,23 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
             <div className="pb-4 border-b border-border">
               <div className="flex items-center gap-2 mb-2">
                 <Bed className="w-4 h-4 text-primary" />
-                <span className="font-medium text-foreground text-sm">Accommodation</span>
+                <span className="font-medium text-foreground text-sm">
+                  Accommodation
+                </span>
               </div>
               <div className="space-y-2 pl-6">
                 {bookingData.rooms.map((room) => (
-                  <div key={room.roomId} className="flex justify-between text-sm">
+                  <div
+                    key={room.roomId}
+                    className="flex justify-between text-sm"
+                  >
                     <span className="text-muted-foreground">
                       {room.quantity}x {room.roomName}
                     </span>
-                    <span className="font-medium">${(room.pricePerNight * room.quantity * nights).toFixed(2)}</span>
+                    <span className="font-medium">
+                      $
+                      {(room.pricePerNight * room.quantity * nights).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -80,15 +128,22 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
             <div className="pb-4 border-b border-border">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="font-medium text-foreground text-sm">Extras</span>
+                <span className="font-medium text-foreground text-sm">
+                  Extras
+                </span>
               </div>
               <div className="space-y-2 pl-6">
                 {bookingData.extras.map((extra) => (
-                  <div key={extra.serviceId} className="flex justify-between text-sm">
+                  <div
+                    key={extra.serviceId}
+                    className="flex justify-between text-sm"
+                  >
                     <span className="text-muted-foreground">
                       {extra.quantity}x {extra.serviceName}
                     </span>
-                    <span className="font-medium">${(extra.price * extra.quantity).toFixed(2)}</span>
+                    <span className="font-medium">
+                      ${(extra.price * extra.quantity).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -116,7 +171,9 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
 
           {/* Empty State */}
           {bookingData.rooms.length === 0 && currentStep !== "search" && (
-            <p className="text-sm text-muted-foreground text-center py-4">Select a room to see your booking summary</p>
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Select a room to see your booking summary
+            </p>
           )}
         </CardContent>
       </Card>
@@ -145,5 +202,5 @@ export function BookingSummary({ bookingData, nights, currentStep }: BookingSumm
         </span>
       </div>
     </div>
-  )
+  );
 }

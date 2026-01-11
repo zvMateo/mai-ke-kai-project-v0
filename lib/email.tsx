@@ -76,6 +76,17 @@ export async function sendStaffBookingAlert(params: {
   });
 }
 
+export async function sendAdminInvitationEmail(params: { to: string; invitationUrl: string; invitedBy: string }) {
+  const html = buildAdminInvitationHtml(params.invitationUrl, params.invitedBy);
+  const subject = "Invitación para configurar cuenta Admin - Mai Ke Kai"
+
+  return sendEmail({
+    to: params.to,
+    subject,
+    html,
+  });
+}
+
 export async function sendBookingConfirmation(params: {
   to: string;
   bookingId: string;
@@ -381,8 +392,146 @@ function buildBookingConfirmationHtml(params: any): string {
       <p><a href="https://maikekaihouse.com" style="color: #5B8A9A;">www.maikekaihouse.com</a></p>
       <p style="margin-top: 10px;">Pura Vida! 🏄</p>
     </div>
+    </div>
   </div>
-</div>
+</body>
+</html>`;
+}
+
+function buildAdminInvitationHtml(invitationUrl: string, invitedBy: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitación Admin - Mai Ke Kai</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header {
+      background: linear-gradient(135deg, #E76F51 0%, #F4A261 100%);
+      padding: 40px 30px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .header img { max-width: 200px; height: auto; }
+    .content {
+      background: white;
+      padding: 40px 30px;
+      border-left: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+    }
+    .title {
+      color: #0E3244;
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .greeting {
+      color: #5B8A9A;
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .text {
+      color: #444;
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .button-container { text-align: center; margin: 35px 0; }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
+      color: white !important;
+      padding: 16px 50px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(231, 111, 81, 0.3);
+      transition: transform 0.2s;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .info-box {
+      background: linear-gradient(135deg, #7DCFB6 0%, #5B8A9A 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+    }
+    .info-box h3 { color: white; margin-bottom: 15px; font-size: 18px; }
+    .info-box ul { list-style: none; }
+    .info-box li {
+      color: white;
+      padding: 8px 0;
+      padding-left: 30px;
+      position: relative;
+      font-size: 15px;
+    }
+    .info-box li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: white;
+      font-weight: bold;
+    }
+    .footer {
+      background: #0E3244;
+      padding: 30px;
+      text-align: center;
+      border-radius: 0 0 8px 8px;
+    }
+    .footer p { color: #aaa; font-size: 14px; margin-bottom: 10px; }
+    .pura-vida {
+      color: #F4A261;
+      font-size: 24px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" />
+    </div>
+
+    <div class="content">
+      <h1 class="title">Invitación Administrador Mai Ke Kai</h1>
+      <p class="greeting">Hola,</p>
+
+      <p class="text">
+        Has sido invitado por <strong>${invitedBy}</strong> para configurar tu cuenta de administrador
+        en Mai Ke Kai Surf House. Esta invitación te permitirá acceder al panel completo de administración.
+      </p>
+
+      <div class="button-container">
+        <a href="${invitationUrl}" class="button">Configurar Mi Cuenta Admin</a>
+      </div>
+
+      <div class="info-box">
+        <h3>¿Qué podrás hacer como Administrador?</h3>
+        <ul>
+          <li>Gestionar habitaciones y precios</li>
+          <li>Administrar reservas y usuarios</li>
+          <li>Ver reportes y estadísticas</li>
+          <li>Configurar servicios y paquetes</li>
+          <li>Gestionar el calendario de disponibilidad</li>
+        </ul>
+      </div>
+
+      <p class="text">
+        <strong>Esta invitación expira en 24 horas.</strong> Si no puedes acceder ahora,
+        puedes solicitar una nueva invitación más tarde.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Mai Ke Kai Surf House | Tamarindo, Costa Rica</p>
+      <p><a href="https://maikekaihouse.com" style="color: #5B8A9A;">www.maikekaihouse.com</a></p>
+      <p class="pura-vida">Pura Vida! 🏄</p>
+    </div>
+  </div>
 </body>
 </html>`;
 }

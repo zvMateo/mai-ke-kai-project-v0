@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "@/components/admin/image-upload"
-import { createPackage, updatePackage } from "@/lib/actions/packages"
+import { useCreatePackage, useUpdatePackage } from "@/lib/queries"
 import type { SurfPackage, RoomType } from "@/types/database"
 import { X, Plus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -23,8 +23,10 @@ interface PackageFormProps {
 
 export function PackageForm({ pkg, mode }: PackageFormProps) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
+  // React Query mutations with automatic cache invalidation and navigation
+  const createMutation = useCreatePackage()
+  const updateMutation = useUpdatePackage()
 
   const [formData, setFormData] = useState<{
     name: string
@@ -62,38 +64,28 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
 
-    try {
-      const submitData = {
-        name: formData.name,
-        tagline: formData.tagline || null,
-        description: formData.description || null,
-        nights: formData.nights,
-        surf_lessons: formData.surf_lessons,
-        room_type: formData.room_type,
-        includes: formData.includes,
-        price: formData.price,
-        original_price: formData.original_price || null,
-        image_url: formData.image_url || null,
-        is_popular: formData.is_popular,
-        is_for_two: formData.is_for_two,
-        is_active: formData.is_active,
-        display_order: formData.display_order,
-      }
+    const submitData = {
+      name: formData.name,
+      tagline: formData.tagline || null,
+      description: formData.description || null,
+      nights: formData.nights,
+      surf_lessons: formData.surf_lessons,
+      room_type: formData.room_type,
+      includes: formData.includes,
+      price: formData.price,
+      original_price: formData.original_price || null,
+      image_url: formData.image_url || null,
+      is_popular: formData.is_popular,
+      is_for_two: formData.is_for_two,
+      is_active: formData.is_active,
+      display_order: formData.display_order,
+    }
 
-      if (mode === "create") {
-        await createPackage(submitData)
-      } else if (pkg) {
-        await updatePackage(pkg.id, submitData)
-      }
-      router.push("/admin/packages")
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save package")
-    } finally {
-      setLoading(false)
+    if (mode === "create") {
+      createMutation.mutate(submitData)
+    } else if (pkg) {
+      updateMutation.mutate({ id: pkg.id, ...submitData })
     }
   }
 
@@ -113,6 +105,10 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
       includes: formData.includes.filter((i) => i !== item),
     })
   }
+
+  // Combine loading states from both mutations
+  const isLoading = createMutation.isPending || updateMutation.isPending
+  const error = createMutation.error || updateMutation.error
 
   const savings = formData.original_price ? formData.original_price - formData.price : 0
 
@@ -365,13 +361,17 @@ export function PackageForm({ pkg, mode }: PackageFormProps) {
         </CardContent>
       </Card>
 
-      {error && <div className="p-4 bg-destructive/10 text-destructive rounded-lg">{error}</div>}
+      {error && (
+        <div className="p-4 bg-destructive/10 text-destructive rounded-lg">
+          {error.message}
+        </div>
+      )}
 
       <div className="flex gap-4">
-        <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : mode === "create" ? "Create Package" : "Update Package"}
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : mode === "create" ? "Create Package" : "Update Package"}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()} disabled={loading}>
+        <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading}>
           Cancel
         </Button>
       </div>

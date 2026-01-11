@@ -1,53 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Clock, ArrowRight, ArrowLeft, Plus, Minus, Loader2 } from "lucide-react"
-import type { ExtraSelection } from "./booking-flow"
-import { getServices } from "@/lib/actions/services"
-import type { Service } from "@/types/database"
+import { useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Clock,
+  ArrowRight,
+  ArrowLeft,
+  Plus,
+  Minus,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
+import type { ExtraSelection } from "./booking-flow";
+import { useServices } from "@/lib/queries";
 
 interface ExtrasSelectorProps {
-  checkIn: Date
-  checkOut: Date
-  selectedExtras: ExtraSelection[]
-  onComplete: (extras: ExtraSelection[]) => void
-  onBack: () => void
+  checkIn: Date;
+  checkOut: Date;
+  selectedExtras: ExtraSelection[];
+  onComplete: (extras: ExtraSelection[]) => void;
+  onBack: () => void;
 }
 
-export function ExtrasSelector({ checkIn, checkOut, selectedExtras, onComplete, onBack }: ExtrasSelectorProps) {
-  const [selections, setSelections] = useState<ExtraSelection[]>(selectedExtras)
-  const [services, setServices] = useState<Service[]>([])
-  const [loading, setLoading] = useState(true)
+export function ExtrasSelector({
+  checkIn,
+  checkOut,
+  selectedExtras,
+  onComplete,
+  onBack,
+}: ExtrasSelectorProps) {
+  const [selections, setSelections] =
+    useState<ExtraSelection[]>(selectedExtras);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const data = await getServices()
-        setServices(data)
-      } catch (error) {
-        console.error("Error loading services:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchServices()
-  }, [])
+  // Use React Query for data fetching with automatic caching and retries
+  const { data: services = [], isLoading, error, refetch } = useServices();
 
   const updateSelection = (serviceId: string, quantity: number) => {
-    const service = services.find((s) => s.id === serviceId)
-    if (!service) return
+    const service = services.find((s) => s.id === serviceId);
+    if (!service) return;
 
     setSelections((prev) => {
       if (quantity === 0) {
-        return prev.filter((s) => s.serviceId !== serviceId)
+        return prev.filter((s) => s.serviceId !== serviceId);
       }
-      const existing = prev.find((s) => s.serviceId === serviceId)
+      const existing = prev.find((s) => s.serviceId === serviceId);
       if (existing) {
-        return prev.map((s) => (s.serviceId === serviceId ? { ...s, quantity } : s))
+        return prev.map((s) =>
+          s.serviceId === serviceId ? { ...s, quantity } : s
+        );
       }
       return [
         ...prev,
@@ -57,83 +60,129 @@ export function ExtrasSelector({ checkIn, checkOut, selectedExtras, onComplete, 
           quantity,
           price: service.price,
         },
-      ]
-    })
-  }
+      ];
+    });
+  };
 
   const getQuantity = (serviceId: string) => {
-    return selections.find((s) => s.serviceId === serviceId)?.quantity || 0
-  }
+    return selections.find((s) => s.serviceId === serviceId)?.quantity || 0;
+  };
 
-  const totalExtras = selections.reduce((sum, s) => sum + s.quantity * s.price, 0)
+  const totalExtras = selections.reduce(
+    (sum, s) => sum + s.quantity * s.price,
+    0
+  );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <AlertCircle className="w-8 h-8 text-destructive" />
+        <p className="text-muted-foreground">
+          Failed to load services. Please try again.
+        </p>
+        <Button variant="outline" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="font-heading text-xl font-bold text-foreground">Add Experiences</h2>
-        <p className="text-muted-foreground text-sm">Enhance your stay with surf lessons and tours (optional)</p>
+        <h2 className="font-heading text-xl font-bold text-foreground">
+          Add Experiences
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          Enhance your stay with surf lessons and tours (optional)
+        </p>
       </div>
 
       {/* Service Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {services.map((service) => {
-          const quantity = getQuantity(service.id)
-          const isSelected = quantity > 0
+          const quantity = getQuantity(service.id);
+          const isSelected = quantity > 0;
+          const durationLabel =
+            typeof service.duration_hours === "number" &&
+            service.duration_hours > 0
+              ? `${service.duration_hours} ${
+                  service.duration_hours === 1 ? "hour" : "hours"
+                }`
+              : "Varies";
 
           return (
             <Card
               key={service.id}
               className={`overflow-hidden transition-all border-2 ${
-                isSelected ? "border-primary shadow-lg" : "border-transparent shadow"
+                isSelected
+                  ? "border-primary shadow-lg"
+                  : "border-transparent shadow"
               }`}
             >
               <div className="relative h-36">
                 <Image
-                  src={service.image_url || "/placeholder.svg?height=200&width=400"}
+                  src={
+                    service.image_url || "/placeholder.svg?height=200&width=400"
+                  }
                   alt={service.name}
                   fill
                   className="object-cover"
                 />
                 {service.category === "surf" && (
-                  <Badge className="absolute top-3 left-3 bg-coral text-white">Popular</Badge>
+                  <Badge className="absolute top-3 left-3 bg-coral text-white">
+                    Popular
+                  </Badge>
                 )}
               </div>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-foreground">{service.name}</h3>
-                  <span className="text-lg font-bold text-primary">${service.price}</span>
+                  <h3 className="font-semibold text-foreground">
+                    {service.name}
+                  </h3>
+                  <span className="text-lg font-bold text-primary">
+                    ${service.price}
+                  </span>
                 </div>
-                <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{service.description}</p>
+                <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                  {service.description}
+                </p>
                 <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {service.duration || "Varies"}
+                    {durationLabel}
                   </span>
                 </div>
 
                 {/* Quantity Selector */}
                 <div className="flex items-center justify-between pt-3 border-t border-border">
-                  <span className="text-sm text-muted-foreground">Quantity</span>
+                  <span className="text-sm text-muted-foreground">
+                    Quantity
+                  </span>
                   <div className="flex items-center gap-3">
                     <Button
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 bg-transparent"
-                      onClick={() => updateSelection(service.id, Math.max(0, quantity - 1))}
+                      onClick={() =>
+                        updateSelection(service.id, Math.max(0, quantity - 1))
+                      }
                       disabled={quantity === 0}
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
-                    <span className="w-6 text-center font-semibold">{quantity}</span>
+                    <span className="w-6 text-center font-semibold">
+                      {quantity}
+                    </span>
                     <Button
                       variant="outline"
                       size="icon"
@@ -146,7 +195,7 @@ export function ExtrasSelector({ checkIn, checkOut, selectedExtras, onComplete, 
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -155,7 +204,9 @@ export function ExtrasSelector({ checkIn, checkOut, selectedExtras, onComplete, 
         <div className="bg-primary/5 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Extras Total</span>
-            <span className="font-semibold text-foreground">${totalExtras}</span>
+            <span className="font-semibold text-foreground">
+              ${totalExtras}
+            </span>
           </div>
         </div>
       )}
@@ -172,5 +223,5 @@ export function ExtrasSelector({ checkIn, checkOut, selectedExtras, onComplete, 
         </Button>
       </div>
     </div>
-  )
+  );
 }

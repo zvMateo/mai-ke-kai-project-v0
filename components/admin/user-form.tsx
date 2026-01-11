@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useCreateUser, useUpdateUser, useDeleteUser } from "@/lib/queries";
 import type { User, UserRole } from "@/types";
 
 interface UserFormProps {
@@ -17,7 +18,10 @@ interface UserFormProps {
 
 export function UserForm({ user, mode = "create" }: UserFormProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const createMutation = useCreateUser();
+  const updateMutation = useUpdateUser();
+  const deleteMutation = useDeleteUser();
+
   const [formData, setFormData] = useState<{
     fullName: string;
     email: string;
@@ -44,48 +48,35 @@ export function UserForm({ user, mode = "create" }: UserFormProps) {
     }
   }, [mode, user]);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const loading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
 
-    const endpoint = "/api/admin/users";
-    const method = mode === "create" ? "POST" : "PUT";
-    const body = JSON.stringify({
-      ...(mode === "edit" && { id: user?.id }),
-      ...formData,
-    });
-
-    try {
-      const response = await fetch(endpoint, { method, headers: { "Content-Type": "application/json" }, body });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Error al guardar usuario");
-      }
-
-      toast.success(mode === "create" ? "Usuario creado exitosamente" : "Usuario actualizado exitosamente");
-      router.push("/admin/users");
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Error al guardar usuario");
-    } finally {
-      setLoading(false);
+    if (mode === "create") {
+      createMutation.mutate(formData, {
+        onSuccess: () => toast.success("Usuario creado exitosamente"),
+        onError: (error) => toast.error(error.message || "Error al guardar usuario"),
+      });
+    } else if (user?.id) {
+      updateMutation.mutate({ id: user.id, ...formData }, {
+        onSuccess: () => toast.success("Usuario actualizado exitosamente"),
+        onError: (error) => toast.error(error.message || "Error al guardar usuario"),
+      });
     }
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!user?.id) return;
     if (!confirm("¿Estás seguro de eliminar este usuario?")) return;
 
-    try {
-      const response = await fetch(`/api/admin/users?id=${user.id}`, { method: "DELETE" });
-      if (!response.ok) throw new Error("Error al eliminar");
-      toast.success("Usuario eliminado");
-      router.push("/admin/users");
-      router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Error al eliminar");
-    }
+    deleteMutation.mutate(user.id, {
+      onSuccess: () => {
+        toast.success("Usuario eliminado");
+        router.push("/admin/users");
+      },
+      onError: (error) => toast.error(error.message || "Error al eliminar"),
+    });
   }
 
   return (

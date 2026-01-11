@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Trash2 } from "lucide-react"
-import { deleteService } from "@/lib/actions/services"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useDeleteService } from "@/lib/queries";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,33 +13,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface ServiceDeleteButtonProps {
-  serviceId: string
-  serviceName: string
+  serviceId: string;
+  serviceName: string;
 }
 
-export function ServiceDeleteButton({ serviceId, serviceName }: ServiceDeleteButtonProps) {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+export function ServiceDeleteButton({
+  serviceId,
+  serviceName,
+}: ServiceDeleteButtonProps) {
+  const deleteService = useDeleteService();
 
-  const handleDelete = async () => {
-    setLoading(true)
-    try {
-      await deleteService(serviceId)
-      router.refresh()
-    } catch (error) {
-      console.error("Failed to delete service:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const handleDelete = () => {
+    deleteService.mutate(serviceId);
+  };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive bg-transparent">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-destructive hover:text-destructive bg-transparent"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </AlertDialogTrigger>
@@ -49,20 +45,23 @@ export function ServiceDeleteButton({ serviceId, serviceName }: ServiceDeleteBut
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Service</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{serviceName}"? This action cannot be undone.
+            Are you sure you want to delete "{serviceName}"? This action cannot
+            be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={deleteService.isPending}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={loading}
+            disabled={deleteService.isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {loading ? "Deleting..." : "Delete"}
+            {deleteService.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, CreditCard, Shield, Loader2 } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import type { BookingData } from "./booking-flow";
-import { createBookingWithCheckout } from "@/lib/actions/checkout";
+import { useCreatePayment } from "@/lib/queries";
 
 interface PaymentStepProps {
   bookingData: BookingData;
@@ -22,9 +22,8 @@ export function PaymentStep({
 }: PaymentStepProps) {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [bookingId, setBookingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const completedRef = useRef(false);
+  const paymentMutation = useCreatePayment();
 
   const nights = differenceInDays(bookingData.checkOut, bookingData.checkIn);
   const roomsTotal = bookingData.rooms.reduce(
@@ -39,58 +38,49 @@ export function PaymentStep({
   const tax = subtotal * 0.13;
   const total = subtotal + tax;
 
-  const handleTilopayPayment = async () => {
-    try {
-      setIsProcessing(true);
-      setError(null);
+  const handleProceedToPayment = async () => {
+    if (!acceptTerms || isProcessing) return;
+    setIsProcessing(true);
+    setError(null);
 
-      const response = await fetch("/api/tilopay/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bookingData: {
-            checkIn: bookingData.checkIn.toISOString().split("T")[0],
-            checkOut: bookingData.checkOut.toISOString().split("T")[0],
-            guestsCount: bookingData.guests,
-            rooms: bookingData.rooms.map((room) => ({
-              roomId: room.roomId,
-              bedId: room.bedId,
-              pricePerNight: room.pricePerNight,
-            })),
-            services: bookingData.extras.map((extra) => ({
-              serviceId: extra.serviceId,
-              quantity: extra.quantity,
-              priceAtBooking: extra.price,
-              scheduledDate: extra.date,
-            })),
-            guestInfo: {
-              email: bookingData.guestInfo?.email || "",
-              fullName: `${bookingData.guestInfo?.firstName || ""} ${bookingData.guestInfo?.lastName || ""}`.trim(),
-              phone: bookingData.guestInfo?.phone,
-              nationality: bookingData.guestInfo?.nationality,
-            },
+    paymentMutation.mutate(
+      {
+        bookingData: {
+          checkIn: bookingData.checkIn.toISOString().split("T")[0],
+          checkOut: bookingData.checkOut.toISOString().split("T")[0],
+          guestsCount: bookingData.guests,
+          rooms: bookingData.rooms.map((room) => ({
+            roomId: room.roomId,
+            bedId: room.bedId,
+            pricePerNight: room.pricePerNight,
+          })),
+          services: bookingData.extras.map((extra) => ({
+            serviceId: extra.serviceId,
+            quantity: extra.quantity,
+            priceAtBooking: extra.price,
+            scheduledDate: extra.date,
+          })),
+          guestInfo: {
+            email: bookingData.guestInfo?.email || "",
+            fullName: `${bookingData.guestInfo?.firstName || ""} ${
+              bookingData.guestInfo?.lastName || ""
+            }`.trim(),
+            phone: bookingData.guestInfo?.phone,
+            nationality: bookingData.guestInfo?.nationality,
           },
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || "No se recibió URL de pago");
+        },
+      },
+      {
+        onError: (err) => {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Error al procesar el pago. Por favor intenta de nuevo."
+          );
+          setIsProcessing(false);
+        },
       }
-    } catch (err) {
-      console.error("Error creando pago Tilopay:", err);
-      setError(err instanceof Error ? err.message : "Error al procesar el pago. Por favor intenta de nuevo.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleProceedToPayment = () => {
-    if (!acceptTerms) return;
-    handleTilopayPayment();
+    );
   };
 
   return (

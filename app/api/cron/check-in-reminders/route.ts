@@ -42,6 +42,7 @@ export async function GET(request: Request) {
         `
         id,
         check_in,
+        check_out,
         users (
           id,
           email,
@@ -93,15 +94,31 @@ export async function GET(request: Request) {
       }
 
       try {
-        await sendCheckInReminder({
-          email: user.email,
-          name: user.full_name || "Huésped",
-          checkIn: new Date(booking.check_in).toLocaleDateString("es-ES", {
+        const formattedCheckIn = new Date(booking.check_in).toLocaleDateString(
+          "es-ES",
+          {
             weekday: "long",
             year: "numeric",
             month: "long",
             day: "numeric",
-          }),
+          }
+        );
+
+        const formattedCheckOut = booking.check_out
+          ? new Date(booking.check_out).toLocaleDateString("es-ES", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : "";
+
+        await sendCheckInReminder({
+          email: user.email,
+          name: user.full_name || "Huésped",
+          bookingId: booking.id,
+          checkIn: formattedCheckIn,
+          checkOut: formattedCheckOut,
           checkInUrl: `${baseUrl}/check-in/${booking.id}`,
         });
 

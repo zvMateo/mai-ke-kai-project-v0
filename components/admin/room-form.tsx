@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageUpload } from "@/components/admin/image-upload";
-import { createRoom, updateRoom } from "@/lib/actions/rooms";
+import { useCreateRoom, useUpdateRoom } from "@/lib/queries";
 import type { Room, RoomType, SellUnit } from "@/types/database";
 import { X, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -29,8 +28,10 @@ interface RoomFormProps {
 
 export function RoomForm({ room, mode }: RoomFormProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  // React Query mutations with automatic cache invalidation and navigation
+  const createMutation = useCreateRoom();
+  const updateMutation = useUpdateRoom();
 
   const [formData, setFormData] = useState({
     name: room?.name || "",
@@ -47,21 +48,11 @@ export function RoomForm({ room, mode }: RoomFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
 
-    try {
-      if (mode === "create") {
-        await createRoom(formData);
-      } else if (room) {
-        await updateRoom(room.id, formData);
-      }
-      router.push("/admin/rooms");
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save room");
-    } finally {
-      setLoading(false);
+    if (mode === "create") {
+      createMutation.mutate(formData);
+    } else if (room) {
+      updateMutation.mutate({ id: room.id, ...formData });
     }
   };
 
@@ -82,19 +73,16 @@ export function RoomForm({ room, mode }: RoomFormProps) {
     });
   };
 
-  const addGalleryImage = (url: string) => {
-    setFormData({
-      ...formData,
-      images: [...formData.images, url],
-    });
-  };
-
   const removeGalleryImage = (url: string) => {
     setFormData({
       ...formData,
       images: formData.images.filter((img) => img !== url),
     });
   };
+
+  // Combine loading states from both mutations
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const error = createMutation.error || updateMutation.error;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -282,13 +270,13 @@ export function RoomForm({ room, mode }: RoomFormProps) {
 
       {error && (
         <div className="p-4 bg-destructive/10 text-destructive rounded-lg">
-          {error}
+          {error.message}
         </div>
       )}
 
       <div className="flex gap-4">
-        <Button type="submit" disabled={loading}>
-          {loading
+        <Button type="submit" disabled={isLoading}>
+          {isLoading
             ? "Saving..."
             : mode === "create"
             ? "Create Room"
@@ -298,7 +286,7 @@ export function RoomForm({ room, mode }: RoomFormProps) {
           type="button"
           variant="outline"
           onClick={() => router.back()}
-          disabled={loading}
+          disabled={isLoading}
         >
           Cancel
         </Button>
