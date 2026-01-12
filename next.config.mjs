@@ -13,19 +13,28 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // Habilitar optimización en producción
     unoptimized: process.env.NODE_ENV === "development",
-    // Configurar dominios permitidos para imágenes externas
-    domains: [
-      "res.cloudinary.com",
-      "images.unsplash.com",
-      "cdn.sanity.io",
-      "localhost",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+      },
     ],
-    // Configurar tamaños de imagen
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Formatos de imagen
     formats: ["image/webp", "image/avif"],
   },
 
@@ -79,9 +88,6 @@ const nextConfig = {
 
   // Compresión y optimización
   compress: true,
-
-  // Configuración de build
-  swcMinify: true,
 
   // Variables de entorno específicas de producción
   env: {
