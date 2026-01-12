@@ -114,5 +114,19 @@ export const queryKeys = {
     dashboard: () => [...queryKeys.admin.all, "dashboard"] as const,
     stats: (range: { from: string; to: string }) =>
       [...queryKeys.admin.all, "stats", range] as const,
+    occupancyHistory: (days: number) =>
+      [...queryKeys.admin.all, "occupancy-history", days] as const,
+    roomOccupancy: () => [...queryKeys.admin.all, "room-occupancy"] as const,
+    recentBookings: (limit: number) =>
+      [...queryKeys.admin.all, "recent-bookings", limit] as const,
+    calendarBookings: (startDate: string, endDate: string) =>
+      [...queryKeys.admin.all, "calendar-bookings", startDate, endDate] as const,
+    calendarRooms: () => [...queryKeys.admin.all, "calendar-rooms"] as const,
+    revenueHistory: () => [...queryKeys.admin.all, "revenue-history"] as const,
+    monthlyOccupancy: () => [...queryKeys.admin.all, "monthly-occupancy"] as const,
+    servicesSales: () => [...queryKeys.admin.all, "services-sales"] as const,
+    channelData: () => [...queryKeys.admin.all, "channel-data"] as const,
+    growth: () => [...queryKeys.admin.all, "growth"] as const,
+    totalBeds: () => [...queryKeys.admin.all, "total-beds"] as const,
   },
 } as const;

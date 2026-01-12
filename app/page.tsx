@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/landing/hero-section";
 import { RoomsSection } from "@/components/landing/rooms-section";
 import { SurfSection } from "@/components/landing/surf-section";
+import { PackagesSection } from "@/components/landing/packages-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { LocationSection } from "@/components/landing/location-section";
 import { Header } from "@/components/landing/header";
@@ -32,16 +33,26 @@ async function getLandingData() {
     .select("id")
     .eq("is_active", true);
 
+  // Fetch surf packages
+  const { data: packages } = await supabase
+    .from("surf_packages")
+    .select("*")
+    .eq("is_active", true)
+    .order("display_order")
+    .limit(6);
+
   return {
     rooms: rooms || [],
     services: services || [],
+    packages: packages || [],
     totalBeds: beds?.length || 0,
     roomTypes: rooms?.length || 0,
   };
 }
 
 export default async function HomePage() {
-  const { rooms, services, totalBeds, roomTypes } = await getLandingData();
+  const { rooms, services, packages, totalBeds, roomTypes } =
+    await getLandingData();
   const locale = await getLocale();
 
   return (
@@ -54,6 +65,7 @@ export default async function HomePage() {
           totalBeds={totalBeds}
           roomTypes={roomTypes}
         />
+        <PackagesSection packages={packages} />
         <SurfSection services={services} />
         <TestimonialsSection />
         <LocationSection />

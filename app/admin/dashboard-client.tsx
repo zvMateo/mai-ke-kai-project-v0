@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useAdminDashboardStats } from "@/lib/queries";
+import { useAdminDashboardStats, useDashboardGrowth } from "@/lib/queries/admin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   CalendarCheck,
   DollarSign,
   Bed,
   TrendingUp,
+  TrendingDown,
   ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OccupancyChart } from "@/components/admin/occupancy-chart";
@@ -39,6 +40,7 @@ function StatsSkeleton() {
 
 export function AdminDashboardClient() {
   const { data: stats, isLoading, error } = useAdminDashboardStats();
+  const { data: growth, isLoading: growthLoading } = useDashboardGrowth();
 
   const safeStats = stats ?? {
     totalRevenue: 0,
@@ -46,6 +48,9 @@ export function AdminDashboardClient() {
     checkInsToday: 0,
     checkOutsToday: 0,
   };
+
+  const growthData = growth ?? { percentage: 0, isPositive: true };
+  const isGrowthLoading = isLoading || growthLoading;
 
   return (
     <div className="space-y-6">
@@ -98,13 +103,28 @@ export function AdminDashboardClient() {
                 ${safeStats.totalRevenue.toLocaleString()}
               </p>
               <div className="flex items-center gap-1 mt-1">
-                <ArrowUpRight className="w-3 h-3 text-green-600" />
-                <span className="text-xs text-green-600 font-medium">
-                  +12.5%
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  vs last month
-                </span>
+                {isGrowthLoading ? (
+                  <Skeleton className="h-4 w-24" />
+                ) : (
+                  <>
+                    {growthData.isPositive ? (
+                      <ArrowUpRight className="w-3 h-3 text-green-600" />
+                    ) : (
+                      <ArrowDownRight className="w-3 h-3 text-red-600" />
+                    )}
+                    <span
+                      className={`text-xs font-medium ${
+                        growthData.isPositive ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {growthData.isPositive ? "+" : ""}
+                      {growthData.percentage}%
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      vs last month
+                    </span>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>

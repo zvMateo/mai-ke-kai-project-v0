@@ -18,6 +18,7 @@ interface HeaderProps {
 }
 
 export function Header({ locale = "en" }: HeaderProps) {
+  // Force client update
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("nav");
@@ -29,6 +30,7 @@ export function Header({ locale = "en" }: HeaderProps) {
     { href: "#surf", label: t("surf") },
     { href: "#testimonials", label: "Reviews" },
     { href: "#location", label: t("location") },
+    { href: "#packages", label: t("packages") },
   ];
 
   useEffect(() => {

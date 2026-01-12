@@ -4,7 +4,7 @@ import { Instagram, Facebook, Youtube, Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/maikekaisurf/", label: "Instagram" },
   { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
   { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
 ];
@@ -16,10 +16,11 @@ export async function Footer() {
 
   const footerLinks = {
     explore: [
-      { label: tNav("rooms"), href: "/rooms" },
-      { label: tSurf("lessons"), href: "/surf" },
-      { label: tSurf("tours"), href: "/tours" },
-      { label: t("gallery"), href: "/gallery" },
+      { label: tNav("rooms"), href: "#rooms" },
+      { label: tSurf("lessons"), href: "#lessons" },
+      { label: tSurf("tours"), href: "#tours" },
+      // { label: t("gallery"), href: "#gallery" },
+      { label: t("packages"), href: "#packages" },
     ],
     info: [
       { label: tNav("about"), href: "/about" },

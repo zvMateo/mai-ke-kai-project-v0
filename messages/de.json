@@ -34,7 +34,8 @@
     "signup": "Registrieren",
     "myAccount": "Mein Konto",
     "logout": "Abmelden",
-    "admin": "Admin"
+    "admin": "Admin",
+    "packages": "Pakete"
   },
   "hero": {
     "title": "Ihr Surf-Paradies",
@@ -159,7 +160,8 @@
     "cancellation": "Stornierungsbedingungen",
     "gallery": "Galerie",
     "information": "Informationen",
-    "surfHouse": "Surf House"
+    "surfHouse": "Surf House",
+    "packages": "Pakete"
   },
   "loyalty": {
     "title": "Treueprogramm",
@@ -181,5 +183,19 @@
     "complete": "Check-in Abschließen",
     "alreadyCompleted": "Check-in bereits abgeschlossen",
     "thankYou": "Vielen Dank! Bis bald."
+  },
+  "packages": {
+    "title": "Surf-Pakete",
+    "sectionTitle": "All-Inclusive Surf-Erlebnisse",
+    "sectionSubtitle": "Kuratierte Pakete mit Unterkunft, Surfkursen und unvergesslichen Abenteuern",
+    "viewAll": "Alle Pakete Anzeigen",
+    "popular": "Beliebt",
+    "forTwo": "Für Zwei",
+    "nights": "Nächte",
+    "lessons": "Kurse",
+    "more": "mehr",
+    "perPerson": "pro Person",
+    "perCouple": "pro Paar",
+    "noPackages": "Unsere Pakete werden vorbereitet. Schauen Sie bald wieder vorbei!"
   }
 }

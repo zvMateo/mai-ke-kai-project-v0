@@ -34,7 +34,8 @@
     "signup": "Registrarse",
     "myAccount": "Mi Cuenta",
     "logout": "Cerrar Sesión",
-    "admin": "Admin"
+    "admin": "Admin",
+    "packages": "Paquetes"
   },
   "hero": {
     "title": "Tu Paraíso del Surf",
@@ -159,7 +160,9 @@
     "cancellation": "Política de Cancelación",
     "gallery": "Galería",
     "information": "Información",
-    "surfHouse": "Surf House"
+    "surfHouse": "Surf House",
+    "packages": "Paquetes"
+
   },
   "loyalty": {
     "title": "Programa de Lealtad",
@@ -181,5 +184,19 @@
     "complete": "Completar Check-in",
     "alreadyCompleted": "Check-in ya completado",
     "thankYou": "¡Gracias! Te veremos pronto."
+  },
+  "packages": {
+    "title": "Paquetes de Surf",
+    "sectionTitle": "Experiencias de Surf Todo Incluido",
+    "sectionSubtitle": "Paquetes diseñados combinando alojamiento, clases de surf y aventuras inolvidables",
+    "viewAll": "Ver Todos los Paquetes",
+    "popular": "Popular",
+    "forTwo": "Para Dos",
+    "nights": "noches",
+    "lessons": "clases",
+    "more": "más",
+    "perPerson": "por persona",
+    "perCouple": "por pareja",
+    "noPackages": "Nuestros paquetes están siendo preparados. ¡Vuelve pronto!"
   }
 }

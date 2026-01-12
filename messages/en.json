@@ -34,7 +34,8 @@
     "signup": "Sign Up",
     "myAccount": "My Account",
     "logout": "Logout",
-    "admin": "Admin"
+    "admin": "Admin",
+    "packages": "Packages"
   },
   "hero": {
     "title": "Your Surf Paradise",
@@ -159,7 +160,8 @@
     "cancellation": "Cancellation Policy",
     "gallery": "Gallery",
     "information": "Information",
-    "surfHouse": "Surf House"
+    "surfHouse": "Surf House",
+    "packages": "Packages"
   },
   "loyalty": {
     "title": "Loyalty Program",
@@ -181,5 +183,19 @@
     "complete": "Complete Check-in",
     "alreadyCompleted": "Check-in already completed",
     "thankYou": "Thank you! We'll see you soon."
+  },
+  "packages": {
+    "title": "Surf Packages",
+    "sectionTitle": "All-Inclusive Surf Experiences",
+    "sectionSubtitle": "Curated packages combining accommodation, surf lessons, and unforgettable adventures",
+    "viewAll": "View All Packages",
+    "popular": "Popular",
+    "forTwo": "For Two",
+    "nights": "nights",
+    "lessons": "lessons",
+    "more": "more",
+    "perPerson": "per person",
+    "perCouple": "per couple",
+    "noPackages": "Our packages are being prepared. Check back soon!"
   }
 }

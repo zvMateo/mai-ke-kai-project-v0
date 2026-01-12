@@ -34,7 +34,8 @@
     "signup": "S'inscrire",
     "myAccount": "Mon Compte",
     "logout": "Déconnexion",
-    "admin": "Admin"
+    "admin": "Admin",
+    "packages": "Forfaits"
   },
   "hero": {
     "title": "Votre Paradis du Surf",
@@ -159,7 +160,8 @@
     "cancellation": "Politique d'Annulation",
     "gallery": "Galerie",
     "information": "Informations",
-    "surfHouse": "Surf House"
+    "surfHouse": "Surf House",
+    "packages": "Forfaits"
   },
   "loyalty": {
     "title": "Programme de Fidélité",
@@ -181,5 +183,19 @@
     "complete": "Compléter l'Enregistrement",
     "alreadyCompleted": "Enregistrement déjà complété",
     "thankYou": "Merci! À bientôt."
+  },
+  "packages": {
+    "title": "Forfaits Surf",
+    "sectionTitle": "Expériences Surf Tout Compris",
+    "sectionSubtitle": "Forfaits combinant hébergement, cours de surf et aventures inoubliables",
+    "viewAll": "Voir Tous les Forfaits",
+    "popular": "Populaire",
+    "forTwo": "Pour Deux",
+    "nights": "nuits",
+    "lessons": "cours",
+    "more": "plus",
+    "perPerson": "par personne",
+    "perCouple": "par couple",
+    "noPackages": "Nos forfaits sont en préparation. Revenez bientôt!"
   }
 }

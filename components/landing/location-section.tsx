@@ -28,7 +28,7 @@ export async function LocationSection() {
           {/* Map / Image */}
           <div className="relative h-[280px] sm:h-[350px] lg:h-[500px] rounded-xl sm:rounded-2xl overflow-hidden shadow-xl">
             <Image
-              src="/placeholder.svg?height=500&width=600"
+              src="/images/Maike Kai-1.jpg"
               alt="Mai Ke Kai location"
               fill
               className="object-cover"
@@ -95,9 +95,9 @@ export async function LocationSection() {
                   {t("contact")}
                 </h3>
                 <p className="text-muted-foreground">
-                  +506 8888-8888
+                  +506 8606 9355
                   <br />
-                  hello@maikekai.com
+                  maikekaisurfhouse@gmail.com
                 </p>
               </div>
             </div>
@@ -112,7 +112,7 @@ export async function LocationSection() {
                   {t("receptionHours")}
                 </h3>
                 <p className="text-muted-foreground">
-                  {t("daily")}: 7:00 AM - 10:00 PM
+                  {t("daily")}: 7:30 AM - 10:30 PM
                   <br />
                   {t("checkInTime")} | {t("checkOutTime")}
                 </p>
@@ -126,7 +126,7 @@ export async function LocationSection() {
                   {t("bookYourStay")}
                 </Button>
               </Link>
-              <a href="mailto:hello@maikekai.com">
+              <a href="mailto:maikekaisurfhouse@gmail.com">
                 <Button
                   size="lg"
                   variant="outline"
