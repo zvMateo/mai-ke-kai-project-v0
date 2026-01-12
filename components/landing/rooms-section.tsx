@@ -44,7 +44,7 @@ export async function RoomsSection({
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
             {t("title")}
           </span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
             {t("sectionTitle")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
@@ -66,7 +66,7 @@ export async function RoomsSection({
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
             {t("title")}
           </span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
             {t("sectionTitle")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -89,7 +89,7 @@ export async function RoomsSection({
                 key={room.id}
                 className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
                   <Image
                     src={imageUrl || "/placeholder.svg"}
                     alt={room.name}
@@ -171,26 +171,26 @@ export async function RoomsSection({
         </div>
 
         {/* Stats Bar - Now using real data */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 bg-primary/5 rounded-2xl p-8">
+        <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 bg-primary/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8">
           <div className="text-center">
-            <p className="font-heading text-4xl font-bold text-primary">
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
               {totalBeds}
             </p>
-            <p className="text-muted-foreground text-sm">{t("totalBeds")}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t("totalBeds")}</p>
           </div>
           <div className="text-center">
-            <p className="font-heading text-4xl font-bold text-primary">
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
               {roomTypes}
             </p>
-            <p className="text-muted-foreground text-sm">{t("roomTypes")}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t("roomTypes")}</p>
           </div>
           <div className="text-center">
-            <p className="font-heading text-4xl font-bold text-primary">3pm</p>
-            <p className="text-muted-foreground text-sm">{t("checkIn")}</p>
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">3pm</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t("checkIn")}</p>
           </div>
           <div className="text-center">
-            <p className="font-heading text-4xl font-bold text-primary">11am</p>
-            <p className="text-muted-foreground text-sm">{t("checkOut")}</p>
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">11am</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t("checkOut")}</p>
           </div>
         </div>
       </div>

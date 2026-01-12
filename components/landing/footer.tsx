@@ -37,9 +37,9 @@ export async function Footer() {
     <footer className="bg-deep text-white">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6">
               <Image
                 src="/images/mai-20ke-20kai-20-20isotipo-20-20original.png"
@@ -117,15 +117,15 @@ export async function Footer() {
               {t("newsletter")}
             </h4>
             <p className="text-white/70 text-sm mb-4">{t("newsletterText")}</p>
-            <form className="flex gap-2">
+            <form className="flex flex-col sm:flex-row gap-2">
               <input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-primary"
+                className="w-full sm:flex-1 px-3 py-2 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-primary"
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg transition-colors flex items-center justify-center"
               >
                 <Mail className="w-5 h-5" />
               </button>
@@ -140,7 +140,7 @@ export async function Footer() {
           <p className="text-white/50 text-sm">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
-          <div className="flex gap-6 text-sm">
+          <div className="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-6 text-xs sm:text-sm">
             {footerLinks.legal.map((link) => (
               <Link
                 key={link.href}

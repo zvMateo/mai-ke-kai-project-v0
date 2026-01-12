@@ -139,7 +139,7 @@ export function Header({ locale = "en" }: HeaderProps) {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-background">
+            <SheetContent side="right" className="w-[280px] sm:w-80 bg-background">
               <div className="flex flex-col gap-6 mt-8">
                 {navLinks.map((link) => (
                   <Link

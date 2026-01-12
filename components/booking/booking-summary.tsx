@@ -51,10 +51,10 @@ export function BookingSummary({
   const effectiveNights = cachedSummary?.nights ?? nights;
 
   return (
-    <div className="sticky top-28">
+    <div className="sticky top-20 sm:top-24 lg:top-28">
       <Card className="border-0 shadow-lg overflow-hidden">
         {/* Header Image */}
-        <div className="relative h-32">
+        <div className="relative h-24 sm:h-32">
           <Image
             src="/perfect-waves-costa-rica-sunset-surfers-in-water.jpg"
             alt="Mai Ke Kai"
@@ -70,7 +70,7 @@ export function BookingSummary({
           </div>
         </div>
 
-        <CardContent className="p-5 space-y-4">
+        <CardContent className="p-4 sm:p-5 space-y-3 sm:space-y-4">
           {/* Dates */}
           <div className="flex items-center gap-3 pb-4 border-b border-border">
             <CalendarDays className="w-5 h-5 text-primary" />
@@ -179,7 +179,7 @@ export function BookingSummary({
       </Card>
 
       {/* Trust Badges */}
-      <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path

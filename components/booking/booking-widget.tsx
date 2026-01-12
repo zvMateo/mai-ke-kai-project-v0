@@ -28,8 +28,8 @@ export function BookingWidget() {
   }
 
   return (
-    <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 md:p-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+    <div className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-5 md:p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-end">
         {/* Check In */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-deep">Check In</label>
@@ -99,9 +99,9 @@ export function BookingWidget() {
         </div>
 
         {/* Search Button */}
-        <Button onClick={handleSearch} size="lg" className="h-12 bg-primary hover:bg-primary/90 text-white shadow-lg">
+        <Button onClick={handleSearch} size="lg" className="h-12 sm:col-span-2 lg:col-span-1 bg-primary hover:bg-primary/90 text-white shadow-lg">
           <Search className="mr-2 h-5 w-5" />
-          Search
+          <span>Search</span>
         </Button>
       </div>
     </div>

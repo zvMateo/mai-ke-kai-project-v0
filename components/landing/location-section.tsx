@@ -16,7 +16,7 @@ export async function LocationSection() {
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
             {t("title")}
           </span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
             {t("subtitle")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -24,9 +24,9 @@ export async function LocationSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Map / Image */}
-          <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-xl">
+          <div className="relative h-[280px] sm:h-[350px] lg:h-[500px] rounded-xl sm:rounded-2xl overflow-hidden shadow-xl">
             <Image
               src="/placeholder.svg?height=500&width=600"
               alt="Mai Ke Kai location"
@@ -53,8 +53,8 @@ export async function LocationSection() {
           <div className="space-y-8">
             {/* Address */}
             <div className="flex gap-4">
-              <div className="shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-primary" />
+              <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">
@@ -70,8 +70,8 @@ export async function LocationSection() {
 
             {/* Getting Here */}
             <div className="flex gap-4">
-              <div className="shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Plane className="w-6 h-6 text-primary" />
+              <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">
@@ -87,8 +87,8 @@ export async function LocationSection() {
 
             {/* Contact */}
             <div className="flex gap-4">
-              <div className="shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Phone className="w-6 h-6 text-primary" />
+              <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">
@@ -104,8 +104,8 @@ export async function LocationSection() {
 
             {/* Hours */}
             <div className="flex gap-4">
-              <div className="shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-primary" />
+              <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">

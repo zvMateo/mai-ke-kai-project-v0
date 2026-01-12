@@ -32,34 +32,34 @@ export async function HeroSection() {
             alt="Mai Ke Kai Surf House"
             width={280}
             height={280}
-            className="mx-auto mb-8 w-52 md:w-64 lg:w-72"
+            className="mx-auto mb-6 sm:mb-8 w-40 sm:w-52 md:w-64 lg:w-72"
           />
 
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance leading-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-balance leading-tight">
             {t("title")}
             <br />
             <span className="text-seafoam">{t("titleHighlight")}</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-white/85 max-w-2xl mx-auto mb-10 text-pretty leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-white/85 max-w-2xl mx-auto mb-8 sm:mb-10 px-2 text-pretty leading-relaxed">
             {t("subtitle")}
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Link href="/booking">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10 sm:mb-16 px-4">
+            <Link href="/booking" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-white px-10 py-6 text-lg shadow-xl"
+                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-6 sm:px-10 py-5 sm:py-6 text-base sm:text-lg shadow-xl"
               >
                 {t("cta")}
               </Button>
             </Link>
-            <Link href="#surf">
+            <Link href="#surf" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white/10 bg-transparent px-10 py-6 text-lg"
+                className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 bg-transparent px-6 sm:px-10 py-5 sm:py-6 text-base sm:text-lg"
               >
                 {tSurf("lessons")}
               </Button>
