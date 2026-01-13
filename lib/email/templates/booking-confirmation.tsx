@@ -1,6 +1,7 @@
 interface BookingConfirmationEmailProps {
   bookingId: string
   guestName: string
+  
   checkIn: string
   checkOut: string
   roomNames: string[]

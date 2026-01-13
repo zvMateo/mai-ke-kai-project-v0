@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminDbClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import type { Booking } from "@/types/database";
 
@@ -182,6 +183,58 @@ export async function getBookingById(bookingId: string) {
     console.error("Error fetching booking:", error);
     throw new Error("Failed to fetch booking");
   }
+
+  return booking;
+}
+
+// Get booking by ID (Public/Admin - Bypasses RLS for confirmation page)
+export async function getBookingByIdPublic(bookingId: string) {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) {
+    console.error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable");
+    throw new Error("Server configuration error: Missing service role key");
+  }
+
+  const supabase = createAdminDbClient();
+
+  const { data: booking, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      *,
+      users (full_name, email, phone, nationality),
+      booking_rooms (
+        rooms (id, name),
+        bed_id,
+        price_per_night
+      ),
+      booking_services (
+        service_id,
+        quantity,
+        price_at_booking,
+        scheduled_date,
+        services (name)
+      )
+    `
+    )
+    .eq("id", bookingId)
+    .single();
+
+  if (error) {
+    console.error(`[getBookingByIdPublic] Error fetching booking ${bookingId}:`, error);
+    // Return null explicitly if not found to allow retries
+    if (error.code === 'PGRST116') {
+      console.log(`[getBookingByIdPublic] Booking ${bookingId} not found (PGRST116)`);
+      return null;
+    }
+    throw new Error(`Database error: ${error.message}`);
+  }
+
+  console.log(`[getBookingByIdPublic] Successfully found booking ${bookingId}:`, {
+    id: booking?.id,
+    checkIn: booking?.check_in,
+    status: booking?.status
+  });
 
   return booking;
 }

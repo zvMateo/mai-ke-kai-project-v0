@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { BookingConfirmation } from "@/components/booking/booking-confirmation"
 import { createClient } from "@/lib/supabase/client"
 import type { BookingData } from "@/components/booking/booking-flow"
+import { getBookingByIdPublic } from "@/lib/actions/bookings"
 
 export function BookingConfirmationPage() {
   const searchParams = useSearchParams()
@@ -20,73 +21,75 @@ export function BookingConfirmationPage() {
       return
     }
 
+    let isMounted = true
+    let retryCount = 0
+    const maxRetries = 5
+
     async function fetchBookingData() {
       try {
-        const supabase = createClient()
-        
-        const { data: booking, error: bookingError } = await supabase
-          .from("bookings")
-          .select(`
-            *,
-            users (full_name, email, phone, nationality),
-            booking_rooms (
-              rooms (id, name),
-              bed_id,
-              price_per_night
-            ),
-            booking_services (
-              service_id,
-              quantity,
-              price_at_booking,
-              scheduled_date,
-              services (name)
-            )
-          `)
-          .eq("id", bookingId)
-          .single()
+        // Loop for retries
+        while (retryCount < maxRetries) {
+          if (!isMounted) return
 
-        if (bookingError) throw bookingError
+          // Use Server Action to bypass RLS
+          const booking = await getBookingByIdPublic(bookingId!)
+          
+          // If we found the booking, process it
+          if (booking) {
+            const checkIn = new Date(booking.check_in)
+            const checkOut = new Date(booking.check_out)
 
-        if (!booking) throw new Error("Booking not found")
+            setBookingData({
+              checkIn,
+              checkOut,
+              guests: booking.guests_count,
+              rooms: booking.booking_rooms.map((br: any) => ({
+                roomId: br.rooms.id,
+                roomName: br.rooms.name,
+                quantity: 1,
+                pricePerNight: br.price_per_night,
+                sellUnit: "room" as const,
+              })),
+              extras: booking.booking_services.map((bs: any) => ({
+                serviceId: bs.service_id,
+                serviceName: bs.services.name,
+                quantity: bs.quantity,
+                price: bs.price_at_booking,
+                date: bs.scheduled_date,
+              })),
+              guestInfo: {
+                firstName: booking.users.full_name?.split(" ")[0] || "",
+                lastName: booking.users.full_name?.split(" ").slice(1).join(" ") || "",
+                email: booking.users.email,
+                phone: booking.users.phone || "",
+                nationality: booking.users.nationality || "",
+              },
+            })
+            setLoading(false)
+            return
+          }
 
-        const checkIn = new Date(booking.check_in)
-        const checkOut = new Date(booking.check_out)
+          // If no booking found, wait and retry
+          retryCount++
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+          }
+        }
 
-        setBookingData({
-          checkIn,
-          checkOut,
-          guests: booking.guests_count,
-          rooms: booking.booking_rooms.map((br: any) => ({
-            roomId: br.rooms.id,
-            roomName: br.rooms.name,
-            quantity: 1,
-            pricePerNight: br.price_per_night,
-            sellUnit: "room" as const,
-          })),
-          extras: booking.booking_services.map((bs: any) => ({
-            serviceId: bs.service_id,
-            serviceName: bs.services.name,
-            quantity: bs.quantity,
-            price: bs.price_at_booking,
-            date: bs.scheduled_date,
-          })),
-          guestInfo: {
-            firstName: booking.users.full_name?.split(" ")[0] || "",
-            lastName: booking.users.full_name?.split(" ").slice(1).join(" ") || "",
-            email: booking.users.email,
-            phone: booking.users.phone || "",
-            nationality: booking.users.nationality || "",
-          },
-        })
-      } catch (err) {
+        // If we exit the loop, we didn't find the booking
+        throw new Error("Booking not found after retries. It might take a few minutes to appear.")
+
+      } catch (err: any) {
+        if (!isMounted) return
         console.error("Error fetching booking:", err)
-        setError("Failed to load booking details")
-      } finally {
+        setError(err.message || "Failed to load booking details")
         setLoading(false)
       }
     }
 
     fetchBookingData()
+    
+    return () => { isMounted = false }
   }, [bookingId])
 
   if (loading) {

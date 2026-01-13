@@ -13,14 +13,19 @@ export async function prefetchBookingFlow(
   const supabase = await createClient();
   const checkInKey = checkInDate.toISOString().split("T")[0];
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.rooms.withPricing(checkInKey),
-      queryFn: () => fetchRoomsWithPricingServer(supabase, checkInDate),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.services.lists(),
-      queryFn: () => fetchServicesServer(supabase),
-    }),
-  ]);
+  try {
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.rooms.withPricing(checkInKey),
+        queryFn: () => fetchRoomsWithPricingServer(supabase, checkInDate),
+      }),
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.services.lists(),
+        queryFn: () => fetchServicesServer(supabase),
+      }),
+    ]);
+  } catch (error) {
+    console.error("Error prefetching booking flow:", error);
+    // Don't throw, let the client fetch data if prefetch fails
+  }
 }

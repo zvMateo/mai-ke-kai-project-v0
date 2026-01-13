@@ -12,6 +12,7 @@ import { GuestDetails } from "./guest-details";
 import { PaymentStep } from "./payment-step";
 import { BookingConfirmation } from "./booking-confirmation";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { queryKeys } from "@/lib/queries";
 
 export type BookingStep =
@@ -79,6 +80,41 @@ interface BookingDraft {
   data: SerializedBookingData;
 }
 
+
+// Simple Error Boundary to catch render errors
+import React from 'react';
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("BookingFlow Error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 bg-red-50 text-red-600 rounded-lg">
+          <h2 className="font-bold mb-2">Something went wrong</h2>
+          <p className="text-sm">{this.state.error?.message}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4" variant="outline">
+            Reload Page
+          </Button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export function BookingFlow({
   initialCheckInISO,
   initialCheckOutISO,
@@ -103,16 +139,27 @@ export function BookingFlow({
     guestInfo: null,
   });
 
+
+
+
+
   const deserializeDraft = (draft: BookingDraft | null): BookingData => {
     if (!draft) {
+      console.log("BookingFlow no draft, using default");
       return createDefaultBookingData();
     }
 
-    return {
-      ...draft.data,
-      checkIn: new Date(draft.data.checkIn),
-      checkOut: new Date(draft.data.checkOut),
-    };
+    try {
+      console.log("BookingFlow deserializing draft", draft);
+      return {
+        ...draft.data,
+        checkIn: new Date(draft.data.checkIn),
+        checkOut: new Date(draft.data.checkOut),
+      };
+    } catch (e) {
+      console.error("Error deserializing draft:", e);
+      return createDefaultBookingData();
+    }
   };
 
   const [currentStep, setCurrentStep] = useState<BookingStep>(
@@ -177,12 +224,12 @@ export function BookingFlow({
     const serializedDraft: BookingDraft = {
       step: currentStep,
       data: {
-        checkIn: bookingData.checkIn.toISOString(),
-        checkOut: bookingData.checkOut.toISOString(),
-        guests: bookingData.guests,
+        ...bookingData, // Spread bookingData to include all fields
         rooms: bookingData.rooms,
         extras: bookingData.extras,
         guestInfo: bookingData.guestInfo,
+        checkIn: bookingData.checkIn.toISOString(),
+        checkOut: bookingData.checkOut.toISOString(),
       },
     };
 
@@ -237,6 +284,7 @@ export function BookingFlow({
   }
 
   return (
+    <ErrorBoundary>
     <div className="container mx-auto px-4">
       <div className="max-w-6xl mx-auto">
         {/* Progress Header */}
@@ -334,5 +382,6 @@ export function BookingFlow({
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }
