@@ -12,6 +12,7 @@ import { PaymentStep } from "../payment-step";
 import { BookingConfirmation } from "../booking-confirmation";
 import { BookingSummary } from "../booking-summary";
 import { BookingFlowBase } from "../base/BookingFlowBase";
+import { BookingFlowModal } from "../booking-flow-modal";
 import type { StepConfig, RoomSelection, ExtraSelection } from "../base/types";
 
 interface RoomSelectFlowProps {
@@ -70,6 +71,8 @@ export function RoomSelectFlow({
   roomId,
   roomName,
 }: RoomSelectFlowProps) {
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+  
   return (
     <BookingFlowBase
       mode="room-select"
@@ -194,7 +197,7 @@ export function RoomSelectFlow({
                         initialData={state.bookingData.guestInfo}
                         onComplete={(guestInfo) => {
                           state.setBookingData((prev) => ({ ...prev, guestInfo }));
-                          state.setCurrentStep("payment");
+                          setShowConfirmModal(true);
                         }}
                         onBack={state.goBack}
                       />
@@ -222,6 +225,19 @@ export function RoomSelectFlow({
                 </div>
               </div>
             </div>
+
+            {/* Confirmation Modal */}
+            <BookingFlowModal
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                state.setCurrentStep("payment");
+              }}
+              mode="room-select"
+              bookingData={state.bookingData}
+              nights={state.nights}
+            />
           </ErrorBoundary>
         );
       }}

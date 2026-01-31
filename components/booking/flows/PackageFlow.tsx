@@ -12,6 +12,7 @@ import { PaymentStep } from "../payment-step";
 import { BookingConfirmation } from "../booking-confirmation";
 import { BookingSummary } from "../booking-summary";
 import { BookingFlowBase } from "../base/BookingFlowBase";
+import { BookingFlowModal } from "../booking-flow-modal";
 import type { StepConfig, RoomSelection, ExtraSelection } from "../base/types";
 
 interface PackageFlowProps {
@@ -78,6 +79,7 @@ export function PackageFlow({
 }: PackageFlowProps) {
   const [packageData, setPackageData] = React.useState<any>(null);
   const [loadingPackage, setLoadingPackage] = React.useState(true);
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
 
   // Load package data on mount
   React.useEffect(() => {
@@ -224,7 +226,7 @@ export function PackageFlow({
                         initialData={state.bookingData.guestInfo}
                         onComplete={(guestInfo) => {
                           state.setBookingData((prev) => ({ ...prev, guestInfo }));
-                          state.setCurrentStep("payment");
+                          setShowConfirmModal(true);
                         }}
                         onBack={state.goBack}
                       />
@@ -252,6 +254,19 @@ export function PackageFlow({
                 </div>
               </div>
             </div>
+
+            {/* Confirmation Modal */}
+            <BookingFlowModal
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                state.setCurrentStep("payment");
+              }}
+              mode="package"
+              bookingData={state.bookingData}
+              nights={state.nights}
+            />
           </ErrorBoundary>
         );
       }}

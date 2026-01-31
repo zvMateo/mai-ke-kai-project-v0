@@ -12,6 +12,7 @@ import { PaymentStep } from "../payment-step";
 import { BookingConfirmation } from "../booking-confirmation";
 import { BookingSummary } from "../booking-summary";
 import { BookingFlowBase } from "../base/BookingFlowBase";
+import { BookingFlowModal } from "../booking-flow-modal";
 import type { StepConfig, BookingData, RoomSelection, ExtraSelection } from "../base/types";
 
 interface AccommodationFlowProps {
@@ -66,6 +67,8 @@ export function AccommodationFlow({
   initialCheckOutISO,
   initialGuests = 2,
 }: AccommodationFlowProps) {
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+  
   return (
     <BookingFlowBase
       mode="accommodation"
@@ -175,7 +178,7 @@ export function AccommodationFlow({
                         initialData={state.bookingData.guestInfo}
                         onComplete={(guestInfo) => {
                           state.setBookingData((prev) => ({ ...prev, guestInfo }));
-                          state.setCurrentStep("payment");
+                          setShowConfirmModal(true);
                         }}
                         onBack={state.goBack}
                       />
@@ -203,6 +206,19 @@ export function AccommodationFlow({
                 </div>
               </div>
             </div>
+
+            {/* Confirmation Modal */}
+            <BookingFlowModal
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                state.setCurrentStep("payment");
+              }}
+              mode="accommodation"
+              bookingData={state.bookingData}
+              nights={state.nights}
+            />
           </ErrorBoundary>
         );
       }}

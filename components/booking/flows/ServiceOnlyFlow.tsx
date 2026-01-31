@@ -11,6 +11,7 @@ import { PaymentStep } from "../payment-step";
 import { BookingConfirmation } from "../booking-confirmation";
 import { BookingSummary } from "../booking-summary";
 import { BookingFlowBase } from "../base/BookingFlowBase";
+import { BookingFlowModal } from "../booking-flow-modal";
 import type { StepConfig, ExtraSelection } from "../base/types";
 
 interface ServiceOnlyFlowProps {
@@ -63,6 +64,7 @@ export function ServiceOnlyFlow({
   initialCheckOutISO,
 }: ServiceOnlyFlowProps) {
   const router = useRouter();
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
 
   const goBackToSurfSection = () => {
     router.push("/#surf");
@@ -171,7 +173,7 @@ export function ServiceOnlyFlow({
                         initialData={state.bookingData.guestInfo}
                         onComplete={(guestInfo) => {
                           state.setBookingData((prev) => ({ ...prev, guestInfo }));
-                          state.setCurrentStep("payment");
+                          setShowConfirmModal(true);
                         }}
                         onBack={state.goBack}
                       />
@@ -199,6 +201,19 @@ export function ServiceOnlyFlow({
                 </div>
               </div>
             </div>
+
+            {/* Confirmation Modal */}
+            <BookingFlowModal
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                state.setCurrentStep("payment");
+              }}
+              mode="services-only"
+              bookingData={state.bookingData}
+              nights={state.nights}
+            />
           </ErrorBoundary>
         );
       }}
