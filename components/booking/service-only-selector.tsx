@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,7 @@ interface ServiceDate {
 }
 
 interface ServiceOnlySelectorProps {
+  serviceId?: string;
   selectedExtras: ExtraSelection[];
   serviceDates?: ServiceDate;
   onComplete: (data: {
@@ -37,6 +38,7 @@ interface ServiceOnlySelectorProps {
 }
 
 export function ServiceOnlySelector({
+  serviceId,
   selectedExtras: initialExtras,
   serviceDates: initialDates = {},
   onComplete,
@@ -47,6 +49,16 @@ export function ServiceOnlySelector({
   const [serviceDates, setServiceDates] = useState<ServiceDate>(initialDates);
 
   const { data: services = [], isLoading, error, refetch } = useServices();
+
+  // Pre-seleccionar servicio si se pasa serviceId
+  useEffect(() => {
+    if (serviceId && !isLoading && services.length > 0) {
+      const service = services.find((s) => s.id === serviceId);
+      if (service && !selections.some((s) => s.serviceId === serviceId)) {
+        updateSelection(serviceId, 1);
+      }
+    }
+  }, [serviceId, isLoading, services]);
 
   const updateSelection = (serviceId: string, quantity: number) => {
     const service = services.find((s) => s.id === serviceId);

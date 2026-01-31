@@ -17,6 +17,7 @@ import type { StepConfig, ExtraSelection } from "../base/types";
 interface ServiceOnlyFlowProps {
   initialCheckInISO: string;
   initialCheckOutISO: string;
+  serviceId?: string;
 }
 
 class ErrorBoundary extends React.Component<
@@ -62,6 +63,7 @@ const getActiveSteps = (): StepConfig[] => [
 export function ServiceOnlyFlow({
   initialCheckInISO,
   initialCheckOutISO,
+  serviceId,
 }: ServiceOnlyFlowProps) {
   const router = useRouter();
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
@@ -138,6 +140,7 @@ export function ServiceOnlyFlow({
                   <div className="lg:col-span-2">
                     {state.currentStep === "service-select" && (
                       <ServiceOnlySelector
+                        serviceId={serviceId}
                         selectedExtras={state.bookingData.extras}
                         serviceDates={state.bookingData.serviceDates || {}}
                         onComplete={(data) => {

@@ -21,6 +21,7 @@ interface BookingFlowProps {
   initialGuests?: number;
   mode?: BookingMode;
   packageId?: string;
+  serviceId?: string;
   roomId?: string;
   roomName?: string;
 }
@@ -42,6 +43,7 @@ export function BookingFlow({
   initialGuests = 2,
   mode = "accommodation",
   packageId,
+  serviceId,
   roomId,
   roomName,
 }: BookingFlowProps) {
@@ -63,6 +65,7 @@ export function BookingFlow({
       <ServiceOnlyFlow
         initialCheckInISO={initialCheckInISO}
         initialCheckOutISO={initialCheckOutISO}
+        serviceId={serviceId}
       />
     );
   }

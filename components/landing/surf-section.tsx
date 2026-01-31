@@ -111,14 +111,14 @@ export async function SurfSection({ services }: SurfSectionProps) {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-primary">
-                      ${service.price}
-                    </span>
-                    <Link href={`/booking?service=${service.id}`}>
-                      <Button size="sm">{tCommon("bookNow")}</Button>
-                    </Link>
-                  </div>
+                   <div className="flex items-center justify-between">
+                     <span className="text-xl font-bold text-primary">
+                       ${service.price}
+                     </span>
+                     <Link href={`/booking?mode=services-only&serviceId=${service.id}`}>
+                       <Button size="sm">{tCommon("bookNow")}</Button>
+                     </Link>
+                   </div>
                 </CardContent>
               </Card>
             );

@@ -101,10 +101,21 @@ export function BookingFlowBase({
     }
   }, [createDefaultBookingData]);
 
-  const [currentStep, setCurrentStep] = useState<BookingStep>(
-    draftRef.current?.step ??
-      (mode === "services-only" ? "service-select" : "search")
-  );
+  // Determinar paso inicial basado en el modo
+  // Si hay draft pero el modo cambió, ignorar el step del draft
+  const getInitialStep = (): BookingStep => {
+    if (draftRef.current && draftRef.current.mode === mode) {
+      // Solo usar draft step si el modo es el mismo
+      return draftRef.current.step;
+    }
+    
+    // Paso inicial basado en modo
+    if (mode === "services-only") return "service-select";
+    if (mode === "package") return "package-preview";
+    return "search"; // accommodation, room-select
+  };
+
+  const [currentStep, setCurrentStep] = useState<BookingStep>(getInitialStep());
   const [bookingData, setBookingData] = useState<BookingData>(() =>
     deserializeDraft(draftRef.current)
   );
@@ -113,6 +124,14 @@ export function BookingFlowBase({
   const [loadingPackage, setLoadingPackage] = useState(packageId ? true : false);
 
   const hasDraft = Boolean(draftRef.current);
+
+  // Limpiar draft si el modo cambió
+  useEffect(() => {
+    if (draftRef.current && draftRef.current.mode !== mode) {
+      queryClient.removeQueries({ queryKey: queryKeys.bookingFlow.draft() });
+      draftRef.current = null;
+    }
+  }, [mode, queryClient]);
 
   // Load package data if in package mode
   useEffect(() => {
@@ -167,7 +186,10 @@ export function BookingFlowBase({
 
   // Parse URL params on mount
   useEffect(() => {
-    if (hasDraft || mode === "package" || mode === "room-select") return;
+    const currentDraft = draftRef.current;
+    const draftModeMatches = currentDraft && currentDraft.mode === mode;
+    
+    if (draftModeMatches || mode === "package" || mode === "room-select") return;
 
     const checkIn = searchParams.get("checkIn");
     const checkOut = searchParams.get("checkOut");
@@ -181,7 +203,7 @@ export function BookingFlowBase({
         guests: guests ? Number.parseInt(guests) : 2,
       }));
     }
-  }, [hasDraft, mode, searchParams]);
+  }, [mode, searchParams]);
 
   const activeSteps = getActiveSteps(mode, packageData);
   const stepIndex = activeSteps.findIndex((s) => s.key === currentStep);
