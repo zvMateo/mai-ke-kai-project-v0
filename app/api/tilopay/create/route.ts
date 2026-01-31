@@ -6,15 +6,36 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     
+    // Validar datos de entrada
+    if (!body.bookingData) {
+      return NextResponse.json(
+        { error: "Datos de reserva requeridos" },
+        { status: 400 }
+      );
+    }
+
+    if (!body.bookingData.guestInfo) {
+      return NextResponse.json(
+        { error: "Información de huésped requerida" },
+        { status: 400 }
+      );
+    }
+    
     const bookingResult = await createBookingWithCheckout(body.bookingData);
+    
+    // Parsear fullName en firstName y lastName
+    const fullName = body.bookingData.guestInfo.fullName || "";
+    const nameParts = fullName.trim().split(" ");
+    const firstName = nameParts[0] || "Guest";
+    const lastName = nameParts.slice(1).join(" ") || "User";
     
     const paymentResult = await createTilopayPayment({
       orderId: bookingResult.bookingId,
       amount: bookingResult.totalAmount,
       currency: "USD",
       client: {
-        firstName: body.bookingData.guestInfo.firstName,
-        lastName: body.bookingData.guestInfo.lastName,
+        firstName,
+        lastName,
         email: body.bookingData.guestInfo.email,
         phone: body.bookingData.guestInfo.phone,
       },
