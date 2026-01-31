@@ -26,14 +26,7 @@ export async function HeroSection() {
 
       <div className="relative z-10 container mx-auto px-4 pt-24 pb-16">
         <div className="max-w-4xl mx-auto text-center text-white mb-12">
-          {/* Logo */}
-          <Image
-            src="/images/mai-20ke-20kai-20-20logo-20-20blanco.png"
-            alt="Mai Ke Kai Surf House"
-            width={280}
-            height={280}
-            className="mx-auto mb-6 sm:mb-8 w-40 sm:w-52 md:w-64 lg:w-72"
-          />
+          {/* Logo removed as per requirements */}
 
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-balance leading-tight">
             {t("title")}
@@ -45,23 +38,16 @@ export async function HeroSection() {
             {t("subtitle")}
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10 sm:mb-16 px-4">
-            <Link href="/booking" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-6 sm:px-10 py-5 sm:py-6 text-base sm:text-lg shadow-xl"
-              >
-                {t("cta")}
-              </Button>
-            </Link>
+          {/* CTA Button - Simplified for single focus */}
+          <div className="flex justify-center mb-10 sm:mb-16 px-4">
             <Link href="#surf" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 bg-transparent px-6 sm:px-10 py-5 sm:py-6 text-base sm:text-lg"
+                className="w-full sm:w-auto bg-transparent border-2 border-white text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 focus:ring-4 focus:ring-white/50"
+                aria-label={tSurf("lessons")}
               >
-                {tSurf("lessons")}
+                Surf Lessons
               </Button>
             </Link>
           </div>

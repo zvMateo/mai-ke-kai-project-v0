@@ -197,15 +197,8 @@ export function ServicesReport() {
                       ${service.revenue.toLocaleString()}
                     </TableCell>
                     <TableCell className="text-right">
-                      {service.trend === "up" && (
-                        <span className="text-green-600">+</span>
-                      )}
-                      {service.trend === "down" && (
-                        <span className="text-red-600">-</span>
-                      )}
-                      {service.trend === "stable" && (
-                        <span className="text-muted-foreground">=</span>
-                      )}
+                      {/* Trend indicator removed - trend property doesn't exist */}
+
                     </TableCell>
                   </TableRow>
                 ))}

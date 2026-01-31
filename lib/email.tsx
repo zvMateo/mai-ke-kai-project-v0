@@ -380,7 +380,7 @@ function buildBookingConfirmationHtml(params: any): string {
       </div>
 
       <div style="text-align: center; margin-top: 20px;">
-        <a href="${SITE_URL}/check-in/${bookingId}" class="button">Complete Check-in Online</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform" class="button">Complete Check-in Online</a>
       </div>
 
       <p>If you have any questions, contact us:</p>
@@ -580,7 +580,7 @@ function buildCheckInReminderHtml(name: string, bookingId: string, checkIn: stri
       </div>
 
       <div style="text-align: center; margin-top: 20px;">
-        <a href="${checkInUrl}" class="button">Complete Check-in Online</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform" class="button">Complete Check-in Online</a>
       </div>
 
       <p>Remember to bring your ID and complete check-in process online to save time upon arrival.</p>

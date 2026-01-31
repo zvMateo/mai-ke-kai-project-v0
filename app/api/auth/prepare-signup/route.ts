@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     // Check existing user in public.users
     const { data: existingUser } = await supabase
-      .from("public.users")
+      .from("users")
       .select("id")
       .eq("email", email)
       .maybeSingle();
@@ -46,7 +46,6 @@ export async function POST(req: Request) {
       email,
       token,
       expires_at: expiresAt.toISOString(),
-      confirmed: false,
     });
 
     const confirmationUrl = `${siteUrl}/auth/sign-up?token=${token}`;

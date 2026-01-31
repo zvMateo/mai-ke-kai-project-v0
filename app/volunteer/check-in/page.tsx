@@ -105,7 +105,7 @@ export default async function VolunteerCheckInPage() {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <Link href={`/volunteer/check-in/${booking.id}`}>
+                    <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform" target="_blank">
                       <Button className="w-full">
                         <ClipboardCheck className="w-4 h-4 mr-2" />
                         Process Check-in

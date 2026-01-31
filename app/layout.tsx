@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "./providers";
+import { WhatsAppFloatingButton } from "@/components/ui/whatsapp-floating";
 import "./globals.css";
 
 // <CHANGE> Using Poppins for headings and Inter for body text - tropical/modern feel
@@ -25,12 +26,12 @@ export const metadata: Metadata = {
     template: "%s | Mai Ke Kai",
   },
   description:
-    "Boutique surf hotel in Costa Rica. Book your surf experience with lessons, tours, and comfortable accommodation for 18 guests.",
+    "Surf hotel in Costa Rica. Book your surf experience with lessons, tours, and comfortable accommodation for 18 guests.",
   keywords: [
     "surf hotel",
     "Costa Rica",
     "surf lessons",
-    "boutique hotel",
+    "Surf hotel",
     "surf house",
   ],
   authors: [{ name: "Mai Ke Kai Surf House" }],
@@ -66,6 +67,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </Providers>
         <Analytics />
+        <WhatsAppFloatingButton />
       </body>
     </html>
   );

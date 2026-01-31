@@ -1,6 +1,6 @@
 {
   "common": {
-    "bookNow": "Jetzt Buchen",
+    "bookNow": "Contactez-nous",
     "learnMore": "Mehr Erfahren",
     "viewAll": "Alle Anzeigen",
     "loading": "Laden...",
@@ -40,7 +40,7 @@
   "hero": {
     "title": "Ihr Surf-Paradies",
     "titleHighlight": "in Costa Rica",
-    "subtitle": "Boutique-Surfhotel mit Weltklasse-Wellen, professionellen Kursen und authentischer Pura Vida Atmosphäre",
+    "subtitle": "Surfhotel mit Weltklasse-Wellen, professionellen Kursen und authentischer Pura Vida Atmosphäre",
     "cta": "Verfügbarkeit Prüfen",
     "scrollDown": "Scrollen zum Entdecken"
   },
@@ -147,7 +147,7 @@
     "loginSubtitle": "Melden Sie sich bei Ihrem Konto an, um fortzufahren"
   },
   "footer": {
-    "description": "Ihr Surf-Paradies in Costa Rica. Boutique-Hotel mit Weltklasse-Wellen und authentischer Pura Vida Atmosphäre.",
+    "description": "Ihr Surf-Paradies in Costa Rica. Hotel mit Weltklasse-Wellen und authentischer Pura Vida Atmosphäre.",
     "quickLinks": "Schnellzugriff",
     "contactUs": "Kontaktieren Sie Uns",
     "followUs": "Folgen Sie Uns",

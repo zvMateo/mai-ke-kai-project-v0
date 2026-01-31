@@ -1,6 +1,6 @@
 {
   "common": {
-    "bookNow": "Réserver",
+    "bookNow": "Contactez-nous",
     "learnMore": "En Savoir Plus",
     "viewAll": "Voir Tout",
     "loading": "Chargement...",
@@ -40,7 +40,7 @@
   "hero": {
     "title": "Votre Paradis du Surf",
     "titleHighlight": "au Costa Rica",
-    "subtitle": "Hôtel boutique de surf avec des vagues de classe mondiale, des cours experts et une ambiance pura vida authentique",
+    "subtitle": "Hôtel de surf avec des vagues de classe mondiale, des cours experts et une ambiance pura vida authentique",
     "cta": "Vérifier la Disponibilité",
     "scrollDown": "Défiler pour explorer"
   },
@@ -147,7 +147,7 @@
     "loginSubtitle": "Connectez-vous à votre compte pour continuer"
   },
   "footer": {
-    "description": "Votre paradis du surf au Costa Rica. Hôtel boutique avec des vagues de classe mondiale et une ambiance pura vida authentique.",
+    "description": "Votre paradis du surf au Costa Rica. Hôtel avec des vagues de classe mondiale et une ambiance pura vida authentique.",
     "quickLinks": "Liens Rapides",
     "contactUs": "Contactez-nous",
     "followUs": "Suivez-nous",

@@ -39,7 +39,7 @@ function loadEnvFile() {
 
 loadEnvFile();
 
-const ADMIN_EMAIL = "maikekaisurfhouse@gmail.com";
+const ADMIN_EMAIL = "zavalamateo14@gmail.com";
 const INVITED_BY = "Sistema Mai Ke Kai";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

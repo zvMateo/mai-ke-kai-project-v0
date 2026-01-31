@@ -4,7 +4,7 @@ import { SurfSection } from "@/components/landing/surf-section";
 import { PackagesSection } from "@/components/landing/packages-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { LocationSection } from "@/components/landing/location-section";
-import { Header } from "@/components/landing/header";
+import { LandingHeader } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "next-intl/server";
@@ -57,7 +57,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header locale={locale} />
+      <LandingHeader locale={locale} />
       <main>
         <HeroSection />
         <RoomsSection

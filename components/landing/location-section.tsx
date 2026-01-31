@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock, Plane } from "lucide-react";
+import { GoogleMapEmbed } from "@/components/ui/google-map-embed";
 import { getTranslations } from "next-intl/server";
 
 export async function LocationSection() {
@@ -25,28 +26,9 @@ export async function LocationSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Map / Image */}
+          {/* Google Maps Embed */}
           <div className="relative h-[280px] sm:h-[350px] lg:h-[500px] rounded-xl sm:rounded-2xl overflow-hidden shadow-xl">
-            <Image
-              src="/images/Maike Kai-1.jpg"
-              alt="Mai Ke Kai location"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6">
-              <a
-                href="https://www.google.com/maps/place/Mai+Ke+Kai+Surf+House/@10.2980201,-85.8501109,15.25z/data=!4m9!3m8!1s0x8f9e39527f1021e3:0xa5529cf38cffffed!5m2!4m1!1i2!8m2!3d10.2971219!4d-85.8386098!16s%2Fg%2F11v18fnt6n?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA3MUgBUAM%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block"
-              >
-                <Button className="bg-white text-deep hover:bg-white/90">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  {t("openInMaps")}
-                </Button>
-              </a>
-            </div>
+            <GoogleMapEmbed />
           </div>
 
           {/* Contact Info */}

@@ -285,10 +285,10 @@ export function BookingDetailsView({ booking }: BookingDetailsViewProps) {
                   </div>
                   <p className="text-sm text-muted-foreground">El huesped puede completar su check-in online en:</p>
                   <div className="flex items-center gap-2">
-                    <code className="text-xs bg-muted px-2 py-1 rounded">/check-in/{booking.id}</code>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/check-in/${booking.id}`} target="_blank">
-                        <ExternalLink className="w-4 h-4" />
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform" target="_blank">
+                        Abrir Formulario de Check-in
+                        <ExternalLink className="w-4 h-4 ml-2" />
                       </Link>
                     </Button>
                   </div>

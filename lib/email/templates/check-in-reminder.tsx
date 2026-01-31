@@ -31,7 +31,7 @@ export const CheckInReminderEmail = (props: CheckInReminderEmailProps) => (
 
       <div style={{ textAlign: "center", marginTop: "30px" }}>
         <a
-          href={`${process.env.NEXT_PUBLIC_BASE_URL}/check-in/${props.bookingId}`}
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform"
           style={{
             display: "inline-block",
             backgroundColor: "#5B8A9A",

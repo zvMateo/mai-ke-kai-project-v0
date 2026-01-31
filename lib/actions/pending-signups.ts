@@ -9,5 +9,6 @@ export async function getPendingSignup(token: string) {
 
 export async function markPendingSignupConfirmed(token: string) {
   const admin = createAdminClient()
-  await admin.from('pending_signups').update({ confirmed: true }).eq('token', token)
+  // Delete the pending signup record after confirmation
+  await admin.from('pending_signups').delete().eq('token', token)
 }

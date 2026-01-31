@@ -163,7 +163,7 @@ export function UserBookingsClient({ userId }: UserBookingsClientProps) {
                           </div>
 
                           {booking.status === "confirmed" && (
-                            <Link href={`/check-in/${booking.id}`}>
+                            <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdL5eZD8ZYn6KStj0BvZThe4j_h5EkWGUMYL-lSP1TsOA6-IQ/viewform" target="_blank">
                               <Button variant="outline" size="sm">
                                 Check-in Online
                               </Button>

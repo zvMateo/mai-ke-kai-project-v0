@@ -54,7 +54,6 @@ export function CreateBlockDialog({ rooms, children }: CreateBlockDialogProps) {
         startDate: format(date.from, "yyyy-MM-dd"),
         endDate: format(date.to, "yyyy-MM-dd"),
         reason,
-        notes: notes || undefined,
       })
       setOpen(false)
       setRoomId("")

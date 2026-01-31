@@ -28,7 +28,7 @@
     "rooms": "Rooms",
     "surf": "Surf & Activities",
     "about": "About",
-    "contact": "Contact",
+    "contact": "Contact us",
     "location": "Location",
     "login": "Login",
     "signup": "Sign Up",
@@ -38,10 +38,12 @@
     "packages": "Packages"
   },
   "hero": {
-    "title": "Your Surf Paradise",
-    "titleHighlight": "in Costa Rica",
-    "subtitle": "Boutique surf hotel with world-class waves, expert lessons, and authentic pura vida vibes",
-    "cta": "Check Availability",
+    "title": "YOUR SURF HOUSE IN",
+    "titleHighlight": "TAMARINDO COSTA RICA",
+    "ariaLabel": "Contact Us for bookings",
+    "subtitle": "Surf hotel with world-class waves, expert lessons, and authentic pura vida vibes",
+    "cta": "Contact Us",
+    "ariaLabel": "Contact Us for bookings",
     "scrollDown": "Scroll to explore"
   },
   "rooms": {
@@ -147,7 +149,7 @@
     "loginSubtitle": "Sign in to your account to continue"
   },
   "footer": {
-    "description": "Your surf paradise in Costa Rica. Boutique hotel with world-class waves and authentic pura vida vibes.",
+    "description": "Your surf paradise in Costa Rica. Hotel with world-class waves and authentic pura vida vibes.",
     "quickLinks": "Quick Links",
     "contactUs": "Contact Us",
     "followUs": "Follow Us",

@@ -14,12 +14,12 @@ interface RoomsSectionProps {
 }
 
 // Fallback images for rooms without images
-const fallbackImages: Record<string, string> = {
-  dorm: "/modern-surf-hostel-dorm-room-with-wooden-bunk-beds.jpg",
-  private: "/cozy-private-room-with-king-bed-tropical-decor-and.jpg",
-  family: "/spacious-family-room-with-two-beds-tropical-style-.jpg",
-  female: "/bright-female-dorm-room-with-curtained-beds-and-pl.jpg",
-};
+// const fallbackImages: Record<string, string> = {
+//   dorm: "/modern-surf-hostel-dorm-room-with-wooden-bunk-beds.jpg",
+//   private: "/cozy-private-room-with-king-bed-tropical-decor-and.jpg",
+//   family: "/spacious-family-room-with-two-beds-tropical-style-.jpg",
+//   female: "/bright-female-dorm-room-with-curtained-beds-and-pl.jpg",
+// };
 
 export async function RoomsSection({
   rooms,
@@ -78,10 +78,7 @@ export async function RoomsSection({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {rooms.map((room) => {
             const badge = roomBadges[room.type] || null;
-            const imageUrl =
-              room.main_image ||
-              fallbackImages[room.type] ||
-              "/placeholder.svg";
+            const imageUrl = room.main_image;
             const amenities = room.amenities || [];
 
             return (
@@ -159,11 +156,13 @@ export async function RoomsSection({
                     </div>
                   )}
 
-                  <Link href={`/booking?room=${room.id}`}>
-                    <Button className="w-full bg-transparent" variant="outline">
-                      {t("bookRoom")}
-                    </Button>
-                  </Link>
+                   <Link
+                     href={`/booking?mode=room-select&roomId=${room.id}&roomName=${encodeURIComponent(room.name)}`}
+                   >
+                     <Button className="w-full bg-transparent" variant="outline">
+                       {t("bookRoom")}
+                     </Button>
+                   </Link>
                 </CardContent>
               </Card>
             );
@@ -176,21 +175,33 @@ export async function RoomsSection({
             <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
               {totalBeds}
             </p>
-            <p className="text-muted-foreground text-xs sm:text-sm">{t("totalBeds")}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {t("totalBeds")}
+            </p>
           </div>
           <div className="text-center">
             <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
               {roomTypes}
             </p>
-            <p className="text-muted-foreground text-xs sm:text-sm">{t("roomTypes")}</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {t("roomTypes")}
+            </p>
           </div>
           <div className="text-center">
-            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">3pm</p>
-            <p className="text-muted-foreground text-xs sm:text-sm">{t("checkIn")}</p>
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
+              3pm
+            </p>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {t("checkIn")}
+            </p>
           </div>
           <div className="text-center">
-            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">11am</p>
-            <p className="text-muted-foreground text-xs sm:text-sm">{t("checkOut")}</p>
+            <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
+              11am
+            </p>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {t("checkOut")}
+            </p>
           </div>
         </div>
       </div>

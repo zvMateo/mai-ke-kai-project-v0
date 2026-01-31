@@ -38,10 +38,10 @@
     "packages": "Paquetes"
   },
   "hero": {
-    "title": "Tu Paraíso del Surf",
-    "titleHighlight": "en Costa Rica",
-    "subtitle": "Hotel boutique de surf con olas de clase mundial, lecciones expertas y auténtico pura vida",
-    "cta": "Ver Disponibilidad",
+    "title": "TU SURF HOUSE EN",
+    "titleHighlight": "TAMARINDO COSTA RICA",
+    "cta": "Contáctanos",
+    "ariaLabel": "Contáctanos para reservas",
     "scrollDown": "Desplázate para explorar"
   },
   "rooms": {
@@ -147,7 +147,7 @@
     "loginSubtitle": "Inicia sesión en tu cuenta para continuar"
   },
   "footer": {
-    "description": "Tu paraíso del surf en Costa Rica. Hotel boutique con olas de clase mundial y auténtico pura vida.",
+    "description": "Tu paraíso del surf en Costa Rica. Hotel con olas de clase mundial y auténtico pura vida.",
     "quickLinks": "Enlaces Rápidos",
     "contactUs": "Contáctanos",
     "followUs": "Síguenos",
@@ -162,7 +162,6 @@
     "information": "Información",
     "surfHouse": "Surf House",
     "packages": "Paquetes"
-
   },
   "loyalty": {
     "title": "Programa de Lealtad",

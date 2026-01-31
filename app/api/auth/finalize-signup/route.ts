@@ -34,8 +34,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Error creating user' }, { status: 500 })
     }
 
-    // Mark as confirmed
-    await admin.from('pending_signups').update({ confirmed: true }).eq('token', token)
+    // Delete the pending signup record after successful user creation
+    await admin.from('pending_signups').delete().eq('token', token)
 
     return NextResponse.json({ success: true, redirect: '/auth/login' })
   } catch (err) {
