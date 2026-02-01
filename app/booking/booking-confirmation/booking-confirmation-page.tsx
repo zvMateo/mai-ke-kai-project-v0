@@ -63,6 +63,7 @@ export function BookingConfirmationPage() {
                 email: booking.users.email,
                 phone: booking.users.phone || "",
                 nationality: booking.users.nationality || "",
+                country: "BR",
               },
             })
             setLoading(false)

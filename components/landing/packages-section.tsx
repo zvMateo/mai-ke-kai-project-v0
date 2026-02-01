@@ -170,10 +170,10 @@ export async function PackagesSection({ packages }: PackagesSectionProps) {
                     </div>
                   </div>
 
-                  {/* CTA Button */}
-                  <Link href={`/booking?package=${pkg.id}`} className="block mt-4">
-                    <Button className="w-full">{tCommon("bookNow")}</Button>
-                  </Link>
+                   {/* CTA Button */}
+                   <Link href={`/booking?mode=package&packageId=${pkg.id}`} className="block mt-4">
+                     <Button className="w-full">{tCommon("bookNow")}</Button>
+                   </Link>
                 </CardContent>
               </Card>
             );

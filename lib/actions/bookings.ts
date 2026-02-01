@@ -402,13 +402,13 @@ export async function cancelBooking(
   let refundProcessed = false;
   let message = "";
 
-  // Process refund handling for Tilopay (manual process)
+  // Process refund handling for AstroPay (manual process via dashboard)
   if (
     refundEligible &&
-    booking.tilopay_transaction_id &&
+    (booking.astropay_deposit_id || booking.tilopay_transaction_id) &&
     booking.paid_amount > 0
   ) {
-    // For Tilopay, refunds need to be processed manually through dashboard
+    // For AstroPay, refunds need to be processed manually through dashboard
     // Mark as requiring manual refund
     await supabase
       .from("bookings")
@@ -416,12 +416,12 @@ export async function cancelBooking(
         payment_status: "refunded",
         special_requests:
           (booking.special_requests || "") +
-          "\n[REFUND REQUIRED] Manual refund needed through Tilopay dashboard",
+          "\n[REFUND REQUIRED] Manual refund needed through AstroPay dashboard",
       })
       .eq("id", bookingId);
 
     refundProcessed = true;
-    message = `Reserva cancelada. Reembolso MANUAL requerido (${daysUntilCheckIn} días antes del check-in). Procesar a través del dashboard de Tilopay.`;
+    message = `Reserva cancelada. Reembolso MANUAL requerido (${daysUntilCheckIn} días antes del check-in). Procesar a través del dashboard de AstroPay.`;
   } else if (!refundEligible && booking.paid_amount > 0) {
     message = `Reserva cancelada SIN reembolso. Política: cancelaciones con menos de ${CANCELLATION_DAYS_THRESHOLD} días de anticipación no son reembolsables (${daysUntilCheckIn} días antes del check-in).`;
   } else {

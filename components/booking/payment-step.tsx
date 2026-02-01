@@ -8,6 +8,7 @@ import { ArrowLeft, CreditCard, Shield, Loader2 } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import type { BookingData } from "./booking-flow";
 import { useCreatePayment } from "@/lib/queries";
+import { SUPPORTED_COUNTRIES } from "@/lib/astropay";
 
 interface PaymentStepProps {
   bookingData: BookingData;
@@ -24,6 +25,20 @@ export function PaymentStep({
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const paymentMutation = useCreatePayment();
+
+  if (!bookingData.guestInfo?.country) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardContent className="p-6">
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-sm text-destructive">
+              Selecciona un país en el paso anterior para continuar con el pago.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const nights = differenceInDays(bookingData.checkOut, bookingData.checkIn);
   const roomsTotal = bookingData.rooms.reduce(
@@ -67,6 +82,7 @@ export function PaymentStep({
             }`.trim(),
             phone: bookingData.guestInfo?.phone,
             nationality: bookingData.guestInfo?.nationality,
+            country: bookingData.guestInfo?.country || "BR",
           },
         },
       },
@@ -152,13 +168,14 @@ export function PaymentStep({
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
-              Pago con Tilopay
+              Pago con AstroPay
             </h4>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Procesamiento seguro con Tilopay</li>
-              <li>• Acepta tarjetas Visa, Mastercard y SINPE Móvil</li>
+              <li>• Procesamiento seguro con AstroPay</li>
+              <li>• Acepta tarjetas Visa, Mastercard, PIX, SPEI y más</li>
               <li>• Confirmación automática de reserva</li>
-              <li>• Protección SSL y encriptación</li>
+              <li>• Protección SSL y encriptación de extremo a extremo</li>
+              <li>• Múltiples métodos de pago según tu país</li>
             </ul>
           </div>
 
@@ -167,7 +184,7 @@ export function PaymentStep({
             <Shield className="w-5 h-5 text-primary shrink-0" />
             <p className="text-sm text-muted-foreground">
               Tu pago está protegido con encriptación SSL. Procesamos pagos de
-              forma segura con Tilopay.
+              forma segura con AstroPay, una pasarela global de pagos.
             </p>
           </div>
 
@@ -221,7 +238,7 @@ export function PaymentStep({
           ) : (
             <>
               <CreditCard className="mr-2 w-4 h-4" />
-              Pagar con Tilopay
+              Pagar con AstroPay
             </>
           )}
         </Button>

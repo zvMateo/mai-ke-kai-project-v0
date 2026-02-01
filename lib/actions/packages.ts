@@ -133,3 +133,28 @@ export async function togglePackageStatus(id: string, isActive: boolean) {
   revalidatePath("/packages")
   return { success: true }
 }
+
+// Get package details for booking flow
+export async function fetchPackageDetails(packageId: string) {
+  const pkg = await getPackageById(packageId)
+
+  if (!pkg || !pkg.is_active) {
+    throw new Error("Package not found or inactive")
+  }
+
+  // Parse includes JSON if it's a string
+  const includes = typeof pkg.includes === "string"
+    ? (() => {
+        try {
+          return JSON.parse(pkg.includes)
+        } catch {
+          return []
+        }
+      })()
+    : Array.isArray(pkg.includes) ? pkg.includes : []
+
+  return {
+    ...pkg,
+    includes,
+  }
+}

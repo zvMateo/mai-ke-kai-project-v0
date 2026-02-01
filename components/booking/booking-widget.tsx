@@ -19,6 +19,7 @@ export function BookingWidget() {
   const handleSearch = () => {
     if (checkIn && checkOut) {
       const params = new URLSearchParams({
+        mode: "accommodation",
         checkIn: format(checkIn, "yyyy-MM-dd"),
         checkOut: format(checkOut, "yyyy-MM-dd"),
         guests: guests,

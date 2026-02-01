@@ -88,6 +88,8 @@ export interface Booking {
   total_amount: number;
   paid_amount: number;
   tilopay_transaction_id: string | null;
+  astropay_deposit_id: string | null;
+  astropay_merchant_deposit_id: string | null;
   special_requests: string | null;
   source: "direct" | "walk_in" | "phone" | "ota";
   created_at: string;
@@ -173,6 +175,22 @@ export interface SurfPackage {
   is_for_two: boolean;
   is_active: boolean;
   display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Payment Webhook Types
+export type PaymentGateway = "astropay" | "tilopay" | "stripe";
+export type WebhookStatus = "pending" | "processed" | "failed";
+
+export interface PaymentWebhook {
+  id: string;
+  gateway: PaymentGateway;
+  transaction_id: string;
+  status: WebhookStatus;
+  payload: Record<string, any> | null;
+  booking_id: string | null;
+  processed_at: string | null;
   created_at: string;
   updated_at: string;
 }

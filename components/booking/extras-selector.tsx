@@ -14,13 +14,14 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import type { ExtraSelection } from "./booking-flow";
+import type { ExtraSelection, BookingMode } from "./booking-flow";
 import { useServices } from "@/lib/queries";
 
 interface ExtrasSelectorProps {
   checkIn: Date;
   checkOut: Date;
   selectedExtras: ExtraSelection[];
+  mode?: BookingMode;
   onComplete: (extras: ExtraSelection[]) => void;
   onBack: () => void;
 }
@@ -29,6 +30,7 @@ export function ExtrasSelector({
   checkIn,
   checkOut,
   selectedExtras,
+  mode = "accommodation",
   onComplete,
   onBack,
 }: ExtrasSelectorProps) {
@@ -95,15 +97,23 @@ export function ExtrasSelector({
     );
   }
 
+   const headerText = mode === "services-only"
+    ? "Servicios Adicionales"
+    : "Agrega Experiencias";
+  
+  const headerSubtext = mode === "services-only"
+    ? "Selecciona servicios adicionales para complementar tu compra"
+    : "Mejora tu estadía con clases de surf y tours (opcional)";
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h2 className="font-heading text-xl font-bold text-foreground">
-          Add Experiences
+          {headerText}
         </h2>
         <p className="text-muted-foreground text-sm">
-          Enhance your stay with surf lessons and tours (optional)
+          {headerSubtext}
         </p>
       </div>
 
@@ -211,17 +221,19 @@ export function ExtrasSelector({
         </div>
       )}
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between pt-4">
-        <Button variant="ghost" onClick={onBack}>
-          <ArrowLeft className="mr-2 w-4 h-4" />
-          Back
-        </Button>
-        <Button onClick={() => onComplete(selections)}>
-          {selections.length > 0 ? "Continue with Extras" : "Skip Extras"}
-          <ArrowRight className="ml-2 w-4 h-4" />
-        </Button>
-      </div>
+       {/* Navigation */}
+       <div className="flex items-center justify-between pt-4">
+         <Button variant="ghost" onClick={onBack}>
+           <ArrowLeft className="mr-2 w-4 h-4" />
+           Atrás
+         </Button>
+         <Button onClick={() => onComplete(selections)}>
+           {mode === "services-only"
+             ? "Ir a mis datos"
+             : selections.length > 0 ? "Continuar con Extras" : "Saltar Extras"}
+           <ArrowRight className="ml-2 w-4 h-4" />
+         </Button>
+       </div>
     </div>
   );
 }

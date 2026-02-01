@@ -218,23 +218,5 @@ export function Header({ locale = "en" }: HeaderProps) {
   );
 }
 
-// Wrapper component to handle hydration
-export const LandingHeader = dynamic(
-  () => import("./header").then((mod) => ({ default: mod.Header })),
-  {
-    ssr: false,
-    loading: () => (
-      <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-transparent">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="w-12 h-12 bg-muted/20 rounded" />
-          <div className="flex gap-2">
-            <div className="w-20 h-8 bg-muted/20 rounded" />
-            <div className="w-24 h-8 bg-primary/20 rounded" />
-          </div>
-        </div>
-      </header>
-    ),
-  },
-);
-
+// Export as LandingHeader for dynamic import compatibility
 export { Header as LandingHeader };

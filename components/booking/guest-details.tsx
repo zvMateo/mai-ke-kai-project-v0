@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowRight, ArrowLeft, User, Mail, Phone, Globe, Star, LogIn } from "lucide-react"
+import { ArrowRight, ArrowLeft, User, Mail, Phone, Globe, Star, LogIn, CreditCard } from "lucide-react"
 import { useUserStore } from "@/lib/stores/user-store"
 import Link from "next/link"
 import type { BookingData } from "./booking-flow"
+import { SUPPORTED_COUNTRIES } from "@/lib/astropay"
 
 interface GuestDetailsProps {
   initialData: BookingData["guestInfo"]
@@ -44,6 +45,7 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
     email: initialData?.email || "",
     phone: initialData?.phone || "",
     nationality: initialData?.nationality || "",
+    country: initialData?.country || "BR",
     specialRequests: initialData?.specialRequests || "",
   })
 
@@ -75,6 +77,7 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
     }
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
     if (!formData.nationality) newErrors.nationality = "Please select your nationality"
+    if (!formData.country) newErrors.country = "Please select your country for payment processing"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -209,6 +212,32 @@ export function GuestDetails({ initialData, onComplete, onBack }: GuestDetailsPr
             </SelectContent>
           </Select>
           {errors.nationality && <p className="text-sm text-destructive">{errors.nationality}</p>}
+        </div>
+
+        {/* Country for Payment (AstroPay) */}
+        <div className="space-y-2">
+          <Label htmlFor="country" className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-primary" />
+            Country for Payment Processing *
+            <span className="text-xs text-muted-foreground">(Required by AstroPay)</span>
+          </Label>
+          <Select value={formData.country} onValueChange={(value) => updateField("country", value)}>
+            <SelectTrigger className={errors.country ? "border-destructive" : ""}>
+              <Globe className="mr-2 w-4 h-4 text-muted-foreground" />
+              <SelectValue placeholder="Select your payment country" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUPPORTED_COUNTRIES.map((country) => (
+                <SelectItem key={country.code} value={country.code}>
+                  {country.name} ({country.currency})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.country && <p className="text-sm text-destructive">{errors.country}</p>}
+          <p className="text-xs text-muted-foreground">
+            Select the country where your payment method is registered. This determines available payment methods and local currency.
+          </p>
         </div>
 
         {/* Special Requests */}

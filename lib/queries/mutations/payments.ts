@@ -24,6 +24,7 @@ export interface PaymentInput {
       fullName: string;
       phone?: string;
       nationality?: string;
+      country: string;
     };
   };
 }
@@ -32,10 +33,10 @@ interface PaymentResult {
   url: string;
 }
 
-async function createTilopayPayment(
+async function createAstroPayPayment(
   input: PaymentInput
 ): Promise<PaymentResult> {
-  const response = await fetch("/api/tilopay/create", {
+  const response = await fetch("/api/astropay/deposit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -54,7 +55,7 @@ export function useCreatePayment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createTilopayPayment,
+    mutationFn: createAstroPayPayment,
     onMutate: async () => {
       await queryClient.cancelQueries({
         queryKey: queryKeys.bookingFlow.payment(),
