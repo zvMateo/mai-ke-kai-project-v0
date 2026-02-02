@@ -10,6 +10,16 @@ export async function createDeposit(
   request: AstroPayDepositRequest
 ): Promise<AstroPayDepositResponse> {
   const url = getMerchantApiUrl('/merchant/v1/deposit/init');
+  
+  console.log('[AstroPay] Creating deposit:', {
+    url,
+    headers: getStandardHeaders(),
+    request: {
+      ...request,
+      callback_url: request.callback_url,
+      redirect_url: request.redirect_url,
+    },
+  });
 
   const response = await fetch(url, {
     method: 'POST',
@@ -17,15 +27,33 @@ export async function createDeposit(
     body: JSON.stringify(request),
   });
 
+  const responseText = await response.text();
+  
+  console.log('[AstroPay] Response status:', response.status);
+  console.log('[AstroPay] Response text:', responseText.substring(0, 500));
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+    // Intentar parsear como JSON, si falla mostrar el HTML/texto crudo
+    let errorData;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      errorData = { rawResponse: responseText.substring(0, 200) };
+    }
+    
     console.error('AstroPay Deposit Error:', errorData);
     throw new Error(
-      errorData.message || errorData.error || 'Error creating deposit'
+      errorData.message || errorData.error || errorData.description || `HTTP ${response.status}: ${responseText.substring(0, 100)}`
     );
   }
 
-  return response.json();
+  // Parsear la respuesta exitosa
+  try {
+    return JSON.parse(responseText);
+  } catch (parseError) {
+    console.error('[AstroPay] Failed to parse success response:', parseError);
+    throw new Error('Invalid JSON response from AstroPay');
+  }
 }
 
 export async function getDepositStatus(
@@ -40,15 +68,23 @@ export async function getDepositStatus(
     headers: getStandardHeaders(),
   });
 
+  const responseText = await response.text();
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+    let errorData;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      errorData = { rawResponse: responseText.substring(0, 200) };
+    }
+    
     console.error('AstroPay Status Error:', errorData);
     throw new Error(
-      errorData.message || errorData.error || 'Error fetching deposit status'
+      errorData.message || errorData.error || `HTTP ${response.status}`
     );
   }
 
-  return response.json();
+  return JSON.parse(responseText);
 }
 
 export async function createDepositForBooking(booking: {
