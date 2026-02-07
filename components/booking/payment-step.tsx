@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, CreditCard, Shield, Loader2 } from "lucide-react";
-import { differenceInDays } from "date-fns";
-import type { BookingData } from "./booking-flow";
-import { useCreatePayment } from "@/lib/queries";
-import { SUPPORTED_COUNTRIES } from "@/lib/astropay";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowLeft, CreditCard, Shield, Loader2 } from "lucide-react"
+import { differenceInDays } from "date-fns"
+import type { BookingData } from "./booking-flow"
+import { useCreateBooking } from "@/lib/queries"
+import { TabPaymentCard } from "./tab-payment-card"
 
 interface PaymentStepProps {
-  bookingData: BookingData;
-  onComplete: (bookingId: string) => void;
-  onBack: () => void;
+  bookingData: BookingData
+  onComplete: (bookingId: string) => void
+  onBack: () => void
 }
 
 export function PaymentStep({
@@ -21,83 +21,107 @@ export function PaymentStep({
   onComplete,
   onBack,
 }: PaymentStepProps) {
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const paymentMutation = useCreatePayment();
+  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [bookingResult, setBookingResult] = useState<{
+    bookingId: string
+    bookingReference: string
+    totalAmount: number
+  } | null>(null)
+  const bookingMutation = useCreateBooking()
 
-  if (!bookingData.guestInfo?.country) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="p-6">
-          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <p className="text-sm text-destructive">
-              Selecciona un país en el paso anterior para continuar con el pago.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const nights = differenceInDays(bookingData.checkOut, bookingData.checkIn);
+  const nights = differenceInDays(bookingData.checkOut, bookingData.checkIn)
   const roomsTotal = bookingData.rooms.reduce(
     (sum, room) => sum + room.pricePerNight * room.quantity * nights,
     0
-  );
+  )
   const extrasTotal = bookingData.extras.reduce(
     (sum, extra) => sum + extra.price * extra.quantity,
     0
-  );
-  const subtotal = roomsTotal + extrasTotal;
-  const tax = subtotal * 0.13;
-  const total = subtotal + tax;
+  )
+  const subtotal = roomsTotal + extrasTotal
+  const tax = subtotal * 0.13
+  const total = subtotal + tax
 
-  const handleProceedToPayment = async () => {
-    if (!acceptTerms || isProcessing) return;
-    setIsProcessing(true);
-    setError(null);
+  const tabPaymentLink =
+    process.env.NEXT_PUBLIC_TAB_PAYMENT_LINK || "https://tab.travel"
 
-    paymentMutation.mutate(
+  const handleCreateBooking = async () => {
+    if (!acceptTerms || isProcessing) return
+    setIsProcessing(true)
+    setError(null)
+
+    bookingMutation.mutate(
       {
-        bookingData: {
-          checkIn: bookingData.checkIn.toISOString().split("T")[0],
-          checkOut: bookingData.checkOut.toISOString().split("T")[0],
-          guestsCount: bookingData.guests,
-          rooms: bookingData.rooms.map((room) => ({
-            roomId: room.roomId,
-            bedId: room.bedId,
-            pricePerNight: room.pricePerNight,
-          })),
-          services: bookingData.extras.map((extra) => ({
-            serviceId: extra.serviceId,
-            quantity: extra.quantity,
-            priceAtBooking: extra.price,
-            scheduledDate: extra.date,
-          })),
-          guestInfo: {
-            email: bookingData.guestInfo?.email || "",
-            fullName: `${bookingData.guestInfo?.firstName || ""} ${
-              bookingData.guestInfo?.lastName || ""
-            }`.trim(),
-            phone: bookingData.guestInfo?.phone,
-            nationality: bookingData.guestInfo?.nationality,
-            country: bookingData.guestInfo?.country || "BR",
-          },
+        checkIn: bookingData.checkIn.toISOString().split("T")[0],
+        checkOut: bookingData.checkOut.toISOString().split("T")[0],
+        guestsCount: bookingData.guests,
+        rooms: bookingData.rooms.map((room) => ({
+          roomId: room.roomId,
+          bedId: room.bedId,
+          pricePerNight: room.pricePerNight,
+        })),
+        services: bookingData.extras.map((extra) => ({
+          serviceId: extra.serviceId,
+          quantity: extra.quantity,
+          priceAtBooking: extra.price,
+          scheduledDate: extra.date,
+        })),
+        guestInfo: {
+          email: bookingData.guestInfo?.email || "",
+          fullName: `${bookingData.guestInfo?.firstName || ""} ${
+            bookingData.guestInfo?.lastName || ""
+          }`.trim(),
+          phone: bookingData.guestInfo?.phone,
+          nationality: bookingData.guestInfo?.nationality,
         },
       },
       {
+        onSuccess: (data) => {
+          setBookingResult({
+            bookingId: data.bookingId,
+            bookingReference: data.bookingReference,
+            totalAmount: data.totalAmount,
+          })
+          setIsProcessing(false)
+        },
         onError: (err) => {
           setError(
             err instanceof Error
               ? err.message
-              : "Error al procesar el pago. Por favor intenta de nuevo."
-          );
-          setIsProcessing(false);
+              : "Error creating your booking. Please try again."
+          )
+          setIsProcessing(false)
         },
       }
-    );
-  };
+    )
+  }
+
+  // Once booking is created, show Tab.travel payment card
+  if (bookingResult) {
+    return (
+      <div className="space-y-6">
+        <TabPaymentCard
+          bookingReference={bookingResult.bookingReference}
+          totalAmount={bookingResult.totalAmount}
+          guestName={`${bookingData.guestInfo?.firstName || ""} ${
+            bookingData.guestInfo?.lastName || ""
+          }`.trim()}
+          tabPaymentLink={tabPaymentLink}
+        />
+
+        <div className="text-center">
+          <Button
+            variant="outline"
+            onClick={() => onComplete(bookingResult.bookingId)}
+          >
+            View Booking Confirmation
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -106,17 +130,17 @@ export function PaymentStep({
         <CardHeader>
           <CardTitle className="font-heading text-xl flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-primary" />
-            Resumen del Pago
+            Payment Summary
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Booking Details */}
           <div className="space-y-3">
-            <h4 className="font-medium text-foreground">Alojamiento</h4>
+            <h4 className="font-medium text-foreground">Accommodation</h4>
             {bookingData.rooms.map((room, idx) => (
               <div key={idx} className="flex justify-between text-sm">
                 <span className="text-muted-foreground">
-                  {room.roomName} x {room.quantity} ({nights} noches)
+                  {room.roomName} x {room.quantity} ({nights} nights)
                 </span>
                 <span className="font-medium">
                   ${(room.pricePerNight * room.quantity * nights).toFixed(2)}
@@ -128,7 +152,7 @@ export function PaymentStep({
           {bookingData.extras.length > 0 && (
             <div className="space-y-3">
               <h4 className="font-medium text-foreground">
-                Extras & Servicios
+                Extras & Services
               </h4>
               {bookingData.extras.map((extra, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
@@ -151,11 +175,11 @@ export function PaymentStep({
               <span className="font-medium">${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">IVA (13%)</span>
+              <span className="text-muted-foreground">Tax (13%)</span>
               <span className="font-medium">${tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-lg pt-2 border-t">
-              <span className="font-semibold">Total a Pagar</span>
+              <span className="font-semibold">Total</span>
               <span className="font-bold text-primary">
                 ${total.toFixed(2)} USD
               </span>
@@ -165,17 +189,24 @@ export function PaymentStep({
           <hr className="border-border" />
 
           {/* Payment Method Info */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-950/20 dark:border-blue-900">
+            <h4 className="font-medium text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
-              Pago con AstroPay
+              Secure Online Payment
             </h4>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Procesamiento seguro con AstroPay</li>
-              <li>• Acepta tarjetas Visa, Mastercard, PIX, SPEI y más</li>
-              <li>• Confirmación automática de reserva</li>
-              <li>• Protección SSL y encriptación de extremo a extremo</li>
-              <li>• Múltiples métodos de pago según tu país</li>
+            <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+              <li>
+                &bull; Pay securely through Tab.travel
+              </li>
+              <li>
+                &bull; Credit/debit cards, bank transfers, and more
+              </li>
+              <li>
+                &bull; Your booking will be confirmed once payment is verified
+              </li>
+              <li>
+                &bull; You&apos;ll receive an email confirmation
+              </li>
             </ul>
           </div>
 
@@ -183,8 +214,8 @@ export function PaymentStep({
           <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
             <Shield className="w-5 h-5 text-primary shrink-0" />
             <p className="text-sm text-muted-foreground">
-              Tu pago está protegido con encriptación SSL. Procesamos pagos de
-              forma segura con AstroPay, una pasarela global de pagos.
+              Your reservation will be held for 24 hours while you complete the
+              payment. A booking reference will be generated for easy tracking.
             </p>
           </div>
 
@@ -199,13 +230,13 @@ export function PaymentStep({
               htmlFor="terms"
               className="text-sm text-muted-foreground leading-relaxed cursor-pointer"
             >
-              Acepto los{" "}
-              <a href="/terminos" className="text-primary hover:underline">
-                Términos de Servicio
+              I accept the{" "}
+              <a href="/terms" className="text-primary hover:underline">
+                Terms of Service
               </a>{" "}
-              y la{" "}
-              <a href="/cancelacion" className="text-primary hover:underline">
-                Política de Cancelación
+              and the{" "}
+              <a href="/cancellation" className="text-primary hover:underline">
+                Cancellation Policy
               </a>
             </label>
           </div>
@@ -222,10 +253,10 @@ export function PaymentStep({
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="mr-2 w-4 h-4" />
-          Volver
+          Back
         </Button>
         <Button
-          onClick={handleProceedToPayment}
+          onClick={handleCreateBooking}
           disabled={!acceptTerms || isProcessing}
           size="lg"
           className="min-w-[200px]"
@@ -233,16 +264,16 @@ export function PaymentStep({
           {isProcessing ? (
             <>
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-              Procesando...
+              Creating Booking...
             </>
           ) : (
             <>
               <CreditCard className="mr-2 w-4 h-4" />
-              Pagar con AstroPay
+              Reserve & Pay
             </>
           )}
         </Button>
       </div>
     </div>
-  );
+  )
 }

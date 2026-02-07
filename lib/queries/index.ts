@@ -64,4 +64,4 @@ export { useCreateUser, useUpdateUser, useDeleteUser } from "./mutations/users";
 
 export { useUploadImage } from "./mutations/images";
 
-export { useCreatePayment } from "./mutations/payments";
+export { useCreateBooking, useCreatePayment } from "./mutations/payments";

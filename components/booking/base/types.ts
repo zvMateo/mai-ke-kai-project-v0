@@ -48,7 +48,6 @@ export interface BookingData {
     email: string;
     phone: string;
     nationality: string;
-    country: string;
     specialRequests?: string;
   } | null;
   packageData?: {

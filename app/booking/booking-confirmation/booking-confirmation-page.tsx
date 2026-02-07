@@ -13,6 +13,7 @@ export function BookingConfirmationPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
+  const [bookingRef, setBookingRef] = useState<string | null>(null)
 
   useEffect(() => {
     if (!bookingId) {
@@ -39,6 +40,7 @@ export function BookingConfirmationPage() {
             const checkIn = new Date(booking.check_in)
             const checkOut = new Date(booking.check_out)
 
+            setBookingRef(booking.booking_reference || booking.id.slice(0, 8).toUpperCase())
             setBookingData({
               checkIn,
               checkOut,
@@ -63,7 +65,6 @@ export function BookingConfirmationPage() {
                 email: booking.users.email,
                 phone: booking.users.phone || "",
                 nationality: booking.users.nationality || "",
-                country: "BR",
               },
             })
             setLoading(false)
@@ -115,5 +116,5 @@ export function BookingConfirmationPage() {
     )
   }
 
-  return <BookingConfirmation bookingId={bookingId!} bookingData={bookingData} />
+  return <BookingConfirmation bookingId={bookingRef || bookingId!} bookingData={bookingData} />
 }

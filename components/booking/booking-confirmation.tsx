@@ -42,7 +42,7 @@ export function BookingConfirmation({ bookingId, bookingData }: BookingConfirmat
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = url
-        a.download = `reserva-${bookingId.slice(0, 8).toUpperCase()}.pdf`
+        a.download = `booking-${bookingId}.pdf`
         document.body.appendChild(a)
         a.click()
         window.URL.revokeObjectURL(url)
@@ -68,9 +68,11 @@ export function BookingConfirmation({ bookingId, bookingData }: BookingConfirmat
         </div>
 
         {/* Header */}
-        <h1 className="font-heading text-3xl font-bold text-foreground mb-2">¡Reserva Confirmada!</h1>
-        <p className="text-muted-foreground mb-2">Tu aventura de surf en Mai Ke Kai está reservada</p>
-        <p className="text-sm text-muted-foreground mb-8">Confirmación #{bookingId.slice(0, 8).toUpperCase()}</p>
+        <h1 className="font-heading text-3xl font-bold text-foreground mb-2">Booking Created!</h1>
+        <p className="text-muted-foreground mb-2">Your surf adventure at Mai Ke Kai is reserved</p>
+        <p className="text-sm font-mono font-medium text-primary mb-8">
+          Reference: {bookingId.slice(0, 8).toUpperCase()}
+        </p>
 
         {/* Confirmation Card */}
         <Card className="border-0 shadow-xl mb-8 text-left">
@@ -175,15 +177,17 @@ export function BookingConfirmation({ bookingId, bookingData }: BookingConfirmat
                   <span className="font-medium">${tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-lg pt-2 border-t border-border">
-                  <span className="font-semibold">Total Pagado</span>
+                  <span className="font-semibold">Total</span>
                   <span className="font-bold text-primary">${total.toFixed(2)} USD</span>
                 </div>
               </div>
 
               {/* Payment Status */}
-              <div className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-2 rounded-lg">
-                <CheckCircle2 className="w-4 h-4" />
-                <span className="text-sm font-medium">Pago confirmado</span>
+              <div className="flex items-center gap-2 text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
+                <CreditCard className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  Payment pending — complete your payment on Tab.travel to confirm
+                </span>
               </div>
 
               {/* Location */}
@@ -201,25 +205,28 @@ export function BookingConfirmation({ bookingId, bookingData }: BookingConfirmat
         {/* What's Next */}
         <Card className="border-0 shadow-lg mb-8">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-foreground mb-4">¿Qué sigue?</h3>
+            <h3 className="font-semibold text-foreground mb-4">What&apos;s Next?</h3>
             <div className="space-y-3 text-left text-sm">
-              <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-primary mt-0.5" />
-                <p className="text-muted-foreground">
-                  Se ha enviado un email de confirmación a{" "}
-                  <span className="text-foreground font-medium">{bookingData.guestInfo?.email}</span>
-                </p>
-              </div>
               <div className="flex items-start gap-3">
                 <CreditCard className="w-4 h-4 text-primary mt-0.5" />
                 <p className="text-muted-foreground">
-                  Recuerda completar tu check-in online 24h antes de tu llegada para una experiencia más rápida.
+                  Complete your payment on Tab.travel using your booking reference.
+                  Your reservation will be confirmed once we verify payment.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <Mail className="w-4 h-4 text-primary mt-0.5" />
+                <p className="text-muted-foreground">
+                  You&apos;ll receive a confirmation email at{" "}
+                  <span className="text-foreground font-medium">{bookingData.guestInfo?.email}</span>{" "}
+                  once payment is verified.
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <Phone className="w-4 h-4 text-primary mt-0.5" />
                 <p className="text-muted-foreground">
-                  ¿Necesitas transporte desde el aeropuerto? Contáctanos al <span className="text-foreground font-medium">+506 8888-8888</span>
+                  Need airport transport? Contact us at{" "}
+                  <span className="text-foreground font-medium">+506 8888-8888</span>
                 </p>
               </div>
             </div>

@@ -92,50 +92,54 @@ export default async function BookingsPage() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                 <TableHeader>
                   <TableRow>
-                    <TableHead>Huesped</TableHead>
-                    <TableHead>Habitacion</TableHead>
-                    <TableHead>Check-in</TableHead>
-                    <TableHead>Check-out</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Origen</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bookings.map((booking) => (
-                    <TableRow key={booking.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{booking.users?.full_name || "Guest"}</p>
-                          <p className="text-sm text-muted-foreground">{booking.users?.email}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <p className="text-sm">
-                          {booking.booking_rooms?.map((br: any) => br.rooms?.name).join(", ") || "-"}
-                        </p>
-                      </TableCell>
-                      <TableCell>{format(new Date(booking.check_in), "d MMM")}</TableCell>
-                      <TableCell>{format(new Date(booking.check_out), "d MMM")}</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className={statusColors[booking.status]}>
-                          {booking.status.replace("_", " ")}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>${booking.total_amount?.toFixed(2)}</TableCell>
-                      <TableCell className="capitalize">{booking.source}</TableCell>
-                      <TableCell>
-                        <Link href={`/admin/bookings/${booking.id}`}>
-                          <Button variant="ghost" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                     <TableHead>Ref</TableHead>
+                     <TableHead>Guest</TableHead>
+                     <TableHead>Room</TableHead>
+                     <TableHead>Check-in</TableHead>
+                     <TableHead>Check-out</TableHead>
+                     <TableHead>Status</TableHead>
+                     <TableHead>Total</TableHead>
+                     <TableHead></TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {bookings.map((booking) => (
+                     <TableRow key={booking.id}>
+                       <TableCell>
+                         <p className="font-mono text-xs font-medium text-primary">
+                           {booking.booking_reference || booking.id.slice(0, 8).toUpperCase()}
+                         </p>
+                       </TableCell>
+                       <TableCell>
+                         <div>
+                           <p className="font-medium">{booking.users?.full_name || "Guest"}</p>
+                           <p className="text-sm text-muted-foreground">{booking.users?.email}</p>
+                         </div>
+                       </TableCell>
+                       <TableCell>
+                         <p className="text-sm">
+                           {booking.booking_rooms?.map((br: any) => br.rooms?.name).join(", ") || "-"}
+                         </p>
+                       </TableCell>
+                       <TableCell>{format(new Date(booking.check_in), "d MMM")}</TableCell>
+                       <TableCell>{format(new Date(booking.check_out), "d MMM")}</TableCell>
+                       <TableCell>
+                         <Badge variant="secondary" className={statusColors[booking.status]}>
+                           {booking.status.replace("_", " ")}
+                         </Badge>
+                       </TableCell>
+                       <TableCell>${booking.total_amount?.toFixed(2)}</TableCell>
+                       <TableCell>
+                         <Link href={`/admin/bookings/${booking.id}`}>
+                           <Button variant="ghost" size="sm">
+                             <Eye className="w-4 h-4" />
+                           </Button>
+                         </Link>
+                       </TableCell>
+                     </TableRow>
+                   ))}
                 </TableBody>
               </Table>
             </div>

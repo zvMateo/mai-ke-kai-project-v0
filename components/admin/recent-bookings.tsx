@@ -124,8 +124,8 @@ export function RecentBookings() {
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
                     <p className="font-semibold">${booking.amount}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {booking.id.slice(0, 12)}
+                    <p className="text-xs text-muted-foreground font-mono">
+                      {booking.bookingReference || booking.id.slice(0, 8)}
                     </p>
                   </div>
                   <Badge

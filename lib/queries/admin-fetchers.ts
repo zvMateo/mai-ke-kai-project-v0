@@ -217,6 +217,7 @@ export type RoomOccupancyData = {
 
 export type RecentBooking = {
   id: string;
+  bookingReference: string | null;
   guestName: string;
   email: string;
   checkIn: string;
@@ -416,6 +417,7 @@ export async function fetchRecentBookings(
     .from("bookings")
     .select(`
       id,
+      booking_reference,
       check_in,
       check_out,
       status,
@@ -429,11 +431,13 @@ export async function fetchRecentBookings(
     .limit(limit);
 
   return (bookings || []).map((booking) => {
-    const user = booking.users as { full_name: string | null; email: string } | null;
-    const roomInfo = booking.booking_rooms?.[0]?.rooms as { name: string; type: string } | null;
+    const user = booking.users as unknown as { full_name: string | null; email: string } | null;
+    const rooms = booking.booking_rooms as unknown as Array<{ rooms: { name: string; type: string } | null }> | null;
+    const roomInfo = rooms?.[0]?.rooms;
 
     return {
       id: booking.id,
+      bookingReference: booking.booking_reference || null,
       guestName: user?.full_name || "Guest",
       email: user?.email || "",
       checkIn: booking.check_in,

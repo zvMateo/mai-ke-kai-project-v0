@@ -1,97 +1,91 @@
-"use client";
+"use client"
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/lib/queries/keys";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { queryKeys } from "@/lib/queries/keys"
+import { createBookingWithCheckout } from "@/lib/actions/checkout"
 
-export interface PaymentInput {
-  bookingData: {
-    checkIn: string;
-    checkOut: string;
-    guestsCount: number;
-    rooms: Array<{
-      roomId: string;
-      bedId?: string;
-      pricePerNight: number;
-    }>;
-    services?: Array<{
-      serviceId: string;
-      quantity: number;
-      priceAtBooking: number;
-      scheduledDate?: string;
-    }>;
-    guestInfo: {
-      email: string;
-      fullName: string;
-      phone?: string;
-      nationality?: string;
-      country: string;
-    };
-  };
-}
-
-interface PaymentResult {
-  url: string;
-}
-
-async function createAstroPayPayment(
-  input: PaymentInput
-): Promise<PaymentResult> {
-  const response = await fetch("/api/astropay/deposit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.url) {
-    throw new Error(data.error || "No se recibió URL de pago");
+export interface CreateBookingInput {
+  checkIn: string
+  checkOut: string
+  guestsCount: number
+  rooms: Array<{
+    roomId: string
+    bedId?: string
+    pricePerNight: number
+  }>
+  services?: Array<{
+    serviceId: string
+    quantity: number
+    priceAtBooking: number
+    scheduledDate?: string
+  }>
+  guestInfo: {
+    email: string
+    fullName: string
+    phone?: string
+    nationality?: string
   }
-
-  return { url: data.url };
 }
 
-export function useCreatePayment() {
-  const queryClient = useQueryClient();
+interface CreateBookingResult {
+  bookingId: string
+  bookingReference: string
+  totalAmount: number
+}
+
+async function createBooking(
+  input: CreateBookingInput
+): Promise<CreateBookingResult> {
+  const result = await createBookingWithCheckout(input)
+  return {
+    bookingId: result.bookingId,
+    bookingReference: result.bookingReference,
+    totalAmount: result.totalAmount,
+  }
+}
+
+export function useCreateBooking() {
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createAstroPayPayment,
+    mutationFn: createBooking,
     onMutate: async () => {
       await queryClient.cancelQueries({
         queryKey: queryKeys.bookingFlow.payment(),
-      });
+      })
       const previousStatus = queryClient.getQueryData(
         queryKeys.bookingFlow.payment()
-      );
+      )
       queryClient.setQueryData(queryKeys.bookingFlow.payment(), {
-        status: "processing",
-      });
-      return { previousStatus };
+        status: "creating",
+      })
+      return { previousStatus }
     },
-    onError: (error, _variables, context) => {
+    onError: (_error: Error, _variables: CreateBookingInput, context: { previousStatus: unknown } | undefined) => {
       if (context?.previousStatus) {
         queryClient.setQueryData(
           queryKeys.bookingFlow.payment(),
           context.previousStatus
-        );
+        )
       } else {
         queryClient.setQueryData(queryKeys.bookingFlow.payment(), {
           status: "error",
-          message:
-            error instanceof Error ? error.message : "Error procesando pago",
-        });
+          message: _error.message || "Error creating booking",
+        })
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.setQueryData(queryKeys.bookingFlow.payment(), {
-        status: "redirecting",
-      });
-      window.location.href = data.url;
+        status: "created",
+      })
     },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.bookingFlow.payment(),
-      });
+      })
     },
-  });
+  })
 }
+
+// Keep backward compatibility - alias the old name
+export const useCreatePayment = useCreateBooking

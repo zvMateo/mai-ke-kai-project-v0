@@ -402,30 +402,25 @@ export async function cancelBooking(
   let refundProcessed = false;
   let message = "";
 
-  // Process refund handling for AstroPay (manual process via dashboard)
-  if (
-    refundEligible &&
-    (booking.astropay_deposit_id || booking.tilopay_transaction_id) &&
-    booking.paid_amount > 0
-  ) {
-    // For AstroPay, refunds need to be processed manually through dashboard
-    // Mark as requiring manual refund
+  // Process refund handling (manual process - Tab.travel payments)
+  if (refundEligible && booking.paid_amount > 0) {
+    // Refunds are handled manually by admin
     await supabase
       .from("bookings")
       .update({
         payment_status: "refunded",
         special_requests:
           (booking.special_requests || "") +
-          "\n[REFUND REQUIRED] Manual refund needed through AstroPay dashboard",
+          "\n[REFUND REQUIRED] Manual refund needed - contact guest directly",
       })
-      .eq("id", bookingId);
+      .eq("id", bookingId)
 
-    refundProcessed = true;
-    message = `Reserva cancelada. Reembolso MANUAL requerido (${daysUntilCheckIn} días antes del check-in). Procesar a través del dashboard de AstroPay.`;
+    refundProcessed = true
+    message = `Booking cancelled. Manual refund required (${daysUntilCheckIn} days before check-in). Process refund directly with the guest.`
   } else if (!refundEligible && booking.paid_amount > 0) {
-    message = `Reserva cancelada SIN reembolso. Política: cancelaciones con menos de ${CANCELLATION_DAYS_THRESHOLD} días de anticipación no son reembolsables (${daysUntilCheckIn} días antes del check-in).`;
+    message = `Booking cancelled WITHOUT refund. Policy: cancellations less than ${CANCELLATION_DAYS_THRESHOLD} days before check-in are non-refundable (${daysUntilCheckIn} days before check-in).`
   } else {
-    message = "Reserva cancelada.";
+    message = "Booking cancelled."
   }
 
   revalidatePath("/admin/bookings");

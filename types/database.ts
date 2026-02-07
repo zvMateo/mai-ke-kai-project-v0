@@ -79,6 +79,7 @@ export interface User {
 // Booking Types
 export interface Booking {
   id: string;
+  booking_reference: string | null;
   user_id: string;
   check_in: string;
   check_out: string;
@@ -87,9 +88,6 @@ export interface Booking {
   payment_status: PaymentStatus;
   total_amount: number;
   paid_amount: number;
-  tilopay_transaction_id: string | null;
-  astropay_deposit_id: string | null;
-  astropay_merchant_deposit_id: string | null;
   special_requests: string | null;
   source: "direct" | "walk_in" | "phone" | "ota";
   created_at: string;
@@ -180,7 +178,7 @@ export interface SurfPackage {
 }
 
 // Payment Webhook Types
-export type PaymentGateway = "astropay" | "tilopay" | "stripe";
+export type PaymentGateway = "tab" | "manual" | "astropay" | "tilopay" | "stripe";
 export type WebhookStatus = "pending" | "processed" | "failed";
 
 export interface PaymentWebhook {

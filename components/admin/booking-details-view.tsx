@@ -34,7 +34,7 @@ import {
 import { format } from "date-fns"
 import { adminProcessCheckIn, adminProcessCheckOut, markAsNoShow } from "@/lib/actions/admin-bookings"
 import { cancelBooking } from "@/lib/actions/bookings"
-import { recordManualPayment } from "@/lib/actions/payments"
+import { recordManualPayment, confirmTabPayment } from "@/lib/actions/payments"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -131,6 +131,18 @@ export function BookingDetailsView({ booking }: BookingDetailsViewProps) {
     }
   }
 
+  const handleConfirmTabPayment = async () => {
+    setIsLoading(true)
+    try {
+      await confirmTabPayment(booking.id)
+      router.refresh()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <>
       {/* Header */}
@@ -142,7 +154,9 @@ export function BookingDetailsView({ booking }: BookingDetailsViewProps) {
             </Button>
           </Link>
           <div>
-            <h1 className="font-heading text-2xl font-bold">Reserva #{booking.id.slice(0, 8).toUpperCase()}</h1>
+            <h1 className="font-heading text-2xl font-bold">
+              Booking {booking.booking_reference || `#${booking.id.slice(0, 8).toUpperCase()}`}
+            </h1>
             <p className="text-muted-foreground">
               Creada el {format(new Date(booking.created_at), "d MMM yyyy, HH:mm")}
             </p>
@@ -326,9 +340,23 @@ export function BookingDetailsView({ booking }: BookingDetailsViewProps) {
                   </span>
                 </div>
               </div>
+              {booking.payment_status !== "paid" && booking.status === "pending_payment" && (
+                <Button
+                  className="w-full"
+                  onClick={handleConfirmTabPayment}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                  )}
+                  Confirm Payment & Notify Guest
+                </Button>
+              )}
               {booking.payment_status !== "paid" && (
                 <Button className="w-full bg-transparent" variant="outline" onClick={() => setShowPaymentDialog(true)}>
-                  Registrar Pago
+                  Record Partial Payment
                 </Button>
               )}
               <p className="text-xs text-muted-foreground text-center">Origen: {booking.source}</p>
