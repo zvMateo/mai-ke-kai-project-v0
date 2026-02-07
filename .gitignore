@@ -29,10 +29,10 @@ next-env.d.ts
 
 #skills
 
-/.agent
-/.agents
-/.claude
-/.opencode
-/.windsurf
-/AGENTS.md
+.agent
+.agents
+.claude
+.opencode
+.windsurf
+AGENTS.md
 
