@@ -21,7 +21,7 @@ export async function HeroSection() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-deep/70 via-deep/40 to-deep/80" />
+        <div className="absolute inset-0 bg-linear-gradient-to-b from-deep/70 via-deep/40 to-deep/80" style={{ background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3))" }} />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 pt-24 pb-16">
