@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Moon, Waves, Users, Check, ArrowRight } from "lucide-react";
 import type { SurfPackage } from "@/types/database";
 import { getTranslations } from "next-intl/server";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 interface PackagesSectionProps {
   packages: SurfPackage[];
@@ -102,7 +103,7 @@ export async function PackagesSection({ packages }: PackagesSectionProps) {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="font-heading text-xl font-bold text-white">
                       {pkg.name}
@@ -141,7 +142,7 @@ export async function PackagesSection({ packages }: PackagesSectionProps) {
                           key={index}
                           className="flex items-center gap-2 text-sm text-muted-foreground"
                         >
-                          <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                          <Check className="w-4 h-4 text-primary shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -171,7 +172,7 @@ export async function PackagesSection({ packages }: PackagesSectionProps) {
                   </div>
 
                    {/* CTA Button */}
-                   <Link href={`/booking?mode=package&packageId=${pkg.id}`} className="block mt-4">
+                   <Link href={TAB_TRAVEL_CHECKOUT_URL} className="block mt-4">
                      <Button className="w-full">{tCommon("bookNow")}</Button>
                    </Link>
                 </CardContent>

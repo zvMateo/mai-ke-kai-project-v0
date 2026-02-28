@@ -10,21 +10,24 @@ import { CalendarIcon, Users, Search } from "lucide-react"
 import { format, addDays } from "date-fns"
 import { cn } from "@/lib/utils"
 
+import { getTabTravelUrl } from "@/lib/booking-utils"
+
 export function BookingWidget() {
-  const router = useRouter()
   const [checkIn, setCheckIn] = useState<Date | undefined>(addDays(new Date(), 7))
   const [checkOut, setCheckOut] = useState<Date | undefined>(addDays(new Date(), 10))
   const [guests, setGuests] = useState("2")
 
   const handleSearch = () => {
     if (checkIn && checkOut) {
-      const params = new URLSearchParams({
-        mode: "accommodation",
-        checkIn: format(checkIn, "yyyy-MM-dd"),
-        checkOut: format(checkOut, "yyyy-MM-dd"),
-        guests: guests,
+      const checkInStr = format(checkIn, "yyyy-MM-dd")
+      const checkOutStr = format(checkOut, "yyyy-MM-dd")
+      
+      // Use the Tab.travel utility
+      window.location.href = getTabTravelUrl({
+        checkin: checkInStr,
+        checkout: checkOutStr,
+        guests: guests
       })
-      router.push(`/booking?${params.toString()}`)
     }
   }
 

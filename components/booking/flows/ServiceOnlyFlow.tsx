@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ServiceOnlySelector } from "../service-only-selector";
+import { AccommodationSuggestion } from "../accommodation-suggestion";
 import { ExtrasSelector } from "../extras-selector";
 import { GuestDetails } from "../guest-details";
 import { PaymentStep } from "../payment-step";
@@ -12,7 +13,7 @@ import { BookingConfirmation } from "../booking-confirmation";
 import { BookingSummary } from "../booking-summary";
 import { BookingFlowBase } from "../base/BookingFlowBase";
 import { BookingFlowModal } from "../booking-flow-modal";
-import type { StepConfig, ExtraSelection } from "../base/types";
+import type { StepConfig, ExtraSelection, RoomSelection } from "../base/types";
 
 interface ServiceOnlyFlowProps {
   initialCheckInISO: string;
@@ -54,10 +55,11 @@ class ErrorBoundary extends React.Component<
 }
 
 const getActiveSteps = (): StepConfig[] => [
-  { key: "service-select", label: "Servicios" },
+  { key: "service-select", label: "Services" },
+  { key: "accommodation-suggestion", label: "Accommodation" },
   { key: "extras", label: "Extras" },
-  { key: "details", label: "Datos" },
-  { key: "payment", label: "Pago" },
+  { key: "details", label: "Details" },
+  { key: "payment", label: "Payment" },
 ];
 
 export function ServiceOnlyFlow({
@@ -97,7 +99,7 @@ export function ServiceOnlyFlow({
                 {/* Progress Header */}
                 <div className="mb-6 sm:mb-8">
                   <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                    Reserva Servicios
+                    Book Services
                   </h1>
                   <div className="flex items-center gap-2 sm:gap-4 mb-4 overflow-x-auto pb-2">
                     {state.activeSteps.map((step, idx) => (
@@ -151,9 +153,28 @@ export function ServiceOnlyFlow({
                             extras: data.extras,
                             serviceDates: data.serviceDates,
                           }));
-                          state.setCurrentStep("extras");
+                          state.setCurrentStep("accommodation-suggestion");
                         }}
                         onBack={goBackToSurfSection}
+                      />
+                    )}
+
+                    {state.currentStep === "accommodation-suggestion" && (
+                      <AccommodationSuggestion
+                        checkIn={state.bookingData.checkIn}
+                        checkOut={state.bookingData.checkOut}
+                        guests={state.bookingData.guests}
+                        selectedRooms={state.bookingData.rooms}
+                        onComplete={(rooms: RoomSelection[]) => {
+                          state.setBookingData((prev) => ({ ...prev, rooms }));
+                          state.setCurrentStep("extras");
+                        }}
+                        onSkip={() => {
+                          // Skip adding accommodation, clear any previously selected rooms
+                          state.setBookingData((prev) => ({ ...prev, rooms: [] }));
+                          state.setCurrentStep("extras");
+                        }}
+                        onBack={state.goBack}
                       />
                     )}
 

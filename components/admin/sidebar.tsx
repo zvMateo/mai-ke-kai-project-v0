@@ -20,6 +20,7 @@ import {
   FileText,
   Package,
   Gift,
+  Tags,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,11 @@ const navItems = [
     title: "Services",
     href: "/admin/services",
     icon: Waves,
+  },
+  {
+    title: "Service Categories",
+    href: "/admin/service-categories",
+    icon: Tags,
   },
   {
     title: "Surf Packages",

@@ -6,38 +6,46 @@ import { cn } from "@/lib/utils";
 
 export function WhatsAppFloatingButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    // Verificar scroll inicial por si ya se hizo scroll antes de recargar
+    if (window.scrollY > 100) setIsVisible(true);
+
     const handleScroll = () => {
-      // Show after scrolling 100px
       setIsVisible(window.scrollY > 100);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const phoneNumber = "+50686069355"; // Update with actual number
+  // Número oficial de la Surf House
+  const phoneNumber = "50686069355";
+  // Mensaje predefinido
+  const welcomeMessage = encodeURIComponent("¡Hola! Me gustaría recibir más información sobre Mai Ke Kai Surf House 🤙");
 
-  if (!isVisible) return null;
+  // Si no está montado o no se ha hecho scroll, no renderizamos nada
+  if (!isMounted || !isVisible) return null;
 
   return (
     <a
-      href={`https://wa.me/${phoneNumber.replace(/[^0-9]/g, "")}`}
+      href={`https://wa.me/${phoneNumber}?text=${welcomeMessage}`}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "fixed bottom-6 right-6 z-50",
+        // Posicionamiento: bottom-32 (128px) para saltar los 100px del widget de Tab
+        "fixed bottom-32 left-6 z-[100000] pointer-events-auto cursor-pointer",
         "bg-green-500 hover:bg-green-600 text-white",
-        "w-14 h-14 rounded-full",
-        "flex items-center justify-center",
-        "shadow-lg hover:shadow-xl",
-        "transition-all duration-300 hover:scale-110",
+        "w-14 h-14 rounded-full flex items-center justify-center",
+        "shadow-2xl hover:shadow-green-500/40",
+        "transition-all duration-300 hover:scale-110 active:scale-95",
         "focus:outline-none focus:ring-4 focus:ring-green-500/50",
       )}
       aria-label="Contact us on WhatsApp"
     >
-      <FaWhatsapp className="w-6 h-6" />
+      <FaWhatsapp className="w-8 h-8" />
       <span className="sr-only">Contact us on WhatsApp</span>
     </a>
   );

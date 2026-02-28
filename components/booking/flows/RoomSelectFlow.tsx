@@ -57,11 +57,11 @@ class ErrorBoundary extends React.Component<
 }
 
 const getActiveSteps = (): StepConfig[] => [
-  { key: "search", label: "Fechas" },
-  { key: "rooms", label: "Habitaciones" },
+  { key: "search", label: "Dates" },
+  { key: "rooms", label: "Rooms" },
   { key: "extras", label: "Extras" },
-  { key: "details", label: "Datos" },
-  { key: "payment", label: "Pago" },
+  { key: "details", label: "Details" },
+  { key: "payment", label: "Payment" },
 ];
 
 export function RoomSelectFlow({
@@ -100,7 +100,7 @@ export function RoomSelectFlow({
                 {/* Progress Header */}
                 <div className="mb-6 sm:mb-8">
                   <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                    Reserva: {roomName}
+                    Book: {roomName}
                   </h1>
                   <div className="flex items-center gap-2 sm:gap-4 mb-4 overflow-x-auto pb-2">
                     {state.activeSteps.map((step, idx) => (

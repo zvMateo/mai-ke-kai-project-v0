@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Clock, Users, ArrowRight } from "lucide-react";
 import type { Service } from "@/types/database";
 import { getTranslations } from "next-intl/server";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 interface SurfSectionProps {
   services: Service[];
@@ -115,9 +116,9 @@ export async function SurfSection({ services }: SurfSectionProps) {
                      <span className="text-xl font-bold text-primary">
                        ${service.price}
                      </span>
-                     <Link href={`/booking?mode=services-only&serviceId=${service.id}`}>
-                       <Button size="sm">{tCommon("bookNow")}</Button>
-                     </Link>
+                      <Link href={TAB_TRAVEL_CHECKOUT_URL}>
+                        <Button size="sm">{tCommon("bookNow")}</Button>
+                      </Link>
                    </div>
                 </CardContent>
               </Card>
@@ -141,7 +142,7 @@ export async function SurfSection({ services }: SurfSectionProps) {
             <p className="text-white/90 max-w-2xl mx-auto mb-6">
               {t("bannerSubtitle")}
             </p>
-            <Link href="/booking">
+            <Link href={TAB_TRAVEL_CHECKOUT_URL}>
               <Button
                 size="lg"
                 variant="secondary"

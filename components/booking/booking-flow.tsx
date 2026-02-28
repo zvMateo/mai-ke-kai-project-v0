@@ -24,6 +24,7 @@ interface BookingFlowProps {
   serviceId?: string;
   roomId?: string;
   roomName?: string;
+  hasSearchParams?: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ export function BookingFlow({
   serviceId,
   roomId,
   roomName,
+  hasSearchParams,
 }: BookingFlowProps) {
   // Route to appropriate flow based on mode
   if (mode === "room-select" && roomId && roomName) {
@@ -86,6 +88,7 @@ export function BookingFlow({
       initialCheckInISO={initialCheckInISO}
       initialCheckOutISO={initialCheckOutISO}
       initialGuests={initialGuests}
+      skipSearch={hasSearchParams}
     />
   );
 }

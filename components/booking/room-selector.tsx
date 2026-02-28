@@ -1,44 +1,130 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Users, Bed, ArrowRight, ArrowLeft, Plus, Minus, Loader2, AlertCircle } from "lucide-react"
-import { format } from "date-fns"
-import type { RoomSelection } from "./booking-flow"
-import { useRoomsWithPricing } from "@/lib/queries"
+import { useState, useMemo } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Users,
+  Bed,
+  ArrowRight,
+  ArrowLeft,
+  Plus,
+  Minus,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
+import { format } from "date-fns";
+import type { RoomSelection } from "./booking-flow";
+import { useRoomsWithPricing } from "@/lib/queries";
+
+// Helper to normalize date for consistent formatting
+const normalizeDateForDisplay = (date: Date): Date => {
+  // Create a new date using local components to avoid timezone issues
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  return new Date(year, month, day, 12, 0, 0); // Use noon to avoid DST issues
+};
 
 interface RoomSelectorProps {
-  checkIn: Date
-  checkOut: Date
-  guests: number
-  selectedRooms: RoomSelection[]
-  onComplete: (rooms: RoomSelection[]) => void
-  onBack: () => void
+  checkIn: Date;
+  checkOut: Date;
+  guests: number;
+  selectedRooms: RoomSelection[];
+  onComplete: (rooms: RoomSelection[]) => void;
+  onBack: () => void;
 }
 
-export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onComplete, onBack }: RoomSelectorProps) {
-  const [selections, setSelections] = useState<RoomSelection[]>(selectedRooms)
+export function RoomSelector({
+  checkIn,
+  checkOut,
+  guests,
+  selectedRooms,
+  onComplete,
+  onBack,
+}: RoomSelectorProps) {
+  const [selections, setSelections] = useState<RoomSelection[]>(selectedRooms);
+  const [hasSyncedPrices, setHasSyncedPrices] = useState(false);
+
+  // Memoize formatted dates to prevent re-calculation issues
+  const formattedDates = useMemo(() => {
+    const checkInYear = checkIn.getUTCFullYear();
+    const checkInMonth = checkIn.getUTCMonth() + 1;
+    const checkInDay = checkIn.getUTCDate();
+
+    const checkOutYear = checkOut.getUTCFullYear();
+    const checkOutMonth = checkOut.getUTCMonth() + 1;
+    const checkOutDay = checkOut.getUTCDate();
+
+    const checkInStr = `${checkInYear}-${String(checkInMonth).padStart(2, "0")}-${String(checkInDay).padStart(2, "0")}`;
+    const checkOutStr = `${checkOutYear}-${String(checkOutMonth).padStart(2, "0")}-${String(checkOutDay).padStart(2, "0")}`;
+
+    // Debug log
+    console.log("RoomSelector memo debug:", {
+      checkInUTC: checkIn.toISOString(),
+      checkInYear,
+      checkInMonth,
+      checkInDay,
+      checkOutUTC: checkOut.toISOString(),
+      checkOutYear,
+      checkOutMonth,
+      checkOutDay,
+      checkInStr,
+      checkOutStr,
+    });
+
+    return { checkInStr, checkOutStr };
+  }, [checkIn, checkOut]);
 
   // Use React Query for data fetching with automatic caching and retries
-  const { data: rooms = [], isLoading, error, refetch } = useRoomsWithPricing(checkIn)
+  const {
+    data: rooms = [],
+    isLoading,
+    error,
+    refetch,
+  } = useRoomsWithPricing(checkIn);
+
+  // Sync pre-selected room prices with real server data once rooms load
+  // This handles the case where a room is pre-selected (e.g. from RoomSelectFlow)
+  // with pricePerNight: 0 before real pricing data is available
+  if (!hasSyncedPrices && rooms.length > 0 && selections.length > 0) {
+    const synced = selections.map((sel) => {
+      const serverRoom = rooms.find((r) => r.id === sel.roomId);
+      if (serverRoom && sel.pricePerNight === 0) {
+        return { ...sel, pricePerNight: serverRoom.price_per_night };
+      }
+      return sel;
+    });
+    const needsUpdate = synced.some(
+      (s, i) => s.pricePerNight !== selections[i].pricePerNight,
+    );
+    if (needsUpdate) {
+      setSelections(synced);
+    }
+    setHasSyncedPrices(true);
+  }
 
   const updateSelection = (roomId: string, quantity: number) => {
-    const room = rooms.find((r) => r.id === roomId)
-    if (!room) return
+    const room = rooms.find((r) => r.id === roomId);
+    if (!room) return;
 
     setSelections((prev) => {
-      const existing = prev.find((s) => s.roomId === roomId)
+      const existing = prev.find((s) => s.roomId === roomId);
       if (quantity === 0) {
-        return prev.filter((s) => s.roomId !== roomId)
+        return prev.filter((s) => s.roomId !== roomId);
       }
       if (existing) {
-        return prev.map((s) => (s.roomId === roomId ? { ...s, quantity } : s))
+        return prev.map((s) =>
+          s.roomId === roomId
+            ? { ...s, quantity, pricePerNight: room.price_per_night }
+            : s,
+        );
       }
 
-      const sellUnit = room.type === "dorm" || room.type === "female" ? "bed" : "room"
+      const sellUnit =
+        room.type === "dorm" || room.type === "female" ? "bed" : "room";
 
       return [
         ...prev,
@@ -49,35 +135,37 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
           pricePerNight: room.price_per_night,
           sellUnit,
         },
-      ]
-    })
-  }
+      ];
+    });
+  };
 
   const getQuantity = (roomId: string) => {
-    return selections.find((s) => s.roomId === roomId)?.quantity || 0
-  }
+    return selections.find((s) => s.roomId === roomId)?.quantity || 0;
+  };
 
-  const totalSelected = selections.reduce((sum, s) => sum + s.quantity, 0)
-  const canContinue = totalSelected >= guests
+  const totalSelected = selections.reduce((sum, s) => sum + s.quantity, 0);
+  const canContinue = totalSelected >= guests;
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-4">
         <AlertCircle className="w-8 h-8 text-destructive" />
-        <p className="text-muted-foreground">Failed to load rooms. Please try again.</p>
+        <p className="text-muted-foreground">
+          Failed to load rooms. Please try again.
+        </p>
         <Button variant="outline" onClick={() => refetch()}>
           Retry
         </Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -85,14 +173,25 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-bold text-foreground">Select Your Room</h2>
+          <h2 className="font-heading text-xl font-bold text-foreground">
+            Select Your Room
+          </h2>
           <p className="text-muted-foreground text-sm">
-            {format(checkIn, "MMM dd")} - {format(checkOut, "MMM dd")} • {guests} guests
+            {checkIn.getUTCFullYear()}-
+            {String(checkIn.getUTCMonth() + 1).padStart(2, "0")}-
+            {String(checkIn.getUTCDate()).padStart(2, "0")} -{" "}
+            {checkOut.getUTCFullYear()}-
+            {String(checkOut.getUTCMonth() + 1).padStart(2, "0")}-
+            {String(checkOut.getUTCDate()).padStart(2, "0")} • {guests} guests
           </p>
         </div>
         <Badge
           variant="outline"
-          className={totalSelected >= guests ? "bg-green-50 text-green-700 border-green-200" : ""}
+          className={
+            totalSelected >= guests
+              ? "bg-green-50 text-green-700 border-green-200"
+              : ""
+          }
         >
           {totalSelected} / {guests} beds
         </Badge>
@@ -101,31 +200,39 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
       {/* Room Cards */}
       <div className="space-y-4">
         {rooms.map((room) => {
-          const quantity = getQuantity(room.id)
-          const isSelected = quantity > 0
-          const sellUnit = room.type === "dorm" || room.type === "female" ? "bed" : "room"
-          const availableCount = room.capacity
-          const amenitiesList = room.amenities || ["Free WiFi", "Hot Shower"]
+          const quantity = getQuantity(room.id);
+          const isSelected = quantity > 0;
+          const sellUnit =
+            room.type === "dorm" || room.type === "female" ? "bed" : "room";
+          const availableCount = room.capacity;
+          const amenitiesList = room.amenities || ["Free WiFi", "Hot Shower"];
 
           return (
             <Card
               key={room.id}
               className={`overflow-hidden transition-all border-2 ${
-                isSelected ? "border-primary shadow-lg" : "border-transparent shadow"
+                isSelected
+                  ? "border-primary shadow-lg"
+                  : "border-transparent shadow"
               }`}
             >
               <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row">
                   {/* Image */}
-                  <div className="relative w-full md:w-48 h-48 md:h-auto flex-shrink-0">
+                  <div className="relative w-full md:w-48 h-48 md:h-auto shrink-0">
                     <Image
-                      src={room.image_url || "/placeholder.svg?height=200&width=200"}
+                      src={
+                        room.image_url ||
+                        "/placeholder.svg?height=200&width=200"
+                      }
                       alt={room.name}
                       fill
                       className="object-cover"
                     />
                     {availableCount <= 2 && (
-                      <Badge className="absolute top-3 left-3 bg-coral text-white">Only {availableCount} left!</Badge>
+                      <Badge className="absolute top-3 left-3 bg-coral text-white">
+                        Only {availableCount} left!
+                      </Badge>
                     )}
                   </div>
 
@@ -134,14 +241,24 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
                     <div className="flex flex-col h-full">
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-heading text-lg font-semibold text-foreground">{room.name}</h3>
+                          <h3 className="font-heading text-lg font-semibold text-foreground">
+                            {room.name}
+                          </h3>
                           <div className="text-right">
-                            <span className="text-xl font-bold text-primary">${room.price_per_night}</span>
-                            <span className="text-muted-foreground text-sm">/{sellUnit}/night</span>
+                            <span className="text-xl font-bold text-primary">
+                              ${room.price_per_night}
+                            </span>
+                            <span className="text-muted-foreground text-sm">
+                              /{sellUnit}/night
+                            </span>
                           </div>
                         </div>
 
-                        {room.description && <p className="text-sm text-muted-foreground mb-3">{room.description}</p>}
+                        {room.description && (
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {room.description}
+                          </p>
+                        )}
 
                         <div className="flex items-center gap-4 mb-3 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
@@ -150,13 +267,19 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
                           </span>
                           <span className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            {sellUnit === "bed" ? "Per bed" : `Up to ${room.capacity}`}
+                            {sellUnit === "bed"
+                              ? "Per bed"
+                              : `Up to ${room.capacity}`}
                           </span>
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                           {amenitiesList.map((amenity) => (
-                            <Badge key={amenity} variant="secondary" className="text-xs">
+                            <Badge
+                              key={amenity}
+                              variant="secondary"
+                              className="text-xs"
+                            >
                               {amenity}
                             </Badge>
                           ))}
@@ -173,17 +296,29 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 bg-transparent"
-                            onClick={() => updateSelection(room.id, Math.max(0, quantity - 1))}
+                            onClick={() =>
+                              updateSelection(
+                                room.id,
+                                Math.max(0, quantity - 1),
+                              )
+                            }
                             disabled={quantity === 0}
                           >
                             <Minus className="w-4 h-4" />
                           </Button>
-                          <span className="w-8 text-center font-semibold">{quantity}</span>
+                          <span className="w-8 text-center font-semibold">
+                            {quantity}
+                          </span>
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 bg-transparent"
-                            onClick={() => updateSelection(room.id, Math.min(availableCount, quantity + 1))}
+                            onClick={() =>
+                              updateSelection(
+                                room.id,
+                                Math.min(availableCount, quantity + 1),
+                              )
+                            }
                             disabled={quantity >= availableCount}
                           >
                             <Plus className="w-4 h-4" />
@@ -195,7 +330,7 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -211,5 +346,5 @@ export function RoomSelector({ checkIn, checkOut, guests, selectedRooms, onCompl
         </Button>
       </div>
     </div>
-  )
+  );
 }

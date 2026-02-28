@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef, useCallback, ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  ReactNode,
+} from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { addDays, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 import { queryKeys } from "@/lib/queries";
 import {
   BookingData,
@@ -13,6 +20,19 @@ import {
   StepConfig,
   SerializedBookingData,
 } from "./types";
+
+// Helper to parse ISO date string to local Date
+const parseISODateToLocal = (dateStr: string): Date => {
+  // Check if the date string has timezone info (Z suffix)
+  if (dateStr.includes("Z")) {
+    // For UTC dates, parse and keep the same calendar date
+    const [year, month, day] = dateStr.split("T")[0].split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+  // For local dates without timezone, parse normally
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
 
 interface BookingFlowBaseProps {
   mode: BookingMode;
@@ -37,7 +57,9 @@ interface BookingFlowBaseProps {
       total: number;
     };
     setCurrentStep: (step: BookingStep) => void;
-    setBookingData: (data: BookingData | ((prev: BookingData) => BookingData)) => void;
+    setBookingData: (
+      data: BookingData | ((prev: BookingData) => BookingData),
+    ) => void;
     goBack: () => void;
     goNext: () => void;
     bookingId: string | null;
@@ -73,55 +95,67 @@ export function BookingFlowBase({
       null;
   }
 
-  const createDefaultBookingData = useCallback((): BookingData => ({
-    checkIn: new Date(initialCheckInISO),
-    checkOut: new Date(initialCheckOutISO),
-    guests: initialGuests,
-    rooms: [],
-    extras: [],
-    serviceDates: {},
-    guestInfo: null,
-    packageData: undefined,
-  }), [initialCheckInISO, initialCheckOutISO, initialGuests]);
+  const createDefaultBookingData = useCallback(
+    (): BookingData => ({
+      checkIn: parseISODateToLocal(initialCheckInISO),
+      checkOut: parseISODateToLocal(initialCheckOutISO),
+      guests: initialGuests,
+      rooms: [],
+      extras: [],
+      serviceDates: {},
+      guestInfo: null,
+      packageData: undefined,
+    }),
+    [initialCheckInISO, initialCheckOutISO, initialGuests],
+  );
 
-  const deserializeDraft = useCallback((draft: BookingDraft | null): BookingData => {
-    if (!draft) {
-      return createDefaultBookingData();
-    }
+  const deserializeDraft = useCallback(
+    (draft: BookingDraft | null): BookingData => {
+      if (!draft) {
+        return createDefaultBookingData();
+      }
 
-    try {
-      return {
-        ...draft.data,
-        checkIn: new Date(draft.data.checkIn),
-        checkOut: new Date(draft.data.checkOut),
-      };
-    } catch (e) {
-      console.error("Error deserializing draft:", e);
-      return createDefaultBookingData();
-    }
-  }, [createDefaultBookingData]);
+      try {
+        return {
+          ...draft.data,
+          checkIn: parseISODateToLocal(draft.data.checkIn),
+          checkOut: parseISODateToLocal(draft.data.checkOut),
+        };
+      } catch (e) {
+        console.error("Error deserializing draft:", e);
+        return createDefaultBookingData();
+      }
+    },
+    [createDefaultBookingData],
+  );
 
   // Determinar paso inicial basado en el modo
   // Si hay draft pero el modo cambió, ignorar el step del draft
   const getInitialStep = (): BookingStep => {
+    const steps = getActiveSteps(mode);
+    const validStepKeys = steps.map((s) => s.key);
+
     if (draftRef.current && draftRef.current.mode === mode) {
-      // Solo usar draft step si el modo es el mismo
-      return draftRef.current.step;
+      // Only use draft step if it exists in the current active steps
+      // (handles case where skipSearch removes "search" but draft has it)
+      if (validStepKeys.includes(draftRef.current.step)) {
+        return draftRef.current.step;
+      }
     }
-    
-    // Paso inicial basado en modo
-    if (mode === "services-only") return "service-select";
-    if (mode === "package") return "package-preview";
-    return "search"; // accommodation, room-select
+
+    // Default to the first step from getActiveSteps
+    return steps[0]?.key || "search";
   };
 
   const [currentStep, setCurrentStep] = useState<BookingStep>(getInitialStep());
   const [bookingData, setBookingData] = useState<BookingData>(() =>
-    deserializeDraft(draftRef.current)
+    deserializeDraft(draftRef.current),
   );
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [packageData, setPackageData] = useState<any>(null);
-  const [loadingPackage, setLoadingPackage] = useState(packageId ? true : false);
+  const [loadingPackage, setLoadingPackage] = useState(
+    packageId ? true : false,
+  );
 
   const hasDraft = Boolean(draftRef.current);
 
@@ -134,6 +168,9 @@ export function BookingFlowBase({
   }, [mode, queryClient]);
 
   // Load package data if in package mode
+  // NOTE: We only load the package metadata and set packageData on bookingData.
+  // Dates and guests are NOT pre-populated here — the user picks them
+  // in the PackageDateSelector step.
   useEffect(() => {
     if (mode !== "package" || !packageId) return;
 
@@ -144,29 +181,16 @@ export function BookingFlowBase({
         const pkg = await response.json();
         setPackageData(pkg);
 
-        // Pre-populate booking data based on package
-        setBookingData((prev) => {
-          const updated = { ...prev };
-
-          if (pkg.nights && pkg.nights > 0) {
-            const now = new Date();
-            updated.checkIn = now;
-            updated.checkOut = addDays(now, pkg.nights);
-          }
-
-          if (pkg.is_for_two) {
-            updated.guests = 2;
-          }
-
-          updated.packageData = {
+        // Only set package metadata on bookingData (no dates, no guests)
+        setBookingData((prev) => ({
+          ...prev,
+          packageData: {
             id: pkg.id,
             name: pkg.name,
             nights: pkg.nights,
             includes: pkg.includes || [],
-          };
-
-          return updated;
-        });
+          },
+        }));
 
         // Set initial step based on package content
         const activeSteps = getActiveSteps("package", pkg);
@@ -188,8 +212,9 @@ export function BookingFlowBase({
   useEffect(() => {
     const currentDraft = draftRef.current;
     const draftModeMatches = currentDraft && currentDraft.mode === mode;
-    
-    if (draftModeMatches || mode === "package" || mode === "room-select") return;
+
+    if (draftModeMatches || mode === "package" || mode === "room-select")
+      return;
 
     const checkIn = searchParams.get("checkIn");
     const checkOut = searchParams.get("checkOut");
@@ -207,18 +232,19 @@ export function BookingFlowBase({
 
   const activeSteps = getActiveSteps(mode, packageData);
   const stepIndex = activeSteps.findIndex((s) => s.key === currentStep);
-  const progress = stepIndex >= 0 ? ((stepIndex + 1) / activeSteps.length) * 100 : 0;
+  const progress =
+    stepIndex >= 0 ? ((stepIndex + 1) / activeSteps.length) * 100 : 0;
 
   const nights = differenceInDays(bookingData.checkOut, bookingData.checkIn);
 
   const summary = useMemo(() => {
     const roomsTotal = bookingData.rooms.reduce(
       (sum, room) => sum + room.pricePerNight * room.quantity * nights,
-      0
+      0,
     );
     const extrasTotal = bookingData.extras.reduce(
       (sum, extra) => sum + extra.price * extra.quantity,
-      0
+      0,
     );
     const subtotal = roomsTotal + extrasTotal;
     const tax = subtotal * 0.13;
@@ -256,9 +282,17 @@ export function BookingFlowBase({
 
     queryClient.setQueryData<BookingDraft>(
       queryKeys.bookingFlow.draft(),
-      serializedDraft
+      serializedDraft,
     );
-  }, [bookingData, currentStep, queryClient, mode, packageId, roomId, roomName]);
+  }, [
+    bookingData,
+    currentStep,
+    queryClient,
+    mode,
+    packageId,
+    roomId,
+    roomName,
+  ]);
 
   // Persist summary
   useEffect(() => {

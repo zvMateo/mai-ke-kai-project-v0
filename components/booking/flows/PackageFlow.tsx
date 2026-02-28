@@ -4,8 +4,8 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { PackagePreview } from "../package-preview";
-import { RoomSelector } from "../room-selector";
+import { PackageDateSelector } from "../package-date-selector";
+import { PackageRoomUpgrade } from "../package-room-upgrade";
 import { ExtrasSelector } from "../extras-selector";
 import { GuestDetails } from "../guest-details";
 import { PaymentStep } from "../payment-step";
@@ -56,18 +56,18 @@ class ErrorBoundary extends React.Component<
 
 const getActiveSteps = (packageData?: any): StepConfig[] => {
   const steps: StepConfig[] = [
-    { key: "package-preview", label: "Resumen" },
+    { key: "package-dates", label: "Dates" },
   ];
 
   // Add rooms step if package includes accommodation (has room_type)
   if (packageData?.room_type) {
-    steps.push({ key: "rooms", label: "Habitaciones" });
+    steps.push({ key: "rooms", label: "Accommodation" });
   }
 
   // Always add extras, details, and payment
   steps.push({ key: "extras", label: "Extras" });
-  steps.push({ key: "details", label: "Datos" });
-  steps.push({ key: "payment", label: "Pago" });
+  steps.push({ key: "details", label: "Details" });
+  steps.push({ key: "payment", label: "Payment" });
 
   return steps;
 };
@@ -77,50 +77,16 @@ export function PackageFlow({
   initialCheckOutISO,
   packageId,
 }: PackageFlowProps) {
-  const [packageData, setPackageData] = React.useState<any>(null);
-  const [loadingPackage, setLoadingPackage] = React.useState(true);
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
-
-  // Load package data on mount
-  React.useEffect(() => {
-    const loadPackage = async () => {
-      try {
-        const response = await fetch(`/api/packages/${packageId}`);
-        if (!response.ok) throw new Error("Failed to fetch package");
-        const pkg = await response.json();
-        setPackageData(pkg);
-      } catch (error) {
-        console.error("Failed to load package:", error);
-      } finally {
-        setLoadingPackage(false);
-      }
-    };
-
-    loadPackage();
-  }, [packageId]);
-
-  if (loadingPackage) {
-    return (
-      <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-foreground">Cargando paquete...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <BookingFlowBase
       mode="package"
       initialCheckInISO={initialCheckInISO}
       initialCheckOutISO={initialCheckOutISO}
-      initialGuests={packageData?.is_for_two ? 2 : 1}
+      initialGuests={1}
       packageId={packageId}
       getActiveSteps={(mode, pkg) => getActiveSteps(pkg)}
-      onPackageLoaded={setPackageData}
     >
       {(state) => {
         if (state.currentStep === "confirmation" && state.bookingId) {
@@ -132,6 +98,19 @@ export function PackageFlow({
           );
         }
 
+        if (state.loadingPackage) {
+          return (
+            <div className="container mx-auto px-4">
+              <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[50vh]">
+                <div className="text-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                  <p className="text-foreground">Loading package...</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <ErrorBoundary>
             <div className="container mx-auto px-4">
@@ -139,7 +118,7 @@ export function PackageFlow({
                 {/* Progress Header */}
                 <div className="mb-6 sm:mb-8">
                   <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                    Reserva: {packageData?.name || "Paquete"}
+                    Book: {state.packageData?.name || "Package"}
                   </h1>
                   <div className="flex items-center gap-2 sm:gap-4 mb-4 overflow-x-auto pb-2">
                     {state.activeSteps.map((step, idx) => (
@@ -180,23 +159,28 @@ export function PackageFlow({
                 {/* Main Content */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                   <div className="lg:col-span-2">
-                    {state.currentStep === "package-preview" && packageData && (
-                      <PackagePreview
-                        packageData={packageData}
-                        onContinue={() => {
-                          const nextIndex =
-                            state.activeSteps.findIndex((s) => s.key === "package-preview") + 1;
-                          const nextStep = state.activeSteps[nextIndex]?.key || "extras";
-                          state.setCurrentStep(nextStep);
+                    {/* Step 1: Package Dates */}
+                    {state.currentStep === "package-dates" && state.packageData && (
+                      <PackageDateSelector
+                        packageData={state.packageData}
+                        onComplete={({ checkIn, checkOut, guests }) => {
+                          state.setBookingData((prev) => ({
+                            ...prev,
+                            checkIn,
+                            checkOut,
+                            guests,
+                          }));
+                          state.goNext();
                         }}
                         onBack={state.goBack}
                       />
                     )}
 
-                    {state.currentStep === "rooms" && packageData?.room_type && (
-                      <RoomSelector
+                    {/* Step 2: Room Upgrade */}
+                    {state.currentStep === "rooms" && state.packageData?.room_type && (
+                      <PackageRoomUpgrade
                         checkIn={state.bookingData.checkIn}
-                        checkOut={state.bookingData.checkOut}
+                        packageData={state.packageData}
                         guests={state.bookingData.guests}
                         selectedRooms={state.bookingData.rooms}
                         onComplete={(rooms: RoomSelection[]) => {
@@ -207,6 +191,7 @@ export function PackageFlow({
                       />
                     )}
 
+                    {/* Step 3: Extras */}
                     {state.currentStep === "extras" && (
                       <ExtrasSelector
                         checkIn={state.bookingData.checkIn}
@@ -221,6 +206,7 @@ export function PackageFlow({
                       />
                     )}
 
+                    {/* Step 4: Guest Details */}
                     {state.currentStep === "details" && (
                       <GuestDetails
                         initialData={state.bookingData.guestInfo}
@@ -232,6 +218,7 @@ export function PackageFlow({
                       />
                     )}
 
+                    {/* Step 5: Payment */}
                     {state.currentStep === "payment" && (
                       <PaymentStep
                         bookingData={state.bookingData}

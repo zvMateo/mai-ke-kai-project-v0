@@ -19,6 +19,7 @@ interface AccommodationFlowProps {
   initialCheckInISO: string;
   initialCheckOutISO: string;
   initialGuests?: number;
+  skipSearch?: boolean;
 }
 
 class ErrorBoundary extends React.Component<
@@ -54,18 +55,23 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-const getActiveSteps = (): StepConfig[] => [
-  { key: "search", label: "Fechas" },
-  { key: "rooms", label: "Habitaciones" },
-  { key: "extras", label: "Extras" },
-  { key: "details", label: "Datos" },
-  { key: "payment", label: "Pago" },
-];
+const getActiveSteps = (skip:boolean): StepConfig[] =>{
+  const steps: StepConfig[] = [];
+  if (!skip) {
+    steps.push({ key: "search", label:"Fechas"});
+  }
+  steps.push({ key: "rooms", label:"Habitaciones"});
+  steps.push({ key: "extras", label:"Extras"});
+  steps.push({ key: "details", label:"Datos"});
+  steps.push({ key: "payment", label:"Pago"});
+  return steps;
+};
 
 export function AccommodationFlow({
   initialCheckInISO,
   initialCheckOutISO,
   initialGuests = 2,
+  skipSearch = false,
 }: AccommodationFlowProps) {
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
   
@@ -75,7 +81,7 @@ export function AccommodationFlow({
       initialCheckInISO={initialCheckInISO}
       initialCheckOutISO={initialCheckOutISO}
       initialGuests={initialGuests}
-      getActiveSteps={(mode) => getActiveSteps()}
+      getActiveSteps={(mode) => getActiveSteps(skipSearch)}
     >
       {(state) => {
         if (state.currentStep === "confirmation" && state.bookingId) {

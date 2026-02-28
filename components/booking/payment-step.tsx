@@ -134,20 +134,22 @@ export function PaymentStep({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Booking Details */}
-          <div className="space-y-3">
-            <h4 className="font-medium text-foreground">Accommodation</h4>
-            {bookingData.rooms.map((room, idx) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {room.roomName} x {room.quantity} ({nights} nights)
-                </span>
-                <span className="font-medium">
-                  ${(room.pricePerNight * room.quantity * nights).toFixed(2)}
-                </span>
-              </div>
-            ))}
-          </div>
+          {/* Booking Details - Accommodation (only if rooms selected) */}
+          {bookingData.rooms.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-medium text-foreground">Accommodation</h4>
+              {bookingData.rooms.map((room, idx) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {room.roomName} x {room.quantity} ({nights} nights)
+                  </span>
+                  <span className="font-medium">
+                    ${(room.pricePerNight * room.quantity * nights).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
 
           {bookingData.extras.length > 0 && (
             <div className="space-y-3">

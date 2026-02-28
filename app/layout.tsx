@@ -50,6 +50,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+import { TabTravelScript } from "@/components/booking/tab-travel-script";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -60,7 +62,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${poppins.variable} ${inter.variable}`}>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <Providers>
           <NextIntlClientProvider messages={messages}>
             {children}
@@ -68,6 +70,7 @@ export default async function RootLayout({
         </Providers>
         <Analytics />
         <WhatsAppFloatingButton />
+        <TabTravelScript />
       </body>
     </html>
   );

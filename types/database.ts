@@ -12,7 +12,23 @@ export type BookingStatus =
   | "no_show";
 export type PaymentStatus = "pending" | "partial" | "paid" | "refunded";
 export type UserRole = "guest" | "volunteer" | "staff" | "admin";
-export type ServiceCategory = "surf" | "tour" | "transport" | "other";
+
+// Service Category - Now stored in database for full customization
+export interface ServiceCategoryEntity {
+  id: string;
+  name: string;           // Display name (e.g., "Surf Lessons")
+  slug: string;           // URL-friendly identifier (e.g., "surf")
+  description: string | null;
+  icon: string | null;    // Lucide icon name (e.g., "waves", "car", "ship")
+  color: string | null;   // Tailwind color class (e.g., "blue", "orange")
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Type alias for compatibility - category field in forms/queries uses slug string
+export type ServiceCategory = string;
 
 // Room/Inventory Types
 export interface Room {
@@ -107,12 +123,16 @@ export interface Service {
   id: string;
   name: string;
   description: string | null;
-  category: ServiceCategory;
+  category: ServiceCategory;          // Category slug (for backwards compatibility)
+  category_id?: string;               // FK to service_categories.id (new)
+  category_data?: ServiceCategoryEntity; // Joined category data (optional)
   price: number;
   duration_hours: number | null;
   max_participants: number | null;
   image_url: string | null;
   is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface BookingService {

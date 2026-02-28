@@ -115,22 +115,24 @@ export async function createBookingWithCheckout(
     throw new Error("Failed to create booking")
   }
 
-  // Insert booking rooms
-  const bookingRoomsData = input.rooms.map((room) => ({
-    booking_id: booking.id,
-    room_id: room.roomId,
-    bed_id: room.bedId || null,
-    price_per_night: room.pricePerNight,
-  }))
+  // Insert booking rooms (skip for service-only bookings with no rooms)
+  if (input.rooms.length > 0) {
+    const bookingRoomsData = input.rooms.map((room) => ({
+      booking_id: booking.id,
+      room_id: room.roomId,
+      bed_id: room.bedId || null,
+      price_per_night: room.pricePerNight,
+    }))
 
-  const { error: roomsError } = await supabase
-    .from("booking_rooms")
-    .insert(bookingRoomsData)
+    const { error: roomsError } = await supabase
+      .from("booking_rooms")
+      .insert(bookingRoomsData)
 
-  if (roomsError) {
-    // Rollback: delete the booking if rooms fail
-    await supabase.from("bookings").delete().eq("id", booking.id)
-    throw new Error("Failed to create booking rooms")
+    if (roomsError) {
+      // Rollback: delete the booking if rooms fail
+      await supabase.from("bookings").delete().eq("id", booking.id)
+      throw new Error("Failed to create booking rooms")
+    }
   }
 
   // Insert booking services
@@ -159,17 +161,19 @@ export async function createBookingWithCheckout(
     terms_accepted: false,
   })
 
-  // Fetch room names for staff alert email
-  const roomNames = await Promise.all(
-    input.rooms.map(async (room) => {
-      const { data } = await supabase
-        .from("rooms")
-        .select("name")
-        .eq("id", room.roomId)
-        .single()
-      return data?.name || "Room"
-    })
-  )
+  // Fetch room names for staff alert email (empty for service-only bookings)
+  const roomNames = input.rooms.length > 0
+    ? await Promise.all(
+        input.rooms.map(async (room) => {
+          const { data } = await supabase
+            .from("rooms")
+            .select("name")
+            .eq("id", room.roomId)
+            .single()
+          return data?.name || "Room"
+        })
+      )
+    : ["Services only"]
 
   // Send staff alert (fire and forget - don't block the response)
   sendStaffBookingAlert({

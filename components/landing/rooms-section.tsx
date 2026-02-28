@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Bed } from "lucide-react";
 import type { Room } from "@/types/database";
 import { getTranslations } from "next-intl/server";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 interface RoomsSectionProps {
   rooms: Room[];
@@ -156,8 +157,8 @@ export async function RoomsSection({
                     </div>
                   )}
 
-                   <Link
-                     href={`/booking?mode=room-select&roomId=${room.id}&roomName=${encodeURIComponent(room.name)}`}
+                  <Link
+                     href={TAB_TRAVEL_CHECKOUT_URL}
                    >
                      <Button className="w-full bg-transparent" variant="outline">
                        {t("bookRoom")}

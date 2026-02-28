@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "@/components/admin/image-upload"
 import { useCreateService, useUpdateService } from "@/lib/queries"
-import type { Service, ServiceCategory } from "@/types/database"
+import { Loader2 } from "lucide-react"
+import type { Service, ServiceCategoryEntity } from "@/types/database"
 
 interface ServiceFormProps {
   service?: Service
@@ -26,10 +27,32 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   const createMutation = useCreateService()
   const updateMutation = useUpdateService()
 
+  // Dynamic categories loaded from database
+  const [categories, setCategories] = useState<ServiceCategoryEntity[]>([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+
+  // Load categories from API
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const response = await fetch("/api/service-categories")
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+        }
+      } catch (error) {
+        console.error("Failed to load categories:", error)
+      } finally {
+        setIsLoadingCategories(false)
+      }
+    }
+    loadCategories()
+  }, [])
+
   const [formData, setFormData] = useState<{
     name: string
     description: string
-    category: ServiceCategory
+    category: string
     price: number
     duration_hours: number | null
     max_participants: number | null
@@ -38,13 +61,20 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
   }>({
     name: service?.name || "",
     description: service?.description || "",
-    category: (service?.category as ServiceCategory) || "surf",
+    category: service?.category || "",
     price: service?.price || 0,
     duration_hours: service?.duration_hours || null,
     max_participants: service?.max_participants || null,
     image_url: service?.image_url || "",
     is_active: service?.is_active ?? true,
   })
+
+  // Set default category when categories load
+  useEffect(() => {
+    if (!formData.category && categories.length > 0) {
+      setFormData(prev => ({ ...prev, category: categories[0].slug }))
+    }
+  }, [categories, formData.category])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,20 +122,40 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value as ServiceCategory })}
-              >
-                <SelectTrigger id="category">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="surf">Surf</SelectItem>
-                  <SelectItem value="tour">Tour</SelectItem>
-                  <SelectItem value="transport">Transport</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              {isLoadingCategories ? (
+                <div className="flex items-center gap-2 h-10 px-3 border rounded-md bg-muted">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm text-muted-foreground">Loading categories...</span>
+                </div>
+              ) : categories.length === 0 ? (
+                <div className="flex items-center justify-between h-10 px-3 border rounded-md bg-muted">
+                  <span className="text-sm text-muted-foreground">No categories available</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push("/admin/service-categories")}
+                  >
+                    Create Category
+                  </Button>
+                </div>
+              ) : (
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.slug}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -199,7 +249,7 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
       )}
 
       <div className="flex gap-4">
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading || isLoadingCategories || categories.length === 0}>
           {isLoading ? "Saving..." : mode === "create" ? "Create Service" : "Update Service"}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading}>
