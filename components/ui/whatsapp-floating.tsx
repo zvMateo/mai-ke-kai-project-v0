@@ -36,7 +36,7 @@ export function WhatsAppFloatingButton() {
       rel="noopener noreferrer"
       className={cn(
         // Posicionamiento: bottom-32 (128px) para saltar los 100px del widget de Tab
-        "fixed bottom-32 left-6 z-[100000] pointer-events-auto cursor-pointer",
+        "fixed bottom-32 right-6 z-100000 pointer-events-auto cursor-pointer",
         "bg-green-500 hover:bg-green-600 text-white",
         "w-14 h-14 rounded-full flex items-center justify-center",
         "shadow-2xl hover:shadow-green-500/40",
