@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix",
     "start": "next start",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next out node_modules/.cache",
+    "clean": "node -e \"const fs=require('fs'); ['.next', 'out', 'node_modules/.cache'].forEach(p => fs.rmSync(p, { recursive: true, force: true }))\"",
     "preview": "next build && next start",
     "export": "next build && next export"
   },
