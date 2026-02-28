@@ -4,7 +4,20 @@ import { BookingConfirmationEmail } from "./templates/booking-confirmation"
 import { CheckInReminderEmail } from "./templates/check-in-reminder"
 import { StaffBookingAlertEmail } from "./templates/staff-booking-alert"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let resendClient: Resend | null = null;
+
+function getResend() {
+  if (!resendClient) {
+    if (!process.env.RESEND_API_KEY) {
+      // Return a dummy client or handle it in the functions
+      // The functions already check for the key, so we can throw or return null
+      return null;
+    }
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
+
 const FROM_EMAIL = process.env.EMAIL_FROM || "Mai Ke Kai <reservas@maikekai.com>"
 
 export async function sendBookingConfirmation(params: {
@@ -23,7 +36,7 @@ export async function sendBookingConfirmation(params: {
   }
 
   try {
-    await resend.emails.send({
+    await getResend()!.emails.send({
       from: FROM_EMAIL,
       to: params.to,
       subject: `Confirmacion de Reserva #${params.bookingId} - Mai Ke Kai Surf House`,
@@ -49,7 +62,7 @@ export async function sendCheckInReminder(params: {
   }
 
   try {
-    await resend.emails.send({
+    await getResend()!.emails.send({
       from: FROM_EMAIL,
       to: params.to,
       subject: `Check-in Online Disponible - Reserva #${params.bookingId}`,
@@ -80,7 +93,7 @@ export async function sendStaffBookingAlert(params: {
   const staffEmail = process.env.STAFF_EMAIL || "staff@maikekai.com"
 
   try {
-    await resend.emails.send({
+    await getResend()!.emails.send({
       from: FROM_EMAIL,
       to: staffEmail,
       subject: `Nueva Reserva #${params.bookingId} - ${params.source}`,
@@ -105,7 +118,7 @@ export async function sendCancellationEmail(params: {
   }
 
   try {
-    await resend.emails.send({
+    await getResend()!.emails.send({
       from: FROM_EMAIL,
       to: params.to,
       subject: `Cancelacion de Reserva #${params.bookingId} - Mai Ke Kai`,

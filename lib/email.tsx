@@ -1,7 +1,16 @@
 import "server-only"
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let resendClient: Resend | null = null;
+
+function getResend() {
+  if (!resendClient) {
+    if (!process.env.RESEND_API_KEY) return null;
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
+
 const FROM_EMAIL = process.env.EMAIL_FROM || "Mai Ke Kai <noreply@maikekaihouse.com>"
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://maikekaihouse.com"
 
@@ -18,7 +27,7 @@ async function sendEmail(data: EmailData): Promise<{ success: boolean; data?: an
   }
 
   try {
-    const result = await resend.emails.send({
+    const result = await getResend()!.emails.send({
       from: FROM_EMAIL,
       to: data.to,
       subject: data.subject,
