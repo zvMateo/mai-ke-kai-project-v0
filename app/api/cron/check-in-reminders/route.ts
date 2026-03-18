@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://maikekai.com";
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "https://maikekaihouse.com").replace(/\/$/, "");
     let sentCount = 0;
     const errors: string[] = [];
 
