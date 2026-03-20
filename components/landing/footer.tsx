@@ -5,42 +5,35 @@ import { getTranslations } from "next-intl/server";
 
 const socialLinks = [
   { icon: Instagram, href: "https://www.instagram.com/maikekaisurf/", label: "Instagram" },
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+  { icon: Facebook, href: "https://www.facebook.com/maikekaisurf", label: "Facebook" },
+  { icon: Youtube, href: "https://www.youtube.com/@maikekaisurf", label: "YouTube" },
 ];
 
 export async function Footer() {
   const t = await getTranslations("footer");
   const tNav = await getTranslations("nav");
-  const tSurf = await getTranslations("surf");
 
   const footerLinks = {
     explore: [
       { label: tNav("rooms"), href: "#rooms" },
-      { label: tSurf("lessons"), href: "#lessons" },
-      { label: tSurf("tours"), href: "#tours" },
-      // { label: t("gallery"), href: "#gallery" },
-      { label: t("packages"), href: "#packages" },
+      { label: tNav("packages"), href: "#packages" },
+      { label: tNav("surf"), href: "#surf" },
+      { label: "Blog", href: "/blog" },
     ],
     info: [
       { label: tNav("about"), href: "/about" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Blog", href: "/blog" },
-      { label: tNav("contact"), href: "/contact" },
-    ],
-    legal: [
-      { label: t("privacy"), href: "/privacy" },
-      { label: t("terms"), href: "/terms" },
-      { label: t("cancellation"), href: "/cancellation" },
+      { label: tNav("location"), href: "#location" },
+      { label: tNav("contact"), href: "#location" },
     ],
   };
+
   return (
     <footer className="bg-deep text-white">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
-          <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-6">
               <Image
                 src="/images/mai-20ke-20kai-20-20isotipo-20-20original.png"
@@ -67,6 +60,7 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                  aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
                 </a>
@@ -81,7 +75,7 @@ export async function Footer() {
             </h4>
             <ul className="space-y-3">
               {footerLinks.explore.map((link) => (
-                <li key={link.href}>
+                <li key={link.href + link.label}>
                   <Link
                     href={link.href}
                     className="text-white/70 hover:text-white transition-colors"
@@ -100,7 +94,7 @@ export async function Footer() {
             </h4>
             <ul className="space-y-3">
               {footerLinks.info.map((link) => (
-                <li key={link.href}>
+                <li key={link.href + link.label}>
                   <Link
                     href={link.href}
                     className="text-white/70 hover:text-white transition-colors"
@@ -112,25 +106,26 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Contact Info */}
           <div>
             <h4 className="font-heading font-semibold mb-4">
-              {t("newsletter")}
+              {t("contactUs")}
             </h4>
-            <p className="text-white/70 text-sm mb-4">{t("newsletterText")}</p>
-            <form className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-full sm:flex-1 px-3 py-2 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-primary"
-              />
-              <button
-                type="submit"
-                className="w-full sm:w-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg transition-colors flex items-center justify-center"
-              >
-                <Mail className="w-5 h-5" />
-              </button>
-            </form>
+            <ul className="space-y-3 text-white/70 text-sm">
+              <li>Playa Tamarindo, Guanacaste</li>
+              <li>Costa Rica, 50309</li>
+              <li>
+                <a href="tel:+50686069355" className="hover:text-white transition-colors">
+                  +506 8606 9355
+                </a>
+              </li>
+              <li>
+                <a href="mailto:maikekaisurfhouse@gmail.com" className="hover:text-white transition-colors flex items-center gap-2">
+                  <Mail className="w-4 h-4 shrink-0" />
+                  maikekaisurfhouse@gmail.com
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -142,15 +137,9 @@ export async function Footer() {
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
           <div className="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-6 text-xs sm:text-sm">
-            {footerLinks.legal.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-white/50 hover:text-white transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            <span className="text-white/50">{t("privacy")}</span>
+            <span className="text-white/50">{t("terms")}</span>
+            <span className="text-white/50">{t("cancellation")}</span>
           </div>
         </div>
       </div>
