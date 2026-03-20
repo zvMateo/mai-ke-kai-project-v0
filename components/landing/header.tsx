@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { UserMenu } from "@/components/user-menu";
 import { UserInitializer } from "@/components/user-initializer";
 import { useUserStore } from "@/lib/stores/user-store";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 // Dynamically import LanguageSwitcher to avoid hydration issues
 const LanguageSwitcher = dynamic(
@@ -35,20 +36,19 @@ interface HeaderProps {
 }
 
 export function Header({ locale = "en" }: HeaderProps) {
-  // Initialize with undefined to avoid hydration mismatch
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isClient, setIsClient] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("nav");
-  const tCommon = useTranslations("common");
+
   const { isAuthenticated } = useUserStore();
 
   const navLinks = [
     { href: "#rooms", label: t("rooms") },
     { href: "#surf", label: t("surf") },
-    { href: "#testimonials", label: "Reviews" },
-    { href: "#location", label: t("location") },
     { href: "#packages", label: t("packages") },
+    { href: "/blog", label: "Blog" },
+    { href: "/about", label: t("about") },
   ];
 
   useEffect(() => {
@@ -57,7 +57,6 @@ export function Header({ locale = "en" }: HeaderProps) {
       setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
-    // Set initial scroll position
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -144,16 +143,22 @@ export function Header({ locale = "en" }: HeaderProps) {
                 </Button>
               </Link>
             )}
+            {/* Book Now CTA — always visible, uses <a> so widget.js intercepts the click */}
             {isClient && (
-              <Link href="#location">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-2 border-white text-white hover:bg-white/10 bg-transparent hover:text-white transition-all duration-300"
-                >
-                  {t("contact")}
-                </Button>
-              </Link>
+              <Button
+                asChild
+                size="sm"
+                className={cn(
+                  "hidden sm:inline-flex font-semibold transition-all duration-300",
+                  isScrolled
+                    ? "bg-primary text-white hover:bg-primary/90"
+                    : "bg-white text-primary hover:bg-white/90",
+                )}
+              >
+                <a href={TAB_TRAVEL_CHECKOUT_URL}>
+                  {t("bookNow")}
+                </a>
+              </Button>
             )}
 
             {/* Mobile Menu */}
@@ -173,7 +178,7 @@ export function Header({ locale = "en" }: HeaderProps) {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[280px] sm:w-80 bg-background"
+                className="w-70 sm:w-80 bg-background"
               >
                 <div className="flex flex-col gap-6 mt-8">
                   {navLinks.map((link) => (
@@ -201,13 +206,14 @@ export function Header({ locale = "en" }: HeaderProps) {
                       </Button>
                     </Link>
                   )}
-                  {isClient && (
-                    <Link href="#location" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full border-2 border-white text-white hover:bg-white/10 bg-transparent hover:text-white transition-all duration-300">
-                        {t("contact")}
-                      </Button>
-                    </Link>
-                  )}
+                  <Button asChild className="w-full">
+                    <a
+                      href={TAB_TRAVEL_CHECKOUT_URL}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {t("bookNow")}
+                    </a>
+                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
