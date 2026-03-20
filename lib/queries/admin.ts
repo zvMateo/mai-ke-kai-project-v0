@@ -22,6 +22,7 @@ import {
   fetchChannelData,
   fetchDashboardGrowth,
   fetchTotalBeds,
+  fetchBlogPosts,
   type BasicFilter,
   type RoomWithDetails,
   type AdminDashboardStats,
@@ -254,6 +255,18 @@ export function useTotalBeds() {
       return fetchTotalBeds(supabase);
     },
     staleTime: 1000 * 60 * 30,
+  });
+}
+
+export function useBlogPostsList(filters?: { isPublished?: boolean }) {
+  return useQuery({
+    queryKey: queryKeys.blogPosts.list(filters),
+    queryFn: async () => {
+      const supabase = createClient();
+      return fetchBlogPosts(supabase, filters);
+    },
+    staleTime: 1000 * 60 * 5,
+    placeholderData: (previousData) => previousData,
   });
 }
 

@@ -10,8 +10,6 @@
  */
 
 // Prefetch utilities for Server Components
-export { prefetchBookingFlow } from "./booking-prefetch";
-
 export {
   prefetchRoomsList,
   prefetchServicesList,
@@ -19,6 +17,7 @@ export {
   prefetchRewardsList,
   prefetchUsersList,
   prefetchAdminDashboard,
+  prefetchBlogPostsList,
 } from "./admin-prefetch";
 
 export {

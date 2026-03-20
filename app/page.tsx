@@ -3,6 +3,7 @@ import { RoomsSection } from "@/components/landing/rooms-section";
 import { SurfSection } from "@/components/landing/surf-section";
 import { PackagesSection } from "@/components/landing/packages-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { BlogSection } from "@/components/landing/blog-section";
 import { LocationSection } from "@/components/landing/location-section";
 import { LandingHeader } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -68,6 +69,7 @@ export default async function HomePage() {
         <PackagesSection packages={packages} />
         <SurfSection services={services} />
         <TestimonialsSection />
+        <BlogSection />
         <LocationSection />
       </main>
       <Footer />

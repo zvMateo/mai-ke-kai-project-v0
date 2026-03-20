@@ -8,6 +8,7 @@ import {
   fetchRewards,
   fetchUsers,
   fetchAdminDashboardStats,
+  fetchBlogPosts,
   type BasicFilter,
 } from "./admin-fetchers";
 import { queryKeys } from "./keys";
@@ -81,5 +82,17 @@ export async function prefetchAdminDashboard(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: queryKeys.admin.dashboard(),
     queryFn: () => fetchAdminDashboardStats(supabase),
+  });
+}
+
+export async function prefetchBlogPostsList(
+  queryClient: QueryClient,
+  filters?: { isPublished?: boolean }
+) {
+  const supabase = await createClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.blogPosts.list(filters),
+    queryFn: () => fetchBlogPosts(supabase, filters),
   });
 }

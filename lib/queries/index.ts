@@ -20,6 +20,7 @@ export {
   useRewardsList,
   useUsersList,
   useAdminDashboardStats,
+  useBlogPostsList,
 } from "./admin";
 export type { RoomWithDetails, AdminDashboardStats } from "./admin";
 
@@ -65,3 +66,9 @@ export { useCreateUser, useUpdateUser, useDeleteUser } from "./mutations/users";
 export { useUploadImage } from "./mutations/images";
 
 export { useCreateBooking, useCreatePayment } from "./mutations/payments";
+
+export {
+  useCreateBlogPost,
+  useUpdateBlogPost,
+  useDeleteBlogPost,
+} from "./mutations/blog";

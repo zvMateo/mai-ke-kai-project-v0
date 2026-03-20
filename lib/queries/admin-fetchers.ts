@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Room, Service, SurfPackage, User, Booking } from "@/types/database";
+import type { Room, Service, SurfPackage, User, Booking, BlogPost } from "@/types/database";
 import type { LoyaltyReward } from "@/lib/actions/loyalty";
 import {
   subDays,
@@ -804,4 +804,25 @@ export async function fetchTotalBeds(supabase: SupabaseClient): Promise<number> 
     .eq("is_active", true);
 
   return data?.length || 0;
+}
+
+export async function fetchBlogPosts(
+  supabase: SupabaseClient,
+  filters?: { isPublished?: boolean }
+): Promise<BlogPost[]> {
+  let query = supabase
+    .from("blog_posts")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (typeof filters?.isPublished === "boolean") {
+    query = query.eq("is_published", filters.isPublished);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    throw new Error("Failed to fetch blog posts: " + error.message);
+  }
+
+  return (data ?? []) as BlogPost[];
 }

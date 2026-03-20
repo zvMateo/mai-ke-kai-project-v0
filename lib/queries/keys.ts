@@ -108,6 +108,18 @@ export const queryKeys = {
     logs: () => [...queryKeys.webhooks.all, "logs"] as const,
   },
 
+  // Blog Posts
+  blogPosts: {
+    all: ["blog-posts"] as const,
+    lists: () => [...queryKeys.blogPosts.all, "list"] as const,
+    list: (filters?: { isPublished?: boolean }) =>
+      [...queryKeys.blogPosts.lists(), filters] as const,
+    details: () => [...queryKeys.blogPosts.all, "detail"] as const,
+    detail: (id: string) => [...queryKeys.blogPosts.details(), id] as const,
+    bySlug: (slug: string) =>
+      [...queryKeys.blogPosts.all, "slug", slug] as const,
+  },
+
   // Admin dashboards / analytics
   admin: {
     all: ["admin"] as const,
