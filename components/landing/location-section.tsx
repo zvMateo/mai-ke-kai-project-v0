@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock, Plane } from "lucide-react";
 import { GoogleMapEmbed } from "@/components/ui/google-map-embed";
 import { getTranslations } from "next-intl/server";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 export async function LocationSection() {
   const t = await getTranslations("location");
@@ -103,7 +103,11 @@ export async function LocationSection() {
 
             {/* CTA */}
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <Link href="/booking">
+              <Link
+                href={TAB_TRAVEL_CHECKOUT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Button size="lg" className="w-full sm:w-auto">
                   {t("bookYourStay")}
                 </Button>

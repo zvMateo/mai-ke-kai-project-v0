@@ -57,7 +57,7 @@ export async function SurfSection({ services }: SurfSectionProps) {
               {t("sectionSubtitle")}
             </p>
           </div>
-          <Link href="/services">
+          <Link href={TAB_TRAVEL_CHECKOUT_URL} target="_blank" rel="noopener noreferrer">
             <Button variant="outline" className="group bg-transparent">
               {t("viewAll")}
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -66,7 +66,7 @@ export async function SurfSection({ services }: SurfSectionProps) {
         </div>
 
         {/* Services Grid - Now using real data from Supabase */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {services.map((service) => {
             const imageUrl =
               service.image_url ||
@@ -116,7 +116,7 @@ export async function SurfSection({ services }: SurfSectionProps) {
                      <span className="text-xl font-bold text-primary">
                        ${service.price}
                      </span>
-                      <Link href={TAB_TRAVEL_CHECKOUT_URL}>
+                      <Link href={TAB_TRAVEL_CHECKOUT_URL} target="_blank" rel="noopener noreferrer">
                         <Button size="sm">{tCommon("bookNow")}</Button>
                       </Link>
                    </div>
@@ -142,7 +142,7 @@ export async function SurfSection({ services }: SurfSectionProps) {
             <p className="text-white/90 max-w-2xl mx-auto mb-6">
               {t("bannerSubtitle")}
             </p>
-            <Link href={TAB_TRAVEL_CHECKOUT_URL}>
+            <Link href={TAB_TRAVEL_CHECKOUT_URL} target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 variant="secondary"

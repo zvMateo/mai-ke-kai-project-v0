@@ -28,7 +28,6 @@ export async function RoomsSection({
   roomTypes,
 }: RoomsSectionProps) {
   const t = await getTranslations("rooms");
-  const tCommon = await getTranslations("common");
 
   // Mapping for room type badges (translated)
   const roomBadges: Record<string, string | null> = {
@@ -101,19 +100,10 @@ export async function RoomsSection({
                   )}
                 </div>
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="mb-3">
                     <h3 className="font-heading text-xl font-bold text-foreground">
                       {room.name}
                     </h3>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-primary">
-                        {tCommon("from")} $
-                        {room.sell_unit === "bed" ? "25" : "85"}
-                      </span>
-                      <span className="text-muted-foreground text-sm">
-                        /{room.sell_unit}/{tCommon("perNight")}
-                      </span>
-                    </div>
                   </div>
 
                   <p className="text-muted-foreground mb-4 line-clamp-2">
@@ -158,12 +148,14 @@ export async function RoomsSection({
                   )}
 
                   <Link
-                     href={TAB_TRAVEL_CHECKOUT_URL}
-                   >
-                     <Button className="w-full bg-transparent" variant="outline">
-                       {t("bookRoom")}
-                     </Button>
-                   </Link>
+                    href={TAB_TRAVEL_CHECKOUT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full">
+                      {t("bookRoom")}
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );
