@@ -1,14 +1,12 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { BookingWidget } from "@/components/booking/booking-widget";
-import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { HeroBookNowButton } from "@/components/landing/hero-book-now-button";
+import { Button } from "@/components/ui/button";
+import { Star, Globe, Waves } from "lucide-react";
 
 export async function HeroSection() {
   const t = await getTranslations("hero");
-  const tCommon = await getTranslations("common");
-  const tSurf = await getTranslations("surf");
 
   return (
     <section className="relative min-h-screen flex items-center justify-center">
@@ -21,45 +19,73 @@ export async function HeroSection() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-linear-gradient-to-b from-deep/70 via-deep/40 to-deep/80" style={{ background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3))" }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)",
+          }}
+        />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto text-center text-white mb-12">
-          {/* Logo removed as per requirements */}
-
+      <div className="relative z-10 container mx-auto px-4 pt-28 pb-20">
+        <div className="max-w-4xl mx-auto text-center text-white">
+          {/* Heading */}
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-balance leading-tight">
             {t("title")}
             <br />
             <span className="text-seafoam">{t("titleHighlight")}</span>
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-white/85 max-w-2xl mx-auto mb-8 sm:mb-10 px-2 text-pretty leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-white/85 max-w-2xl mx-auto mb-8 px-2 text-pretty leading-relaxed">
             {t("subtitle")}
           </p>
 
-          {/* CTA Button - Simplified for single focus */}
-          <div className="flex justify-center mb-10 sm:mb-16 px-4">
-            <Link href="#surf" className="w-full sm:w-auto">
+          {/* Social proof stats */}
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-10">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span className="text-white/90 text-sm font-medium">
+                4.9/5 · 213 {t("reviews")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+              <Globe className="w-4 h-4 text-seafoam" />
+              <span className="text-white/90 text-sm font-medium">
+                30+ {t("nationalities")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+              <Waves className="w-4 h-4 text-seafoam" />
+              <span className="text-white/90 text-sm font-medium">
+                500+ {t("surfCamps")}
+              </span>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <HeroBookNowButton label={t("bookYourStay")} />
+            <Link href="#packages">
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto bg-transparent border-2 border-white text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 focus:ring-4 focus:ring-white/50"
-                aria-label={tSurf("lessons")}
+                className="border-2 border-white/60 text-white hover:bg-white/10 bg-transparent hover:text-white px-8 py-6 rounded-full text-base font-semibold transition-all duration-300"
               >
-                Surf Lessons
+                {t("exploreSurfCamps")}
               </Button>
             </Link>
           </div>
         </div>
-
-        {/* Booking Widget */}
-        <div className="max-w-4xl mx-auto">
-          <BookingWidget />
-        </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50">
+        <span className="text-xs tracking-wider uppercase">{t("scrollDown")}</span>
+        <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5">
+          <div className="w-1 h-2 bg-white/50 rounded-full animate-bounce" />
+        </div>
+      </div>
     </section>
   );
 }
