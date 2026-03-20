@@ -1,6 +1,6 @@
 {
   "common": {
-    "bookNow": "Contactez-nous",
+    "bookNow": "Jetzt Buchen",
     "learnMore": "Mehr Erfahren",
     "viewAll": "Alle Anzeigen",
     "loading": "Laden...",
@@ -35,13 +35,18 @@
     "myAccount": "Mein Konto",
     "logout": "Abmelden",
     "admin": "Admin",
-    "packages": "Pakete"
+    "packages": "Pakete",
+    "bookNow": "Buchen"
   },
   "hero": {
     "title": "Ihr Surf-Paradies",
     "titleHighlight": "in Costa Rica",
     "subtitle": "Surfhotel mit Weltklasse-Wellen, professionellen Kursen und authentischer Pura Vida Atmosphäre",
-    "cta": "Verfügbarkeit Prüfen",
+    "bookYourStay": "Jetzt Buchen",
+    "exploreSurfCamps": "Surf Camps Entdecken",
+    "reviews": "Bewertungen",
+    "nationalities": "Nationalitäten",
+    "surfCamps": "Surf Camps",
     "scrollDown": "Scrollen zum Entdecken"
   },
   "rooms": {
@@ -197,5 +202,61 @@
     "perPerson": "pro Person",
     "perCouple": "pro Paar",
     "noPackages": "Unsere Pakete werden vorbereitet. Schauen Sie bald wieder vorbei!"
+  },
+  "testimonials": {
+    "title": "Bewertungen",
+    "sectionTitle": "Was Unsere Gäste Sagen",
+    "sectionSubtitle": "Schließen Sie sich Hunderten zufriedener Reisender an, die ihr Surf-Paradies bei uns gefunden haben.",
+    "reviews": "Bewertungen",
+    "viewAllGoogle": "Alle Bewertungen auf Google ansehen"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Geschichten, Tipps und Neuigkeiten aus dem Surfhaus",
+    "readMore": "Mehr Lesen",
+    "by": "Von",
+    "noPostsYet": "Noch keine Beiträge. Schau bald wieder vorbei!",
+    "latestPosts": "Neueste Blog-Beiträge",
+    "viewAll": "Alle Beiträge Anzeigen"
+  },
+  "about": {
+    "title": "Über Uns",
+    "heroTagline": "Unsere Geschichte",
+    "heroTitle": "Über Mai Ke Kai",
+    "heroSubtitle": "Ein Surfhaus aus Leidenschaft geboren, auf Gemeinschaft gebaut und im Pura Vida Geist Costa Ricas verwurzelt.",
+    "storyTagline": "Wie alles begann",
+    "storyTitle": "Aus Liebe zum Surfen Entstanden",
+    "storyP1": "Mai Ke Kai — Hawaiianisch für 'Vom Meer' — begann als Traum einer Gruppe von Surfern, die sich in Tamarindos perfekte Wellen, warmherzige Menschen und den ansteckenden Pura Vida Geist verliebten.",
+    "storyP2": "Was als einfaches Gästehaus begann, wuchs zu einem vollständigen Surf-Camp-Erlebnis. Wir wollten einen Ort, an dem Reisende als Fremde ankommen und als lebenslange Freunde abreisen — verbunden durch ihre gemeinsame Liebe zum Meer.",
+    "storyP3": "Heute begrüßen wir jedes Jahr Gäste aus über 30 Ländern. Ob Surf-Anfänger oder erfahrener Wellenreiter, Mai Ke Kai ist Ihre Basis für das ultimative Costa Rica Surf-Erlebnis.",
+    "valuesTagline": "Wofür wir stehen",
+    "valuesTitle": "Warum Mai Ke Kai Wählen",
+    "valuesSubtitle": "Mehr als nur ein Schlafplatz — wir sind ein Kompletterlebnis für Surfer, Abenteurer und Kulturentdecker.",
+    "valueSurf": "Professioneller Surfunterricht",
+    "valueSurfDesc": "Unsere zertifizierten Instruktoren haben jahrelange Erfahrung im Unterricht für Anfänger und Fortgeschrittene in Tamarindos konstanten Wellen.",
+    "valueCommunity": "Lebendige Gemeinschaft",
+    "valueCommunityDesc": "Reisende aus über 30 Ländern treffen sich hier. Teilen Sie Mahlzeiten, Geschichten und Sessions mit Surf-Enthusiasten aus aller Welt.",
+    "valueLocation": "Beste Lage",
+    "valueLocationDesc": "Nur wenige Schritte vom Tamarindo Beach entfernt, einem der berühmtesten Surfspots Zentralamerikas.",
+    "valueQuality": "Qualität & Komfort",
+    "valueQualityDesc": "Saubere Zimmer, tolle Betten, schnelles WLAN und alle Annehmlichkeiten, die Sie zwischen den Sessions brauchen.",
+    "valueSustainable": "Nachhaltiges Denken",
+    "valueSustainableDesc": "Uns liegt der Ozean und das lokale Ökosystem am Herzen. Wir fördern rifffreundlichen Sonnenschutz und verantwortungsvollen Tourismus.",
+    "valueWaves": "Wellen das Ganze Jahr",
+    "valueWavesDesc": "Tamarindo bietet Surf in jeder Saison. Ob Trocken- oder Regenzeit, die Wellen warten auf Sie.",
+    "teamTagline": "Die Menschen dahinter",
+    "teamTitle": "Das Team",
+    "teamFoundersName": "Die Gründer",
+    "teamFoundersRole": "Mitgründer",
+    "teamFoundersBio": "Surfer aus Leidenschaft, die ihre Liebe zum Pura Vida in einen Ort zum Übernachten, Surfen und Verbinden verwandelt haben.",
+    "teamSurfName": "Surf-Instruktoren",
+    "teamSurfRole": "Surf-Team",
+    "teamSurfBio": "Lokale und internationale zertifizierte Coaches mit Leidenschaft für sicheres Wellenreiten.",
+    "teamHostName": "Host-Team",
+    "teamHostRole": "Rezeption & Betrieb",
+    "teamHostBio": "Freundliche Gesichter, bereit zu helfen — von Surf-Tipps bis zu lokalen Restaurantempfehlungen.",
+    "ctaTitle": "Bereit für Deine Erste Welle?",
+    "ctaSubtitle": "Buchen Sie Ihren Platz bei Mai Ke Kai und erleben Sie die Magie von Tamarindo — Wellen, Gemeinschaft und Pura Vida.",
+    "ctaButton": "Jetzt Buchen"
   }
 }

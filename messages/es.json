@@ -35,14 +35,18 @@
     "myAccount": "Mi Cuenta",
     "logout": "Cerrar Sesión",
     "admin": "Admin",
-    "packages": "Paquetes"
+    "packages": "Paquetes",
+    "bookNow": "Reservar"
   },
   "hero": {
     "title": "TU SURF HOUSE EN",
     "titleHighlight": "TAMARINDO COSTA RICA",
     "subtitle": "Vive la experiencia de surf definitiva en Costa Rica",
-    "cta": "Contáctanos",
-    "ariaLabel": "Contáctanos para reservas",
+    "bookYourStay": "Reserva Tu Estadía",
+    "exploreSurfCamps": "Explorar Surf Camps",
+    "reviews": "reseñas",
+    "nationalities": "nacionalidades",
+    "surfCamps": "surf camps",
     "scrollDown": "Desplázate para explorar"
   },
   "rooms": {
@@ -198,5 +202,61 @@
     "perPerson": "por persona",
     "perCouple": "por pareja",
     "noPackages": "Nuestros paquetes están siendo preparados. ¡Vuelve pronto!"
+  },
+  "testimonials": {
+    "title": "Testimonios",
+    "sectionTitle": "Lo Que Dicen Nuestros Huéspedes",
+    "sectionSubtitle": "Únete a cientos de viajeros felices que encontraron su paraíso del surf con nosotros.",
+    "reviews": "reseñas",
+    "viewAllGoogle": "Ver todas las reseñas en Google"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Historias, consejos y noticias de la casa de surf",
+    "readMore": "Leer Más",
+    "by": "Por",
+    "noPostsYet": "Aún no hay artículos. ¡Vuelve pronto!",
+    "latestPosts": "Lo Último del Blog",
+    "viewAll": "Ver Todos los Artículos"
+  },
+  "about": {
+    "title": "Quiénes Somos",
+    "heroTagline": "Nuestra Historia",
+    "heroTitle": "Sobre Mai Ke Kai",
+    "heroSubtitle": "Un surf house nacido de la pasión, construido sobre comunidad y arraigado en el espíritu pura vida de Costa Rica.",
+    "storyTagline": "Cómo comenzó todo",
+    "storyTitle": "Nacidos del Amor por el Surf",
+    "storyP1": "Mai Ke Kai — que en hawaiano significa \"Del Mar\" — comenzó como un sueño compartido por un grupo de surfers que se enamoraron de las olas perfectas de Tamarindo, su gente cálida y el espíritu contagioso del pura vida.",
+    "storyP2": "Lo que empezó como una simple casa de huéspedes creció hasta convertirse en una experiencia completa de surf camp. Queríamos un lugar donde los viajeros pudieran llegar como extraños y marcharse como amigos de por vida — conectados por su amor compartido por el océano.",
+    "storyP3": "Hoy recibimos huéspedes de más de 30 países cada año. Ya seas un surfer principiante o un cazador de olas experimentado, Mai Ke Kai es tu base para la experiencia definitiva de surf en Costa Rica.",
+    "valuesTagline": "Lo que representamos",
+    "valuesTitle": "Por Qué Elegir Mai Ke Kai",
+    "valuesSubtitle": "Más que un lugar para dormir — somos una experiencia completa diseñada para surfers, aventureros y buscadores de cultura.",
+    "valueSurf": "Instrucción Experta de Surf",
+    "valueSurfDesc": "Nuestros instructores certificados tienen años de experiencia enseñando a principiantes y avanzando a surfers intermedios en las olas consistentes de Tamarindo.",
+    "valueCommunity": "Comunidad Vibrante",
+    "valueCommunityDesc": "Viajeros de más de 30 países se encuentran aquí. Comparte comidas, historias y sesiones con otros entusiastas del surf de todo el mundo.",
+    "valueLocation": "Ubicación Privilegiada",
+    "valueLocationDesc": "A pasos de Playa Tamarindo, uno de los breaks de surf más famosos de Centroamérica. Despierta y rema en minutos.",
+    "valueQuality": "Calidad y Confort",
+    "valueQualityDesc": "Habitaciones limpias, buenas camas, Wi-Fi rápido y todas las comodidades que necesitas para recuperarte entre sesiones.",
+    "valueSustainable": "Mentalidad Sostenible",
+    "valueSustainableDesc": "Nos importa el océano y el ecosistema local. Promovemos protector solar seguro para arrecifes, turismo responsable y limpiezas costeras.",
+    "valueWaves": "Olas Todo el Año",
+    "valueWavesDesc": "Tamarindo ofrece surf en todas las estaciones. Ya vengas en temporada seca o lluviosa, las olas te esperan.",
+    "teamTagline": "Las personas detrás",
+    "teamTitle": "Conoce al Equipo",
+    "teamFoundersName": "Los Fundadores",
+    "teamFoundersRole": "Co-Fundadores",
+    "teamFoundersBio": "Surfers de corazón, convirtieron su amor por el pura vida en un lugar para que el mundo se hospede, surfee y conecte.",
+    "teamSurfName": "Instructores de Surf",
+    "teamSurfRole": "Equipo de Surf",
+    "teamSurfBio": "Coaches certificados locales e internacionales apasionados por compartir la alegría de surfear de manera segura.",
+    "teamHostName": "Equipo Anfitrión",
+    "teamHostRole": "Recepción y Operaciones",
+    "teamHostBio": "Caras amigables listas para ayudar con cualquier cosa, desde tips de surf hasta recomendaciones de restaurantes locales.",
+    "ctaTitle": "¿Listo para Atrapar tu Primera Ola?",
+    "ctaSubtitle": "Reserva tu lugar en Mai Ke Kai y vive la magia de Tamarindo — olas, comunidad y pura vida.",
+    "ctaButton": "Reserva tu Estadía"
   }
 }
