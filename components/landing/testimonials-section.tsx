@@ -10,43 +10,44 @@ import {
   Quote,
   ExternalLink,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-// Google Reviews - Mai Ke Kai Surf House
+// Google Reviews - Mai Ke Kai Surf House (kept in original language for authenticity)
 const testimonials = [
   {
     id: 1,
     name: "Yessi Mujica",
     rating: 5,
-    text: "El mejor hostel para hospedarte en Tamarindo!!Los dueños unos genios, las chicas que trabajan muy amables y atentas, Paula la mejor 🤭Cerca de todo, facil acceso a pie.Muy comodo los espacios, me sentí como en casa.Super agradecida y sin dudas volveré aquí 🤙🏼✨",
-    date: "Diciembre 2025",
+    text: "El mejor hostel para hospedarte en Tamarindo!! Los dueños unos genios, las chicas que trabajan muy amables y atentas. Cerca de todo, fácil acceso a pie. Muy cómodo los espacios, me sentí como en casa. Sin dudas volveré aquí.",
+    date: "Dec 2025",
   },
   {
     id: 2,
     name: "David Elmore",
     rating: 5,
-    text: "Esta casa y laso personas que viven y trabajan ahi son increibles. Los jefes son perfecto. Atmosfera estaba muy bien.  Cerca de la playa. Yo puedo caminar en diez minutos. Y esta cerca del Mercado de local y mas el Banco esta a Cinco minutos  de la casa.",
-    date: "Diciembre 2025",
+    text: "Esta casa y las personas que viven y trabajan ahí son increíbles. Los jefes son perfecto. Atmósfera estaba muy bien. Cerca de la playa, puedo caminar en diez minutos. Y está cerca del Mercado local y el Banco.",
+    date: "Dec 2025",
   },
   {
     id: 3,
     name: "Sara Garutti",
     rating: 5,
-    text: "Excelente lugar para hospedarse! Está cerca de todo y los dueños y toda persona que trabaja en el hostel son super amables. El lugar está siempre limpio y lleno de buenas vibras 🙌",
-    date: "Diciembre 2025",
+    text: "Excelente lugar para hospedarse! Está cerca de todo y los dueños y toda persona que trabaja en el hostel son super amables. El lugar está siempre limpio y lleno de buenas vibras.",
+    date: "Dec 2025",
   },
   {
     id: 4,
     name: "Dani Vidrio",
     rating: 5,
-    text: "Es un hostal increible, está super cerca de todo, son muy amables y el lugar es demasiado lindo y cómodo para estar ahíTomé una clase de surf con ellos y me encantó, el maestro es muy bueno y me divertí muchisimo",
-    date: "Diciembre 2025",
+    text: "Es un hostal increíble, está super cerca de todo, son muy amables y el lugar es demasiado lindo y cómodo. Tomé una clase de surf con ellos y me encantó, el maestro es muy bueno y me divertí muchísimo.",
+    date: "Dec 2025",
   },
   {
     id: 5,
     name: "Serena Pasetti",
     rating: 5,
-    text: "El lugar es increíble, tiene un jardín precioso y una terraza super amplia dónde se puede hacer ejercicio.Queda cerca del centro y de la playa.Ofrecen clases de surf y excursiones buenísimas, que están a mejor precio que en otros lados. Sin dudas, volvería a hospedarme ahí en mi vuelta a tamarindo!",
-    date: "Agosto 2025",
+    text: "El lugar es increíble, tiene un jardín precioso y una terraza super amplia. Queda cerca del centro y de la playa. Ofrecen clases de surf y excursiones buenísimas, a mejor precio que en otros lados. Sin dudas, volvería!",
+    date: "Aug 2025",
   },
 ];
 
@@ -80,6 +81,7 @@ function getAvatarColor(name: string): string {
 export function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const t = useTranslations("testimonials");
 
   const next = useCallback(
     () => setCurrent((prev) => (prev + 1) % testimonials.length),
@@ -103,14 +105,13 @@ export function TestimonialsSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
-            Testimonios
+            {t("title")}
           </span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
-            Lo Que Dicen Nuestros Huéspedes
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mt-2 mb-4">
+            {t("sectionTitle")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
-            Únete a cientos de viajeros felices que encontraron su paraíso del
-            surf con nosotros.
+            {t("sectionSubtitle")}
           </p>
 
           {/* Google Rating Badge */}
@@ -156,7 +157,7 @@ export function TestimonialsSection() {
               </div>
             </div>
             <span className="text-sm text-muted-foreground">
-              {GOOGLE_REVIEWS_COUNT} reseñas
+              {GOOGLE_REVIEWS_COUNT} {t("reviews")}
             </span>
             <ExternalLink className="w-4 h-4 text-muted-foreground" />
           </a>
@@ -168,11 +169,11 @@ export function TestimonialsSection() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/5 to-seafoam/10">
+          <Card className="border-0 shadow-xl bg-linear-to-br from-primary/5 to-seafoam/10">
             <CardContent className="p-8 md:p-12">
               <Quote className="w-12 h-12 text-primary/20 mb-6" />
               <p className="text-xl md:text-2xl text-foreground leading-relaxed mb-8">
-                "{testimonials[current].text}"
+                &ldquo;{testimonials[current].text}&rdquo;
               </p>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -236,47 +237,11 @@ export function TestimonialsSection() {
           </div>
         </div>
 
-        {/* Mini Reviews Grid */}
-        {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.slice(0, 3).map((review) => (
-            <Card key={review.id} className="border-0 shadow-md hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-3">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-amber-400 text-amber-400"
-                    />
-                  ))}
-                </div>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                  "{review.text}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm ${getAvatarColor(review.name)}`}
-                  >
-                    {getInitials(review.name)}
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">
-                      {review.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {review.date}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>*/}
-
         {/* CTA to Google */}
         <div className="text-center mt-10">
-          <Button variant="outline" asChild className="gap-2">
+          <Button variant="outline" asChild className="gap-2 bg-transparent">
             <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-              Ver todas las reseñas en Google
+              {t("viewAllGoogle")}
               <ExternalLink className="w-4 h-4" />
             </a>
           </Button>
