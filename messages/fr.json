@@ -193,6 +193,9 @@
     "title": "Forfaits Surf",
     "sectionTitle": "Expériences Surf Tout Compris",
     "sectionSubtitle": "Forfaits combinant hébergement, cours de surf et aventures inoubliables",
+    "heroBadge": "Économisez jusqu'à 30%",
+    "heroTitle": "Forfaits Surf + Hébergement",
+    "heroSubtitle": "Combinez votre séjour avec des cours de surf et des visites pour une expérience complète au Costa Rica. Prix spéciaux et avantages exclusifs.",
     "viewAll": "Voir Tous les Forfaits",
     "popular": "Populaire",
     "forTwo": "Pour Deux",
@@ -201,7 +204,23 @@
     "more": "plus",
     "perPerson": "par personne",
     "perCouple": "par couple",
-    "noPackages": "Nos forfaits sont en préparation. Revenez bientôt!"
+    "noPackages": "Nos forfaits sont en préparation. Revenez bientôt!",
+    "bookAccommodation": "Réserver l'hébergement",
+    "bookPackage": "Réserver le forfait",
+    "bookA La Carte": "Réserver à la carte",
+    "whyPackagesTitle": "Pourquoi choisir un forfait?",
+    "whySavingsTitle": "Économies garanties",
+    "whySavingsDesc": "Jusqu'à 30% de réduction par rapport à une réservation séparée",
+    "whyOrganizedTitle": "Tout organisé",
+    "whyOrganizedDesc": "Ne vous inquiétez de rien, nous coordonnons tout",
+    "whyCompleteTitle": "Expérience complète",
+    "whyCompleteDesc": "Surf, aventure et détente en un seul endroit",
+    "savings": "Vous économisez ${amount}",
+    "ctaTitle": "Vous préférez créer votre propre expérience?",
+    "ctaSubtitle": "Réservez votre hébergement et ajoutez des activités à votre goût",
+    "dorm": "Partagée",
+    "private": "Privée",
+    "family": "Familiale"
   },
   "testimonials": {
     "title": "Témoignages",
@@ -258,5 +277,11 @@
     "ctaTitle": "Prêt à Attraper Votre Première Vague?",
     "ctaSubtitle": "Réservez votre place à Mai Ke Kai et vivez la magie de Tamarindo — vagues, communauté et pura vida.",
     "ctaButton": "Réservez Votre Séjour"
+  },
+  "unauthorized": {
+    "title": "Accès Refusé",
+    "description": "Vous n'avez pas la permission d'accéder à cette page. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter un administrateur.",
+    "backHome": "Retour à l'Accueil",
+    "login": "Se Connecter"
   }
 }

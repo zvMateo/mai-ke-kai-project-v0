@@ -193,6 +193,9 @@
     "title": "Surf Packages",
     "sectionTitle": "All-Inclusive Surf Experiences",
     "sectionSubtitle": "Curated packages combining accommodation, surf lessons, and unforgettable adventures",
+    "heroBadge": "Save up to 30%",
+    "heroTitle": "Surf + Stay Packages",
+    "heroSubtitle": "Combine your stay with surf lessons and tours for a complete Costa Rica experience. Special pricing and exclusive benefits.",
     "viewAll": "View All Packages",
     "popular": "Popular",
     "forTwo": "For Two",
@@ -201,7 +204,23 @@
     "more": "more",
     "perPerson": "per person",
     "perCouple": "per couple",
-    "noPackages": "Our packages are being prepared. Check back soon!"
+    "noPackages": "Our packages are being prepared. Check back soon!",
+    "bookAccommodation": "Book Accommodation",
+    "bookPackage": "Book Package",
+    "bookA La Carte": "Book A La Carte",
+    "whyPackagesTitle": "Why choose a package?",
+    "whySavingsTitle": "Guaranteed Savings",
+    "whySavingsDesc": "Up to 30% discount compared to booking separately",
+    "whyOrganizedTitle": "Everything Organized",
+    "whyOrganizedDesc": "Don't worry about anything, we coordinate everything for you",
+    "whyCompleteTitle": "Complete Experience",
+    "whyCompleteDesc": "Surf, adventure and relaxation all in one place",
+    "savings": "You save ${amount}",
+    "ctaTitle": "Prefer to build your own experience?",
+    "ctaSubtitle": "Book your accommodation and add activities to your liking",
+    "dorm": "Shared",
+    "private": "Private",
+    "family": "Family"
   },
   "testimonials": {
     "title": "Testimonials",
@@ -258,5 +277,11 @@
     "ctaTitle": "Ready to Catch Your First Wave?",
     "ctaSubtitle": "Book your spot at Mai Ke Kai and experience the magic of Tamarindo — waves, community, and pura vida.",
     "ctaButton": "Book Your Stay"
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "description": "You don't have permission to access this page. If you believe this is an error, please contact an administrator.",
+    "backHome": "Back to Home",
+    "login": "Sign In"
   }
 }

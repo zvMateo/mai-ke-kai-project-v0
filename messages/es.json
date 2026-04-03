@@ -193,6 +193,9 @@
     "title": "Paquetes de Surf",
     "sectionTitle": "Experiencias de Surf Todo Incluido",
     "sectionSubtitle": "Paquetes diseñados combinando alojamiento, clases de surf y aventuras inolvidables",
+    "heroBadge": "Ahorrá hasta 30%",
+    "heroTitle": "Paquetes Surf + Alojamiento",
+    "heroSubtitle": "Combiná tu estadía con clases de surf y tours para una experiencia completa en Costa Rica. Precios especiales y beneficios exclusivos.",
     "viewAll": "Ver Todos los Paquetes",
     "popular": "Popular",
     "forTwo": "Para Dos",
@@ -201,7 +204,23 @@
     "more": "más",
     "perPerson": "por persona",
     "perCouple": "por pareja",
-    "noPackages": "Nuestros paquetes están siendo preparados. ¡Vuelve pronto!"
+    "noPackages": "Nuestros paquetes están siendo preparados. ¡Vuelve pronto!",
+    "bookAccommodation": "Reservar Alojamiento",
+    "bookPackage": "Reservar Paquete",
+    "bookA La Carte": "Reservar a la Carta",
+    "whyPackagesTitle": "¿Por qué elegir un paquete?",
+    "whySavingsTitle": "Ahorro Garantizado",
+    "whySavingsDesc": "Hasta 30% de descuento comparado con reservar por separado",
+    "whyOrganizedTitle": "Todo Organizado",
+    "whyOrganizedDesc": "No te preocupes por nada, nosotros coordinamos todo",
+    "whyCompleteTitle": "Experiencia Completa",
+    "whyCompleteDesc": "Surf, aventura y relax en un solo lugar",
+    "savings": "Ahorrás ${amount}",
+    "ctaTitle": "¿Preferís armar tu propia experiencia?",
+    "ctaSubtitle": "Reservá tu alojamiento y agregá actividades a tu gusto",
+    "dorm": "Compartida",
+    "private": "Privada",
+    "family": "Familiar"
   },
   "testimonials": {
     "title": "Testimonios",
@@ -258,5 +277,11 @@
     "ctaTitle": "¿Listo para Atrapar tu Primera Ola?",
     "ctaSubtitle": "Reserva tu lugar en Mai Ke Kai y vive la magia de Tamarindo — olas, comunidad y pura vida.",
     "ctaButton": "Reserva tu Estadía"
+  },
+  "unauthorized": {
+    "title": "Acceso Denegado",
+    "description": "No tienes permisos para acceder a esta página. Si crees que esto es un error, contacta al administrador.",
+    "backHome": "Volver al Inicio",
+    "login": "Iniciar Sesión"
   }
 }

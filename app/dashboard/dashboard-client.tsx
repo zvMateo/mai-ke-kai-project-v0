@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { useUserProfile, useUpcomingBookings } from "@/lib/queries";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 interface DashboardClientProps {
   userId: string;
@@ -45,7 +46,11 @@ export function DashboardClient({ userId, userEmail }: DashboardClientProps) {
           <p className="text-muted-foreground mb-4">
             ¿Listo para tu próxima aventura de surf?
           </p>
-          <Link href="/booking">
+          <Link
+            href={TAB_TRAVEL_CHECKOUT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button>Reservar Ahora</Button>
           </Link>
         </div>
@@ -137,7 +142,11 @@ export function DashboardClient({ userId, userEmail }: DashboardClientProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <Link href="/booking">
+          <Link
+            href={TAB_TRAVEL_CHECKOUT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">

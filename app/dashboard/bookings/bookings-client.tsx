@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 const statusLabels: Record<string, string> = {
   pending_payment: "Pendiente de Pago",
@@ -71,7 +72,11 @@ export function UserBookingsClient({ userId }: UserBookingsClientProps) {
                 Historial completo de tus estancias
               </p>
             </div>
-            <Link href="/booking">
+            <Link
+              href={TAB_TRAVEL_CHECKOUT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button>Nueva Reserva</Button>
             </Link>
           </div>
@@ -98,7 +103,11 @@ export function UserBookingsClient({ userId }: UserBookingsClientProps) {
                 <p className="text-muted-foreground mb-4">
                   Aún no has hecho ninguna reserva con nosotros
                 </p>
-                <Link href="/booking">
+                <Link
+                  href={TAB_TRAVEL_CHECKOUT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button>Reservar Ahora</Button>
                 </Link>
               </CardContent>

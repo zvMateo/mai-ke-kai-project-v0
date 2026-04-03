@@ -193,6 +193,9 @@
     "title": "Surf-Pakete",
     "sectionTitle": "All-Inclusive Surf-Erlebnisse",
     "sectionSubtitle": "Kuratierte Pakete mit Unterkunft, Surfkursen und unvergesslichen Abenteuern",
+    "heroBadge": "Sparen Sie bis zu 30%",
+    "heroTitle": "Surf + Unterkunft Pakete",
+    "heroSubtitle": "Kombinieren Sie Ihren Aufenthalt mit Surfkursen und Touren für ein vollständiges Costa Rica-Erlebnis. Sonderpreise und exklusive Vorteile.",
     "viewAll": "Alle Pakete Anzeigen",
     "popular": "Beliebt",
     "forTwo": "Für Zwei",
@@ -201,7 +204,23 @@
     "more": "mehr",
     "perPerson": "pro Person",
     "perCouple": "pro Paar",
-    "noPackages": "Unsere Pakete werden vorbereitet. Schauen Sie bald wieder vorbei!"
+    "noPackages": "Unsere Pakete werden vorbereitet. Schauen Sie bald wieder vorbei!",
+    "bookAccommodation": "Unterkunft buchen",
+    "bookPackage": "Paket buchen",
+    "bookA La Carte": "À la carte buchen",
+    "whyPackagesTitle": "Warum ein Paket wählen?",
+    "whySavingsTitle": "Garantierte Einsparungen",
+    "whySavingsDesc": "Bis zu 30% Rabatt im Vergleich zur separaten Buchung",
+    "whyOrganizedTitle": "Alles organisiert",
+    "whyOrganizedDesc": "Machen Sie sich keine Sorgen, wir koordinieren alles",
+    "whyCompleteTitle": "Komplettes Erlebnis",
+    "whyCompleteDesc": "Surfen, Abenteuer und Entspannung an einem Ort",
+    "savings": "Sie sparen ${amount}",
+    "ctaTitle": "Möchten Sie Ihr eigenes Erlebnis gestalten?",
+    "ctaSubtitle": "Buchen Sie Ihre Unterkunft und fügen Sie Aktivitäten nach Ihrem Geschmack hinzu",
+    "dorm": "Gemeinschaft",
+    "private": "Privat",
+    "family": "Familie"
   },
   "testimonials": {
     "title": "Bewertungen",
@@ -258,5 +277,11 @@
     "ctaTitle": "Bereit für Deine Erste Welle?",
     "ctaSubtitle": "Buchen Sie Ihren Platz bei Mai Ke Kai und erleben Sie die Magie von Tamarindo — Wellen, Gemeinschaft und Pura Vida.",
     "ctaButton": "Jetzt Buchen"
+  },
+  "unauthorized": {
+    "title": "Zugriff Verweigert",
+    "description": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen. Wenn Sie glauben, dass dies ein Fehler ist, wenden Sie sich bitte an einen Administrator.",
+    "backHome": "Zurück zur Startseite",
+    "login": "Anmelden"
   }
 }

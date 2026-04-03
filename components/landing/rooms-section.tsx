@@ -50,7 +50,11 @@ export async function RoomsSection({
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
             {t("noRooms")}
           </p>
-          <Link href="/booking">
+          <Link
+            href={TAB_TRAVEL_CHECKOUT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button>{t("checkAvailability")}</Button>
           </Link>
         </div>

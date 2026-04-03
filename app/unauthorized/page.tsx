@@ -2,8 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShieldX } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function UnauthorizedPage() {
+export default async function UnauthorizedPage() {
+  const t = await getTranslations("unauthorized");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <div className="text-center max-w-md">
@@ -22,22 +25,21 @@ export default function UnauthorizedPage() {
         </div>
 
         <h1 className="font-heading text-3xl font-bold text-foreground mb-4">
-          Acceso Denegado
+          {t("title")}
         </h1>
 
         <p className="text-muted-foreground mb-8">
-          No tienes permisos para acceder a esta página. Si crees que esto es un
-          error, contacta al administrador.
+          {t("description")}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/">
             <Button variant="outline" className="w-full sm:w-auto">
-              Volver al Inicio
+              {t("backHome")}
             </Button>
           </Link>
           <Link href="/auth/login">
-            <Button className="w-full sm:w-auto">Iniciar Sesión</Button>
+            <Button className="w-full sm:w-auto">{t("login")}</Button>
           </Link>
         </div>
       </div>
