@@ -6,6 +6,7 @@ import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 
 interface HeroBookNowButtonProps {
   label: string;
+  className?: string;
 }
 
 /**
@@ -15,12 +16,12 @@ interface HeroBookNowButtonProps {
  * of navigating away. Falls back to normal navigation if widget
  * hasn't loaded.
  */
-export function HeroBookNowButton({ label }: HeroBookNowButtonProps) {
+export function HeroBookNowButton({ label, className }: HeroBookNowButtonProps) {
   return (
     <Button
       asChild
       size="lg"
-      className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-7 rounded-full shadow-2xl hover:scale-105 active:scale-100 transition-all duration-300 font-bold"
+      className={`bg-primary hover:bg-primary/90 text-white text-lg px-12 py-7 rounded-full shadow-2xl hover:scale-105 active:scale-100 transition-all duration-300 font-bold ${className || ""}`}
     >
       <a href={TAB_TRAVEL_CHECKOUT_URL}>
         {label}
