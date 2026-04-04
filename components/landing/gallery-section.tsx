@@ -4,7 +4,14 @@ import { GalleryGridClient } from "@/components/landing/gallery-grid-client";
 
 export async function GallerySection() {
   const t = await getTranslations("gallery");
-  const items = await getGalleryItems(undefined, 24);
+
+  // Completely fail-safe: if gallery_items table doesn't exist yet, show empty state
+  let items: Awaited<ReturnType<typeof getGalleryItems>> = [];
+  try {
+    items = await getGalleryItems(undefined, 24);
+  } catch (err) {
+    console.error("GallerySection: gallery_items table may not exist yet. Run SQL migration.", err);
+  }
 
   return (
     <section id="gallery" className="py-24 bg-muted/20">

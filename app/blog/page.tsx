@@ -31,9 +31,16 @@ function readingTime(html: string | null): number {
 }
 
 export default async function BlogPage() {
-  const posts = await getPublishedBlogPosts();
   const locale = await getLocale();
   const t = await getTranslations("blog");
+
+  // Wrap in try/catch — Supabase errors should never produce a 500
+  let posts: Awaited<ReturnType<typeof getPublishedBlogPosts>> = [];
+  try {
+    posts = await getPublishedBlogPosts();
+  } catch (err) {
+    console.error("BlogPage: failed to load posts", err);
+  }
 
   const [featured, ...rest] = posts;
 
@@ -97,9 +104,9 @@ export default async function BlogPage() {
 
                   {/* Content */}
                   <div className="flex flex-col justify-center p-8 md:p-10 bg-card">
-                    {featured.tags.length > 0 && (
+                    {(featured.tags ?? []).length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {featured.tags.slice(0, 3).map((tag) => (
+                        {(featured.tags ?? []).slice(0, 3).map((tag) => (
                           <Badge key={tag} variant="secondary" className="text-xs">
                             {tag}
                           </Badge>
@@ -187,9 +194,9 @@ export default async function BlogPage() {
 
                       {/* Body */}
                       <div className="p-5">
-                        {post.tags.length > 0 && (
+                        {(post.tags ?? []).length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mb-3">
-                            {post.tags.slice(0, 2).map((tag) => (
+                            {(post.tags ?? []).slice(0, 2).map((tag) => (
                               <Badge key={tag} variant="secondary" className="text-xs">
                                 {tag}
                               </Badge>

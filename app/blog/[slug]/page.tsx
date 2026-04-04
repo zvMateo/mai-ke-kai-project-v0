@@ -46,10 +46,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const [post, allPosts] = await Promise.all([
-    getBlogPostBySlug(slug),
-    getPublishedBlogPosts(4),
-  ]);
+  let post = null;
+  let allPosts: Awaited<ReturnType<typeof getPublishedBlogPosts>> = [];
+  try {
+    [post, allPosts] = await Promise.all([
+      getBlogPostBySlug(slug),
+      getPublishedBlogPosts(4),
+    ]);
+  } catch (err) {
+    console.error("BlogPostPage: failed to load data", err);
+    // post remains null → notFound() will be called below
+  }
   const locale = await getLocale();
   const t = await getTranslations("blog");
 
@@ -101,9 +108,9 @@ export default async function BlogPostPage({ params }: Props) {
             </Button>
 
             {/* Tags */}
-            {post.tags.length > 0 && (
+            {(post.tags ?? []).length > 0 && (
               <div className="flex flex-wrap gap-2 mb-5">
-                {post.tags.map((tag) => (
+                {(post.tags ?? []).map((tag) => (
                   <Badge key={tag} variant="secondary">
                     {tag}
                   </Badge>

@@ -14,24 +14,29 @@ export async function getGalleryItems(
   category?: GalleryCategory,
   limit?: number
 ): Promise<GalleryItem[]> {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  let query = supabase
-    .from("gallery_items")
-    .select("*")
-    .eq("is_active", true)
-    .order("is_featured", { ascending: false })
-    .order("display_order", { ascending: true });
+    let query = supabase
+      .from("gallery_items")
+      .select("*")
+      .eq("is_active", true)
+      .order("is_featured", { ascending: false })
+      .order("display_order", { ascending: true });
 
-  if (category) query = query.eq("category", category);
-  if (limit) query = query.limit(limit);
+    if (category) query = query.eq("category", category);
+    if (limit) query = query.limit(limit);
 
-  const { data, error } = await query;
-  if (error) {
-    console.error("Error fetching gallery items:", error);
+    const { data, error } = await query;
+    if (error) {
+      // Table may not exist yet — fail silently
+      return [];
+    }
+    return (data as GalleryItem[]) ?? [];
+  } catch {
+    // Network error or Edge Runtime incompatibility — never crash the page
     return [];
   }
-  return (data as GalleryItem[]) ?? [];
 }
 
 /** Get featured items only */

@@ -52,9 +52,9 @@ export function BlogCard({ post }: BlogCardProps) {
       {/* Content */}
       <div className="p-5 flex flex-col gap-3">
         {/* Tags */}
-        {post.tags.length > 0 && (
+        {(post.tags ?? []).length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {post.tags.slice(0, 2).map((tag) => (
+            {(post.tags ?? []).slice(0, 2).map((tag) => (
               <Badge key={tag} variant="secondary" className="text-xs">
                 {tag}
               </Badge>
