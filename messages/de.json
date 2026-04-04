@@ -280,12 +280,26 @@
   },
   "blog": {
     "title": "Blog",
+    "heroTagline": "Geschichten & Tipps",
+    "heroTitle": "Das Surfhaus-Journal",
+    "heroSubtitle": "Surf-Guides, Reisetipps, lokales Wissen und Pura-Vida-Geschichten aus Tamarindo, Costa Rica.",
     "subtitle": "Geschichten, Tipps und Neuigkeiten aus dem Surfhaus",
     "readMore": "Mehr Lesen",
     "by": "Von",
     "noPostsYet": "Noch keine Beiträge. Schau bald wieder vorbei!",
     "latestPosts": "Neueste Blog-Beiträge",
-    "viewAll": "Alle Beiträge Anzeigen"
+    "viewAll": "Alle Beiträge Anzeigen",
+    "featuredPost": "Empfohlene Geschichte",
+    "allPosts": "Alle Geschichten",
+    "minRead": "Min. Lesezeit",
+    "backToBlog": "Zurück zum Blog",
+    "sharePost": "Diese Geschichte teilen",
+    "copyLink": "Link kopieren",
+    "copied": "Kopiert!",
+    "relatedPosts": "Mehr Geschichten",
+    "ctaBannerTitle": "Bereit, in Tamarindo zu surfen?",
+    "ctaBannerSubtitle": "Buchen Sie Ihr Surf-Paket und erleben Sie alles, worüber wir schreiben.",
+    "ctaBannerButton": "Ein Paket Buchen"
   },
   "about": {
     "title": "Über Uns",

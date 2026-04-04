@@ -280,12 +280,26 @@
   },
   "blog": {
     "title": "Blog",
+    "heroTagline": "Historias y Consejos",
+    "heroTitle": "El Diario de la Casa de Surf",
+    "heroSubtitle": "Guías de surf, consejos de viaje, conocimiento local e historias de pura vida desde Tamarindo, Costa Rica.",
     "subtitle": "Historias, consejos y noticias de la casa de surf",
     "readMore": "Leer Más",
     "by": "Por",
     "noPostsYet": "Aún no hay artículos. ¡Vuelve pronto!",
     "latestPosts": "Lo Último del Blog",
-    "viewAll": "Ver Todos los Artículos"
+    "viewAll": "Ver Todos los Artículos",
+    "featuredPost": "Historia Destacada",
+    "allPosts": "Todas las Historias",
+    "minRead": "min de lectura",
+    "backToBlog": "Volver al Blog",
+    "sharePost": "Compartir esta historia",
+    "copyLink": "Copiar enlace",
+    "copied": "¡Copiado!",
+    "relatedPosts": "Más Historias",
+    "ctaBannerTitle": "¿Listo para surfear en Tamarindo?",
+    "ctaBannerSubtitle": "Reservá tu paquete de surf y viví todo lo que escribimos.",
+    "ctaBannerButton": "Reservar un Paquete"
   },
   "about": {
     "title": "Quiénes Somos",

@@ -6,14 +6,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+// Textarea removed — replaced by TiptapEditor
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { TiptapEditor } from "@/components/admin/tiptap-editor";
 import { useCreateBlogPost, useUpdateBlogPost } from "@/lib/queries";
-import { Loader2, Eye, EyeOff, X } from "lucide-react";
-import { sanitizeHtml } from "@/lib/utils";
+import { Loader2, X } from "lucide-react";
+// sanitizeHtml no longer needed in form (Tiptap outputs clean HTML)
 import type { BlogPost } from "@/types/database";
 
 interface BlogPostFormProps {
@@ -39,7 +40,6 @@ export function BlogPostForm({ post, mode }: BlogPostFormProps) {
   const updateMutation = useUpdateBlogPost();
 
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
-  const [showPreview, setShowPreview] = useState(false);
   const [tagInput, setTagInput] = useState("");
 
   const [formData, setFormData] = useState({
@@ -179,55 +179,23 @@ export function BlogPostForm({ post, mode }: BlogPostFormProps) {
         </CardContent>
       </Card>
 
-      {/* Body Content */}
+      {/* Body Content — Tiptap WYSIWYG Editor */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Body Content</CardTitle>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowPreview((v) => !v)}
-              className="gap-2"
-            >
-              {showPreview ? (
-                <>
-                  <EyeOff className="w-4 h-4" />
-                  Hide Preview
-                </>
-              ) : (
-                <>
-                  <Eye className="w-4 h-4" />
-                  Preview
-                </>
-              )}
-            </Button>
-          </div>
+          <CardTitle>Body Content</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Use the toolbar above to format your post — no HTML knowledge needed.
+          </p>
         </CardHeader>
         <CardContent>
-          {showPreview ? (
-            <div
-              className="min-h-[400px] p-4 border rounded-lg prose-content [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_img]:rounded-lg [&_img]:max-w-full"
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(formData.content || "<p><em>Nothing to preview yet.</em></p>"),
-              }}
-            />
-          ) : (
-            <Textarea
-              id="content"
-              value={formData.content}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, content: e.target.value }))
-              }
-              placeholder={`Write your post in HTML format. Examples:\n<h2>Section Title</h2>\n<p>Your paragraph text here.</p>\n<ul>\n  <li>List item</li>\n</ul>`}
-              rows={20}
-              className="font-mono text-sm"
-            />
-          )}
-          <p className="text-xs text-muted-foreground mt-2">
-            Content is written in HTML. Use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;img&gt;, etc.
-          </p>
+          <TiptapEditor
+            value={formData.content}
+            onChange={(html) =>
+              setFormData((prev) => ({ ...prev, content: html }))
+            }
+            placeholder="Start writing your post here... Use H2 for section titles, bold for emphasis, and the image button to insert photos."
+            minHeight={480}
+          />
         </CardContent>
       </Card>
 

@@ -280,12 +280,26 @@
   },
   "blog": {
     "title": "Blog",
+    "heroTagline": "Stories & Tips",
+    "heroTitle": "The Surf House Journal",
+    "heroSubtitle": "Surf guides, travel tips, local knowledge and pura vida stories from Tamarindo, Costa Rica.",
     "subtitle": "Stories, tips and news from the surf house",
     "readMore": "Read More",
     "by": "By",
     "noPostsYet": "No posts yet. Check back soon!",
     "latestPosts": "Latest from the Blog",
-    "viewAll": "View All Posts"
+    "viewAll": "View All Posts",
+    "featuredPost": "Featured Story",
+    "allPosts": "All Stories",
+    "minRead": "min read",
+    "backToBlog": "Back to Blog",
+    "sharePost": "Share this story",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "relatedPosts": "More Stories",
+    "ctaBannerTitle": "Ready to surf Tamarindo?",
+    "ctaBannerSubtitle": "Book your surf package and live everything we write about.",
+    "ctaBannerButton": "Book a Package"
   },
   "about": {
     "title": "About Us",
