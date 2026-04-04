@@ -22,6 +22,7 @@ import {
   Gift,
   Tags,
   Newspaper,
+  Images,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,11 @@ const navItems = [
     title: "Date Blocks",
     href: "/admin/blocks",
     icon: Lock,
+  },
+  {
+    title: "Gallery",
+    href: "/admin/gallery",
+    icon: Images,
   },
   {
     title: "Blog",

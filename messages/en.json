@@ -261,6 +261,23 @@
     "reviews": "reviews",
     "viewAllGoogle": "View all reviews on Google"
   },
+  "gallery": {
+    "tagline": "Our World",
+    "title": "Life at Mai Ke Kai",
+    "subtitle": "Waves, community, sunsets, and pure pura vida. Every photo tells a story.",
+    "viewAll": "View All",
+    "all": "All",
+    "surf": "Surf",
+    "rooms": "Rooms",
+    "community": "Community",
+    "nature": "Nature",
+    "lifestyle": "Lifestyle",
+    "noPhotos": "Gallery coming soon — follow us on Instagram for now!",
+    "openPhoto": "Open photo",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "closeGallery": "Close gallery"
+  },
   "blog": {
     "title": "Blog",
     "subtitle": "Stories, tips and news from the surf house",

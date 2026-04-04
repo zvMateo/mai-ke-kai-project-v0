@@ -261,6 +261,23 @@
     "reviews": "reseñas",
     "viewAllGoogle": "Ver todas las reseñas en Google"
   },
+  "gallery": {
+    "tagline": "Nuestro Mundo",
+    "title": "La Vida en Mai Ke Kai",
+    "subtitle": "Olas, comunidad, atardeceres y pura vida. Cada foto cuenta una historia.",
+    "viewAll": "Ver Todo",
+    "all": "Todo",
+    "surf": "Surf",
+    "rooms": "Habitaciones",
+    "community": "Comunidad",
+    "nature": "Naturaleza",
+    "lifestyle": "Estilo de Vida",
+    "noPhotos": "¡La galería viene pronto — seguinos en Instagram por ahora!",
+    "openPhoto": "Abrir foto",
+    "prevPhoto": "Foto anterior",
+    "nextPhoto": "Foto siguiente",
+    "closeGallery": "Cerrar galería"
+  },
   "blog": {
     "title": "Blog",
     "subtitle": "Historias, consejos y noticias de la casa de surf",

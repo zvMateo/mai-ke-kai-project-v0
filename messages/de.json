@@ -261,6 +261,23 @@
     "reviews": "Bewertungen",
     "viewAllGoogle": "Alle Bewertungen auf Google ansehen"
   },
+  "gallery": {
+    "tagline": "Unsere Welt",
+    "title": "Das Leben bei Mai Ke Kai",
+    "subtitle": "Wellen, Gemeinschaft, Sonnenuntergänge und pura vida. Jedes Foto erzählt eine Geschichte.",
+    "viewAll": "Alles anzeigen",
+    "all": "Alle",
+    "surf": "Surf",
+    "rooms": "Zimmer",
+    "community": "Gemeinschaft",
+    "nature": "Natur",
+    "lifestyle": "Lebensstil",
+    "noPhotos": "Galerie kommt bald — folgen Sie uns vorerst auf Instagram!",
+    "openPhoto": "Foto öffnen",
+    "prevPhoto": "Vorheriges Foto",
+    "nextPhoto": "Nächstes Foto",
+    "closeGallery": "Galerie schließen"
+  },
   "blog": {
     "title": "Blog",
     "subtitle": "Geschichten, Tipps und Neuigkeiten aus dem Surfhaus",

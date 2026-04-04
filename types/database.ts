@@ -214,6 +214,22 @@ export interface BlogPost {
   updated_at: string;
 }
 
+// Gallery Types
+export type GalleryCategory = "surf" | "rooms" | "community" | "nature" | "lifestyle" | "general";
+
+export interface GalleryItem {
+  id: string;
+  title: string | null;
+  description: string | null;
+  image_url: string;
+  category: GalleryCategory;
+  display_order: number;
+  is_featured: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Payment Webhook Types
 export type PaymentGateway = "tab" | "manual" | "astropay" | "tilopay" | "stripe";
 export type WebhookStatus = "pending" | "processed" | "failed";
