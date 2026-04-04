@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "@/components/landing/blog-card";
-import { getPublishedBlogPosts } from "@/lib/actions/blog";
+import { getPublishedPosts } from "@/lib/queries/blog-public";
 import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 export async function BlogSection() {
-  const posts = await getPublishedBlogPosts(3);
+  const posts = await getPublishedPosts(3);
   const t = await getTranslations("blog");
 
   if (posts.length === 0) return null;

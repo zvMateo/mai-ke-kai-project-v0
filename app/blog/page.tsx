@@ -3,7 +3,7 @@ export const runtime = "edge";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getPublishedBlogPosts } from "@/lib/actions/blog";
+import { getPublishedPosts } from "@/lib/queries/blog-public";
 import { LandingHeader } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { Badge } from "@/components/ui/badge";
@@ -34,13 +34,8 @@ export default async function BlogPage() {
   const locale = await getLocale();
   const t = await getTranslations("blog");
 
-  // Wrap in try/catch — Supabase errors should never produce a 500
-  let posts: Awaited<ReturnType<typeof getPublishedBlogPosts>> = [];
-  try {
-    posts = await getPublishedBlogPosts();
-  } catch (err) {
-    console.error("BlogPage: failed to load posts", err);
-  }
+  // getPublishedPosts never throws — returns [] on any error
+  const posts = await getPublishedPosts();
 
   const [featured, ...rest] = posts;
 

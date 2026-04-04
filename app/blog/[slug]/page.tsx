@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getBlogPostBySlug, getPublishedBlogPosts } from "@/lib/actions/blog";
+import { getPostBySlug, getPublishedPosts } from "@/lib/queries/blog-public";
 import { sanitizeHtml } from "@/lib/utils";
 import { LandingHeader } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -28,7 +28,7 @@ function readingTime(html: string | null): number {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
   return {
@@ -46,17 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  let post = null;
-  let allPosts: Awaited<ReturnType<typeof getPublishedBlogPosts>> = [];
-  try {
-    [post, allPosts] = await Promise.all([
-      getBlogPostBySlug(slug),
-      getPublishedBlogPosts(4),
-    ]);
-  } catch (err) {
-    console.error("BlogPostPage: failed to load data", err);
-    // post remains null → notFound() will be called below
-  }
+  // Both functions are edge-safe (only @supabase/ssr, no revalidatePath)
+  const [post, allPosts] = await Promise.all([
+    getPostBySlug(slug),
+    getPublishedPosts(4),
+  ]);
   const locale = await getLocale();
   const t = await getTranslations("blog");
 
