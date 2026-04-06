@@ -44,9 +44,9 @@ export function Header({ locale = "en" }: HeaderProps) {
   const { isAuthenticated } = useUserStore();
 
   const navLinks = [
-    { href: "#rooms", label: t("rooms") },
-    { href: "#surf", label: t("surf") },
-    { href: "#packages", label: t("packages") },
+    { href: "/#rooms", label: t("rooms") },
+    { href: "/#surf", label: t("surf") },
+    { href: "/#packages", label: t("packages") },
     { href: "/blog", label: "Blog" },
     { href: "/about", label: t("about") },
   ];
@@ -155,9 +155,7 @@ export function Header({ locale = "en" }: HeaderProps) {
                     : "bg-white text-primary hover:bg-white/90",
                 )}
               >
-                <a href={TAB_TRAVEL_CHECKOUT_URL}>
-                  {t("bookNow")}
-                </a>
+                <a href={TAB_TRAVEL_CHECKOUT_URL}>{t("bookNow")}</a>
               </Button>
             )}
 
@@ -176,10 +174,7 @@ export function Header({ locale = "en" }: HeaderProps) {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="w-70 sm:w-80 bg-background"
-              >
+              <SheetContent side="right" className="w-70 sm:w-80 bg-background">
                 <div className="flex flex-col gap-6 mt-8">
                   {navLinks.map((link) => (
                     <Link
