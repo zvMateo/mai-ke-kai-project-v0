@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -144,11 +145,13 @@ export function ServicesClient() {
                     {categoryServices.map((service) => (
                       <Card key={service.id} className="overflow-hidden">
                         {service.image_url && (
-                          <div className="aspect-video relative">
-                            <img
-                              src={service.image_url || "/placeholder.svg"}
+                          <div className="aspect-video relative overflow-hidden">
+                            <Image
+                              src={service.image_url}
                               alt={service.name}
-                              className="w-full h-full object-cover"
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              className="object-cover"
                             />
                           </div>
                         )}

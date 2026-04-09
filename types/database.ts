@@ -230,6 +230,91 @@ export interface GalleryItem {
   updated_at: string;
 }
 
+// Testimonial Types
+export interface Testimonial {
+  id: string;
+  name: string;
+  location: string | null;
+  rating: number;
+  text: string;
+  avatar_url: string | null;
+  package_id: string | null;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// About Page Types
+export interface AboutTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  avatar_url: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AboutTimelineItem {
+  id: string;
+  year: string;
+  title: string;
+  description: string;
+  display_order: number;
+  created_at: string;
+}
+
+export interface SiteContent {
+  key: string;
+  value: string;
+  updated_at: string;
+}
+
+// Newsletter Types
+export type NewsletterStatus = "subscribed" | "unsubscribed";
+export type NewsletterCampaignStatus = "draft" | "sent";
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  full_name: string | null;
+  locale: string | null;
+  country_code: string | null;
+  timezone: string | null;
+  location_consent: boolean;
+  geo_lat: number | null;
+  geo_lng: number | null;
+  geo_accuracy_meters: number | null;
+  geo_captured_at: string | null;
+  status: NewsletterStatus;
+  unsubscribe_token: string;
+  source: string | null;
+  subscribed_at: string;
+  unsubscribed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NewsletterCampaign {
+  id: string;
+  title: string;
+  subject: string;
+  content_html: string;
+  preview_text: string | null;
+  template_type: "promo" | "news" | "cta" | "surf_camp" | "accommodation" | "informative";
+  audience_country_code: string | null;
+  status: NewsletterCampaignStatus;
+  recipients_count: number;
+  successful_sends: number;
+  failed_sends: number;
+  sent_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // Payment Webhook Types
 export type PaymentGateway = "tab" | "manual" | "astropay" | "tilopay" | "stripe";
 export type WebhookStatus = "pending" | "processed" | "failed";

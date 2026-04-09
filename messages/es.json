@@ -158,6 +158,9 @@
     "followUs": "Síguenos",
     "newsletter": "Boletín",
     "newsletterText": "Suscríbete para recibir ofertas especiales y novedades",
+    "newsletterPlaceholder": "Tu correo electrónico",
+    "newsletterLocationConsent": "Permitir ubicación aproximada para recibir campañas relevantes de tu zona",
+    "newsletterLocationHelp": "Opcional. Usamos esto solo para ofertas por ubicación y nunca vendemos tus datos.",
     "subscribe": "Suscribirse",
     "copyright": "© {year} Mai Ke Kai Surf House. Todos los derechos reservados.",
     "privacy": "Política de Privacidad",
@@ -252,7 +255,12 @@
     "compareBoard": "Alquiler de Tabla",
     "comparePhotos": "Fotos de Surf",
     "compareYes": "Sí",
-    "compareNo": "No"
+    "compareNo": "No",
+    "compareMostPopular": "Más Popular",
+    "urgencyText": "Solo quedan pocos lugares",
+    "trustFreeCancellation": "Cancelación gratuita 7 días antes",
+    "trustInstantConfirmation": "Confirmación instantánea",
+    "trustExpertGuides": "Guías locales expertos"
   },
   "testimonials": {
     "title": "Testimonios",
@@ -369,7 +377,9 @@
     "timeline4Desc": "Valorados con 4.9/5 en Google con huéspedes de más de 30 países. Nos convertimos en una de las casas de surf más queridas de Tamarindo.",
     "timeline5Year": "Hoy",
     "timeline5Title": "Seguimos Surfeando",
-    "timeline5Desc": "Cada día es una nueva aventura. Seguimos creciendo, surfeando y construyendo una comunidad de amantes de las olas de todo el mundo."
+    "timeline5Desc": "Cada día es una nueva aventura. Seguimos creciendo, surfeando y construyendo una comunidad de amantes de las olas de todo el mundo.",
+    "videoTitle": "Mirá Nuestra Historia",
+    "videoSubtitle": "Unos minutos de pura vida auténtica"
   },
   "unauthorized": {
     "title": "Acceso Denegado",

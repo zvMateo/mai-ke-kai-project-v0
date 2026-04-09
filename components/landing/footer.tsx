@@ -2,11 +2,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Instagram, Facebook, Youtube, Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { NewsletterSubscribeForm } from "@/components/landing/newsletter-subscribe-form";
 
 const socialLinks = [
-  { icon: Instagram, href: "https://www.instagram.com/maikekaisurf/", label: "Instagram" },
-  { icon: Facebook, href: "https://www.facebook.com/maikekaisurf", label: "Facebook" },
-  { icon: Youtube, href: "https://www.youtube.com/@maikekaisurf", label: "YouTube" },
+  {
+    icon: Instagram,
+    href: "https://www.instagram.com/maikekaisurf/",
+    label: "Instagram",
+  },
+  {
+    icon: Facebook,
+    href: "https://www.facebook.com/maikekaisurf",
+    label: "Facebook",
+  },
+  {
+    icon: Youtube,
+    href: "https://www.youtube.com/@maikekaisurf",
+    label: "YouTube",
+  },
 ];
 
 export async function Footer() {
@@ -15,15 +28,15 @@ export async function Footer() {
 
   const footerLinks = {
     explore: [
-      { label: tNav("rooms"), href: "#rooms" },
-      { label: tNav("packages"), href: "#packages" },
-      { label: tNav("surf"), href: "#surf" },
+      { label: tNav("rooms"), href: "/#rooms" },
+      { label: tNav("packages"), href: "/#packages" },
+      { label: tNav("surf"), href: "/#surf" },
       { label: "Blog", href: "/blog" },
     ],
     info: [
       { label: tNav("about"), href: "/about" },
-      { label: tNav("location"), href: "#location" },
-      { label: tNav("contact"), href: "#location" },
+      { label: tNav("location"), href: "/#location" },
+      { label: tNav("contact"), href: "/#location" },
     ],
   };
 
@@ -31,7 +44,7 @@ export async function Footer() {
     <footer className="bg-deep text-white">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-6">
@@ -106,6 +119,20 @@ export async function Footer() {
             </ul>
           </div>
 
+          {/* Newsletter */}
+          <div>
+            <h4 className="font-heading font-semibold mb-4">
+              {t("newsletter")}
+            </h4>
+            <p className="text-white/70 text-sm mb-4">{t("newsletterText")}</p>
+            <NewsletterSubscribeForm
+              placeholder={t("newsletterPlaceholder")}
+              buttonLabel={t("subscribe")}
+              consentLabel={t("newsletterLocationConsent")}
+              consentHelp={t("newsletterLocationHelp")}
+            />
+          </div>
+
           {/* Contact Info */}
           <div>
             <h4 className="font-heading font-semibold mb-4">
@@ -115,12 +142,18 @@ export async function Footer() {
               <li>Playa Tamarindo, Guanacaste</li>
               <li>Costa Rica, 50309</li>
               <li>
-                <a href="tel:+50686069355" className="hover:text-white transition-colors">
+                <a
+                  href="tel:+50686069355"
+                  className="hover:text-white transition-colors"
+                >
                   +506 8606 9355
                 </a>
               </li>
               <li>
-                <a href="mailto:maikekaisurfhouse@gmail.com" className="hover:text-white transition-colors flex items-center gap-2">
+                <a
+                  href="mailto:maikekaisurfhouse@gmail.com"
+                  className="hover:text-white transition-colors flex items-center gap-2"
+                >
                   <Mail className="w-4 h-4 shrink-0" />
                   maikekaisurfhouse@gmail.com
                 </a>

@@ -158,6 +158,11 @@ const CATEGORY_TABS = [
 export function GalleryGridClient({ items, labels }: GalleryGridClientProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+
+  const handleImageError = (id: string) => {
+    setFailedImages((prev) => new Set(prev).add(id));
+  };
 
   const filtered = activeCategory === "all"
     ? items
@@ -207,7 +212,7 @@ export function GalleryGridClient({ items, labels }: GalleryGridClientProps) {
           style={{ columnFill: "balance" }}
         >
           <AnimatePresence>
-            {filtered.map((item, i) => (
+            {filtered.filter((item) => !failedImages.has(item.id)).map((item, i) => (
               <motion.div
                 key={item.id}
                 layout
@@ -228,6 +233,7 @@ export function GalleryGridClient({ items, labels }: GalleryGridClientProps) {
                     width={600}
                     height={400}
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={() => handleImageError(item.id)}
                   />
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">

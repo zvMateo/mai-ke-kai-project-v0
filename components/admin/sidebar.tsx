@@ -23,6 +23,9 @@ import {
   Tags,
   Newspaper,
   Images,
+  MessageSquare,
+  Info,
+  Mail,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -94,9 +97,24 @@ const navItems = [
     icon: Images,
   },
   {
+    title: "Testimonials",
+    href: "/admin/testimonials",
+    icon: MessageSquare,
+  },
+  {
+    title: "About Us",
+    href: "/admin/about",
+    icon: Info,
+  },
+  {
     title: "Blog",
     href: "/admin/blog",
     icon: Newspaper,
+  },
+  {
+    title: "Newsletter",
+    href: "/admin/newsletter",
+    icon: Mail,
   },
   {
     title: "Reports",
@@ -142,7 +160,7 @@ export function AdminSidebar() {
       <aside
         className={cn(
           "fixed top-0 left-0 z-40 h-screen w-64 bg-card border-r border-border transition-transform lg:translate-x-0",
-          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+          isMobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex flex-col h-full">
@@ -181,7 +199,7 @@ export function AdminSidebar() {
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                     isActive
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
                   <item.icon className="w-5 h-5" />

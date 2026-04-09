@@ -158,6 +158,9 @@
     "followUs": "Folgen Sie Uns",
     "newsletter": "Newsletter",
     "newsletterText": "Abonnieren Sie für Sonderangebote und Updates",
+    "newsletterPlaceholder": "Ihre E-Mail-Adresse",
+    "newsletterLocationConsent": "Ungefähren Standort erlauben, um regionale Kampagnen zu erhalten",
+    "newsletterLocationHelp": "Optional. Wir nutzen dies nur für standortbezogene Angebote und verkaufen Ihre Daten niemals.",
     "subscribe": "Abonnieren",
     "copyright": "© {year} Mai Ke Kai Surf House. Alle Rechte vorbehalten.",
     "privacy": "Datenschutzrichtlinie",
@@ -252,7 +255,12 @@
     "compareBoard": "Board-Verleih",
     "comparePhotos": "Surf-Fotos",
     "compareYes": "Ja",
-    "compareNo": "Nein"
+    "compareNo": "Nein",
+    "compareMostPopular": "Am Beliebtesten",
+    "urgencyText": "Nur noch wenige Plätze",
+    "trustFreeCancellation": "Kostenlose Stornierung 7 Tage vorher",
+    "trustInstantConfirmation": "Sofortige Bestätigung",
+    "trustExpertGuides": "Erfahrene lokale Guides"
   },
   "testimonials": {
     "title": "Bewertungen",
@@ -369,7 +377,9 @@
     "timeline4Desc": "Mit 4,9/5 auf Google bewertet, mit Gästen aus über 30 Ländern. Wir werden eines der beliebtesten Surfhäuser in Tamarindo.",
     "timeline5Year": "Heute",
     "timeline5Title": "Wir Surfen Weiter",
-    "timeline5Desc": "Jeder Tag ist ein neues Abenteuer. Wir wachsen weiter, surfen weiter und bauen eine Gemeinschaft von Wellenliebhabern aus aller Welt auf."
+    "timeline5Desc": "Jeder Tag ist ein neues Abenteuer. Wir wachsen weiter, surfen weiter und bauen eine Gemeinschaft von Wellenliebhabern aus aller Welt auf.",
+    "videoTitle": "Unsere Geschichte Ansehen",
+    "videoSubtitle": "Ein paar Minuten pure Pura Vida"
   },
   "unauthorized": {
     "title": "Zugriff Verweigert",

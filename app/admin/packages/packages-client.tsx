@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,11 +78,13 @@ function PackageCard({ pkg }: { pkg: SurfPackage }) {
       )}
 
       {pkg.image_url && (
-        <div className="aspect-video relative">
-          <img
-            src={pkg.image_url || "/placeholder.svg"}
+        <div className="aspect-video relative overflow-hidden">
+          <Image
+            src={pkg.image_url}
             alt={pkg.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
           />
           {!pkg.is_active && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

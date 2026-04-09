@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -197,17 +198,19 @@ export function RoomForm({ room, mode }: RoomFormProps) {
             <Label>Gallery Images</Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {formData.images.map((url) => (
-                <div key={url} className="relative group">
-                  <img
-                    src={url || "/placeholder.svg"}
+                <div key={url} className="relative group h-32">
+                  <Image
+                    src={url}
                     alt="Gallery"
-                    className="w-full h-32 object-cover rounded-lg"
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover rounded-lg"
                   />
                   <Button
                     type="button"
                     variant="destructive"
                     size="icon"
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                     onClick={() => removeGalleryImage(url)}
                   >
                     <X className="h-4 w-4" />

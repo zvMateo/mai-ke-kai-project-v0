@@ -158,6 +158,9 @@
     "followUs": "Follow Us",
     "newsletter": "Newsletter",
     "newsletterText": "Subscribe to get special offers and updates",
+    "newsletterPlaceholder": "Your email address",
+    "newsletterLocationConsent": "Allow approximate location to receive campaigns relevant to your area",
+    "newsletterLocationHelp": "Optional. We use this only for location-based offers and never sell your data.",
     "subscribe": "Subscribe",
     "copyright": "© {year} Mai Ke Kai Surf House. All rights reserved.",
     "privacy": "Privacy Policy",
@@ -252,7 +255,12 @@
     "compareBoard": "Board Rental",
     "comparePhotos": "Surf Photos",
     "compareYes": "Yes",
-    "compareNo": "No"
+    "compareNo": "No",
+    "compareMostPopular": "Most Popular",
+    "urgencyText": "Only a few spots left",
+    "trustFreeCancellation": "Free cancellation 7 days prior",
+    "trustInstantConfirmation": "Instant confirmation",
+    "trustExpertGuides": "Expert local guides"
   },
   "testimonials": {
     "title": "Testimonials",
@@ -369,7 +377,9 @@
     "timeline4Desc": "Rated 4.9/5 on Google with guests from 30+ countries. We become one of Tamarindo's most beloved surf houses.",
     "timeline5Year": "Today",
     "timeline5Title": "Still Riding Waves",
-    "timeline5Desc": "Every day is a new adventure. We keep growing, keep surfing, and keep building a community of wave lovers from around the world."
+    "timeline5Desc": "Every day is a new adventure. We keep growing, keep surfing, and keep building a community of wave lovers from around the world.",
+    "videoTitle": "Watch Our Story",
+    "videoSubtitle": "A few minutes of pure pura vida"
   },
   "unauthorized": {
     "title": "Access Denied",

@@ -1,0 +1,27 @@
+{
+  "name": "Mai Ke Kai Surf House",
+  "short_name": "Mai Ke Kai",
+  "description": "Your surf house in Tamarindo, Costa Rica. World-class waves, expert lessons, and authentic pura vida vibes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E3244",
+  "theme_color": "#0BA4A4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["travel", "lifestyle"],
+  "lang": "en"
+}

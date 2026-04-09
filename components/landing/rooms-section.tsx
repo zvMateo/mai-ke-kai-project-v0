@@ -12,6 +12,8 @@ interface RoomsSectionProps {
   rooms: Room[];
   totalBeds: number;
   roomTypes: number;
+  checkInTime?: string;
+  checkOutTime?: string;
 }
 
 // Fallback images for rooms without images
@@ -26,6 +28,8 @@ export async function RoomsSection({
   rooms,
   totalBeds,
   roomTypes,
+  checkInTime = "3pm",
+  checkOutTime = "11am",
 }: RoomsSectionProps) {
   const t = await getTranslations("rooms");
 
@@ -186,7 +190,7 @@ export async function RoomsSection({
           </div>
           <div className="text-center">
             <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
-              3pm
+              {checkInTime}
             </p>
             <p className="text-muted-foreground text-xs sm:text-sm">
               {t("checkIn")}
@@ -194,7 +198,7 @@ export async function RoomsSection({
           </div>
           <div className="text-center">
             <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
-              11am
+              {checkOutTime}
             </p>
             <p className="text-muted-foreground text-xs sm:text-sm">
               {t("checkOut")}

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// Textarea removed — replaced by TiptapEditor
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -169,7 +169,7 @@ export function BlogPostForm({ post, mode }: BlogPostFormProps) {
             <Textarea
               id="excerpt"
               value={formData.excerpt}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setFormData((prev) => ({ ...prev, excerpt: e.target.value }))
               }
               placeholder="Brief summary shown in blog listing (1-2 sentences)"
@@ -208,7 +208,10 @@ export function BlogPostForm({ post, mode }: BlogPostFormProps) {
           <ImageUpload
             value={formData.cover_image_url}
             onChange={(url) =>
-              setFormData((prev) => ({ ...prev, cover_image_url: url }))
+              setFormData((prev) => ({
+                ...prev,
+                cover_image_url: Array.isArray(url) ? url[0] ?? "" : url,
+              }))
             }
             folder="blog"
           />

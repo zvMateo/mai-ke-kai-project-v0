@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +24,8 @@ import {
   TimelineItem,
   MeaningQuote,
 } from "@/components/about/about-animations";
+import { AboutVideoSection } from "@/components/about/about-video-section";
+import { getTeamMembers, getTimeline, getSiteContent } from "@/lib/actions/about";
 
 export const metadata: Metadata = {
   title: "About Us | Mai Ke Kai Surf House",
@@ -38,9 +38,73 @@ export const metadata: Metadata = {
   },
 };
 
+// Fallback data when DB is empty
+const FALLBACK_TEAM = [
+  {
+    id: "1",
+    name: "The Founders",
+    role: "Surf & Hospitality",
+    bio: "A group of surfers from different corners of the world who fell in love with Tamarindo and decided to create a home for the surf community.",
+    avatar_url: null,
+    display_order: 1,
+    is_active: true,
+    created_at: "",
+  },
+  {
+    id: "2",
+    name: "Surf Team",
+    role: "Certified Instructors",
+    bio: "Passionate local surfers and certified instructors who know every break, every current, and every perfect wave in Tamarindo.",
+    avatar_url: null,
+    display_order: 2,
+    is_active: true,
+    created_at: "",
+  },
+  {
+    id: "3",
+    name: "Host Team",
+    role: "Hospitality",
+    bio: "The heart of Mai Ke Kai. Always ready with local tips, a cold drink, and the best smile in Tamarindo.",
+    avatar_url: null,
+    display_order: 3,
+    is_active: true,
+    created_at: "",
+  },
+];
+
+const FALLBACK_TIMELINE = [
+  { id: "1", year: "2019", title: "The Dream Begins", description: "A group of surfers from different corners of the world meet in Tamarindo and fall in love with the waves, the people, and the pura vida spirit.", display_order: 1, created_at: "" },
+  { id: "2", year: "2020", title: "Building the Home", description: "The idea of creating a surf house where travelers could live the authentic Costa Rica experience takes shape.", display_order: 2, created_at: "" },
+  { id: "3", year: "2021", title: "First Guests", description: "Mai Ke Kai opens its doors. First guests arrive from 12 different countries.", display_order: 3, created_at: "" },
+  { id: "4", year: "2022", title: "Growing Community", description: "Word spreads. The community grows to 500+ guests from 25+ nationalities.", display_order: 4, created_at: "" },
+  { id: "5", year: "2023", title: "Mai Ke Kai Today", description: "Recognized as one of the top surf hostels in Costa Rica, with 30+ nationalities and 2500+ happy guests.", display_order: 5, created_at: "" },
+];
+
+// Gradient colors for team avatars (cycles by index)
+const AVATAR_GRADIENTS = [
+  "from-primary to-ocean-dark",
+  "from-seafoam to-ocean",
+  "from-amber-400 to-coral",
+];
+
 export default async function AboutPage() {
   const locale = await getLocale();
   const t = await getTranslations("about");
+
+  const [dbTeam, dbTimeline, siteContent] = await Promise.all([
+    getTeamMembers(),
+    getTimeline(),
+    getSiteContent(["about_quote", "about_quote_author", "about_video_id"]),
+  ]);
+
+  const team = dbTeam.length > 0 ? dbTeam : FALLBACK_TEAM;
+  const timeline = dbTimeline.length > 0 ? dbTimeline : FALLBACK_TIMELINE;
+
+  const beachQuote =
+    siteContent["about_quote"] ?? "The ocean is calling — and we must go.";
+  const beachQuoteAuthor =
+    siteContent["about_quote_author"] ?? "Pura Vida, Costa Rica";
+  const videoId = siteContent["about_video_id"] ?? null;
 
   const values = [
     { icon: Waves, title: t("valueSurf"), description: t("valueSurfDesc"), color: "bg-primary/10", iconColor: "text-primary" },
@@ -49,41 +113,6 @@ export default async function AboutPage() {
     { icon: Star, title: t("valueQuality"), description: t("valueQualityDesc"), color: "bg-amber-50", iconColor: "text-amber-500" },
     { icon: Leaf, title: t("valueSustainable"), description: t("valueSustainableDesc"), color: "bg-green-50", iconColor: "text-green-600" },
     { icon: Sun, title: t("valueWaves"), description: t("valueWavesDesc"), color: "bg-primary/10", iconColor: "text-primary" },
-  ];
-
-  const team = [
-    {
-      initials: "MKK",
-      color: "from-primary to-ocean-dark",
-      name: t("teamFoundersName"),
-      role: t("teamFoundersRole"),
-      bio: t("teamFoundersBio"),
-      emoji: "🌊",
-    },
-    {
-      initials: "CR",
-      color: "from-seafoam to-ocean",
-      name: t("teamSurfName"),
-      role: t("teamSurfRole"),
-      bio: t("teamSurfBio"),
-      emoji: "🏄",
-    },
-    {
-      initials: "HT",
-      color: "from-amber-400 to-coral",
-      name: t("teamHostName"),
-      role: t("teamHostRole"),
-      bio: t("teamHostBio"),
-      emoji: "🤙",
-    },
-  ];
-
-  const timeline = [
-    { year: t("timeline1Year"), title: t("timeline1Title"), desc: t("timeline1Desc") },
-    { year: t("timeline2Year"), title: t("timeline2Title"), desc: t("timeline2Desc") },
-    { year: t("timeline3Year"), title: t("timeline3Title"), desc: t("timeline3Desc") },
-    { year: t("timeline4Year"), title: t("timeline4Title"), desc: t("timeline4Desc") },
-    { year: t("timeline5Year"), title: t("timeline5Title"), desc: t("timeline5Desc") },
   ];
 
   const stats = [
@@ -118,7 +147,6 @@ export default async function AboutPage() {
             />
           </div>
 
-          {/* Decorative bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
 
           <div className="relative z-10 text-center text-white px-4 pt-28 pb-20 max-w-4xl mx-auto">
@@ -154,7 +182,6 @@ export default async function AboutPage() {
         <section className="py-20 bg-muted/20">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
-              {/* Images collage */}
               <ScrollReveal className="relative">
                 <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
                   <Image
@@ -165,14 +192,12 @@ export default async function AboutPage() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>
-                {/* Floating accent card */}
                 <div className="absolute -bottom-6 -right-4 md:-right-8 bg-primary text-white rounded-2xl px-5 py-4 shadow-xl z-10 max-w-[160px]">
                   <p className="font-heading font-bold text-2xl">4.9 ⭐</p>
                   <p className="text-white/80 text-xs mt-1">Google Reviews</p>
                 </div>
               </ScrollReveal>
 
-              {/* Story text */}
               <div className="space-y-6">
                 <ScrollReveal>
                   <p className="text-primary font-semibold uppercase tracking-wider text-sm mb-2">
@@ -204,7 +229,6 @@ export default async function AboutPage() {
 
         {/* ── STATS COUNTER BAR ── */}
         <section className="py-16 bg-deep text-white relative overflow-hidden">
-          {/* Decorative wave top */}
           <div
             className="absolute inset-x-0 top-0 h-8"
             style={{ background: "var(--color-muted, #f5f5f5)", clipPath: "ellipse(55% 100% at 50% 0%)" }}
@@ -219,10 +243,7 @@ export default async function AboutPage() {
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
                   <p className="font-heading text-4xl sm:text-5xl font-bold text-white mb-2">
-                    <AnimatedCounter
-                      target={stat.value}
-                      suffix={stat.suffix}
-                    />
+                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                   </p>
                   <p className="text-white/60 text-sm">{stat.label}</p>
                 </div>
@@ -230,6 +251,15 @@ export default async function AboutPage() {
             </div>
           </div>
         </section>
+
+        {/* ── VIDEO ── */}
+        {videoId && (
+          <AboutVideoSection
+            videoId={videoId}
+            title={t("videoTitle")}
+            subtitle={t("videoSubtitle")}
+          />
+        )}
 
         {/* ── TIMELINE ── */}
         <section className="py-24 bg-background">
@@ -247,10 +277,10 @@ export default async function AboutPage() {
               <div>
                 {timeline.map((item, i) => (
                   <TimelineItem
-                    key={i}
+                    key={item.id}
                     year={item.year}
                     title={item.title}
-                    desc={item.desc}
+                    desc={item.description}
                     isLast={i === timeline.length - 1}
                     index={i}
                   />
@@ -314,16 +344,28 @@ export default async function AboutPage() {
               className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto"
               staggerDelay={0.12}
             >
-              {team.map((member) => (
-                <StaggerItem key={member.name}>
+              {team.map((member, idx) => (
+                <StaggerItem key={member.id}>
                   <div className="group text-center">
-                    {/* Avatar */}
                     <div className="relative mx-auto mb-5 w-24 h-24">
-                      <div
-                        className={`w-24 h-24 rounded-full bg-gradient-to-br ${member.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                      >
-                        <span className="text-3xl">{member.emoji}</span>
-                      </div>
+                      {member.avatar_url ? (
+                        <Image
+                          src={member.avatar_url}
+                          alt={member.name}
+                          fill
+                          className="object-cover rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div
+                          className={`w-24 h-24 rounded-full bg-gradient-to-br ${
+                            AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length]
+                          } flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <span className="text-white font-bold text-xl">
+                            {member.name.slice(0, 2).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <h3 className="font-heading font-bold text-lg text-foreground">
                       {member.name}
@@ -331,9 +373,11 @@ export default async function AboutPage() {
                     <p className="text-primary text-sm font-semibold mb-3">
                       {member.role}
                     </p>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {member.bio}
-                    </p>
+                    {member.bio && (
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {member.bio}
+                      </p>
+                    )}
                   </div>
                 </StaggerItem>
               ))}
@@ -354,9 +398,9 @@ export default async function AboutPage() {
             <ScrollReveal>
               <blockquote className="text-center text-white px-6 max-w-2xl">
                 <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold italic leading-relaxed">
-                  &ldquo;The ocean is calling — and we must go.&rdquo;
+                  &ldquo;{beachQuote}&rdquo;
                 </p>
-                <p className="text-white/60 mt-4 text-sm">— Pura Vida, Costa Rica</p>
+                <p className="text-white/60 mt-4 text-sm">— {beachQuoteAuthor}</p>
               </blockquote>
             </ScrollReveal>
           </div>

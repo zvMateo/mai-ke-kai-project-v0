@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import Image from "next/image"
 import { Upload, X, Loader2, ImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -124,10 +125,12 @@ export function ImageUpload({
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {images.map((imageUrl, index) => (
             <div key={imageUrl} className="group relative aspect-square overflow-hidden rounded-lg border bg-muted">
-              <img
-                src={imageUrl || "/placeholder.svg"}
+              <Image
+                src={imageUrl}
                 alt={`Upload ${index + 1}`}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
                 <Button

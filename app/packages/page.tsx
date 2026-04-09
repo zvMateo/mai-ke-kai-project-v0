@@ -19,13 +19,42 @@ import {
   Zap,
   Shield,
   Heart,
+  Flame,
 } from "lucide-react";
 import { getPackages } from "@/lib/actions/packages";
+import { getActiveTestimonials } from "@/lib/actions/testimonials";
 import { TAB_TRAVEL_CHECKOUT_URL } from "@/lib/booking-utils";
 import { PackagesFaqClient } from "@/components/packages/packages-faq-client";
+import { PackagesComparisonTable } from "@/components/packages/packages-comparison-table";
+import { PackageCardMotion } from "@/components/packages/package-card-motion";
+
+// Fallback testimonials when DB is empty
+const FALLBACK_TESTIMONIALS = [
+  {
+    name: "Sarah M.",
+    from: "Australia",
+    text: "The 7-day surf camp was the best week of my life! The instructors were amazing and the waves were perfect every day.",
+    rating: 5,
+  },
+  {
+    name: "Jake R.",
+    from: "Canada",
+    text: "Everything was perfectly organized. From airport pickup to the last surf session. Can't wait to come back!",
+    rating: 5,
+  },
+  {
+    name: "Emma L.",
+    from: "Germany",
+    text: "I came as a complete beginner and left standing on my own waves. The community here is incredible.",
+    rating: 5,
+  },
+];
 
 export default async function PackagesPage() {
-  const packages = await getPackages();
+  const [packages, dbTestimonials] = await Promise.all([
+    getPackages(),
+    getActiveTestimonials(),
+  ]);
   const t = await getTranslations("packages");
 
   const roomTypeLabels: Record<string, string> = {
@@ -42,26 +71,15 @@ export default async function PackagesPage() {
     { q: t("faq5q"), a: t("faq5a") },
   ];
 
-  const testimonials = [
-    {
-      name: t("testimonial1name"),
-      from: t("testimonial1from"),
-      text: t("testimonial1text"),
-      rating: 5,
-    },
-    {
-      name: t("testimonial2name"),
-      from: t("testimonial2from"),
-      text: t("testimonial2text"),
-      rating: 5,
-    },
-    {
-      name: t("testimonial3name"),
-      from: t("testimonial3from"),
-      text: t("testimonial3text"),
-      rating: 5,
-    },
-  ];
+  const testimonials =
+    dbTestimonials.length > 0
+      ? dbTestimonials.slice(0, 3).map((item) => ({
+          name: item.name,
+          from: item.location ?? "",
+          text: item.text,
+          rating: item.rating,
+        }))
+      : FALLBACK_TESTIMONIALS;
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,15 +112,15 @@ export default async function PackagesPage() {
           <div className="flex flex-wrap justify-center gap-6 text-sm text-white/70">
             <span className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-seafoam" />
-              Free cancellation 7 days prior
+              {t("trustFreeCancellation")}
             </span>
             <span className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-amber-400" />
-              Instant confirmation
+              {t("trustInstantConfirmation")}
             </span>
             <span className="flex items-center gap-2">
               <Heart className="w-4 h-4 text-coral" />
-              Expert local guides
+              {t("trustExpertGuides")}
             </span>
           </div>
         </div>
@@ -134,9 +152,9 @@ export default async function PackagesPage() {
                 const includes = Array.isArray(pkg.includes) ? pkg.includes : [];
 
                 return (
-                  <div
+                  <PackageCardMotion
                     key={pkg.id}
-                    className={`relative group flex flex-col rounded-2xl overflow-hidden border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-card ${
+                    className={`relative group flex flex-col rounded-2xl overflow-hidden border bg-card ${
                       pkg.is_popular
                         ? "border-primary shadow-lg shadow-primary/10 ring-2 ring-primary/20"
                         : "border-border"
@@ -263,6 +281,15 @@ export default async function PackagesPage() {
                             </span>
                           </div>
                         )}
+
+                        {/* Urgency badge */}
+                        <div className="flex items-center justify-center gap-1.5 bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 rounded-lg py-2 px-3">
+                          <Flame className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="text-xs font-semibold">
+                            {t("urgencyText")}
+                          </span>
+                        </div>
+
                         <Link
                           href={TAB_TRAVEL_CHECKOUT_URL}
                           target="_blank"
@@ -280,13 +307,38 @@ export default async function PackagesPage() {
                         </Link>
                       </div>
                     </div>
-                  </div>
+                  </PackageCardMotion>
                 );
               })}
             </div>
           )}
         </div>
       </section>
+
+      {/* ── COMPARISON TABLE ── */}
+      {packages.length > 0 && (
+        <PackagesComparisonTable
+          packages={packages}
+          labels={{
+            compareTitle: t("compareTitle"),
+            compareNights: t("compareNights"),
+            compareLessons: t("compareLessons"),
+            compareRoom: t("compareRoom"),
+            compareMeals: t("compareMeals"),
+            compareTransfers: t("compareTransfers"),
+            compareYoga: t("compareYoga"),
+            compareTours: t("compareTours"),
+            compareBoard: t("compareBoard"),
+            comparePhotos: t("comparePhotos"),
+            compareYes: t("compareYes"),
+            compareNo: t("compareNo"),
+            compareMostPopular: t("compareMostPopular"),
+            dorm: t("dorm"),
+            private: t("private"),
+            family: t("family"),
+          }}
+        />
+      )}
 
       {/* ── WHY PACKAGES ── */}
       <section className="py-20 bg-gradient-to-b from-primary/5 to-background">

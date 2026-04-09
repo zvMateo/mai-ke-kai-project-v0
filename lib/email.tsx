@@ -249,13 +249,14 @@ function buildWelcomeEmailHtml(name: string, confirmationUrl: string): string {
 <body>
   <div class="container">
     <div class="header">
-      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" />
+      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" style="display:block" />
     </div>
 
     <img
       class="banner"
       src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749845/email-banner-tamarindo_cupqjb.jpg"
       alt="Tamarindo, Costa Rica"
+      style="display:block"
     />
 
     <div class="content">
@@ -502,7 +503,7 @@ function buildAdminInvitationHtml(invitationUrl: string, invitedBy: string): str
 <body>
   <div class="container">
     <div class="header">
-      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" />
+      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" style="display:block" />
     </div>
 
     <div class="content">
@@ -688,7 +689,7 @@ function buildNewUserWelcomeHtml(name: string, resetUrl: string, role: string): 
 <body>
   <div class="container">
     <div class="header">
-      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" />
+      <img src="https://res.cloudinary.com/daufytlmp/image/upload/v1767749705/logo-email_ezef4r.png" alt="Mai Ke Kai" style="display:block" />
     </div>
 
     <div class="content">

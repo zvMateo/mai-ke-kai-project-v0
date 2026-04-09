@@ -18,7 +18,10 @@ async function getRoomBlocks() {
 
   const { data: rooms } = await supabase.from("rooms").select("id, name, type").eq("is_active", true)
 
-  return { blocks: blocks || [], rooms: rooms || [] }
+  // Map DB `type` column to the `room_type` field expected by the Room type
+  const mappedRooms = (rooms || []).map((r) => ({ ...r, room_type: r.type }))
+
+  return { blocks: blocks || [], rooms: mappedRooms }
 }
 
 export default async function BlocksPage() {

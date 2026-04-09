@@ -49,6 +49,6 @@ VALUES
   ('Tamarindo Beach',             '/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg', 'nature',    2,  true,  true),
   ('Our Cozy Dorm Room',          '/modern-surf-hostel-dorm-room-with-wooden-bunk-beds.jpg', 'rooms',     3,  false, true),
   ('Private Room Paradise',       '/cozy-private-room-with-king-bed-tropical-decor-and.jpg', 'rooms',     4,  false, true),
-  ('Catamaran Sunset Tour',       '/catamaran-tour-sunset-costa-rica-ocean.jpg',              'lifestyle', 5,  true,  true),
-  ('Surfboard Rentals',           '/surf-boards-rental-rack-tropical-beach.jpg',              'surf',      6,  false, true)
+  ('Catamaran Sunset Tour',       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',  'lifestyle', 5,  true,  true),
+  ('Surfboard Rentals',           'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800',  'surf',      6,  false, true)
 ON CONFLICT DO NOTHING;

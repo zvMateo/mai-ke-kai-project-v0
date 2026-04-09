@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,11 +74,15 @@ function RoomsList({ rooms }: { rooms: RoomWithDetails[] }) {
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
                   {room.main_image && (
-                    <img
-                      src={room.main_image || "/placeholder.svg"}
-                      alt={room.name}
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
+                    <div className="relative w-24 h-24 flex-shrink-0">
+                      <Image
+                        src={room.main_image}
+                        alt={room.name}
+                        fill
+                        sizes="96px"
+                        className="object-cover rounded-lg"
+                      />
+                    </div>
                   )}
                   <div>
                     <CardTitle className="font-heading text-xl">

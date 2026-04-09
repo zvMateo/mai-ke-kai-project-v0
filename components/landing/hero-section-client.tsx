@@ -5,7 +5,7 @@ import Image from "next/image";
 import { HeroBookNowButton } from "@/components/landing/hero-book-now-button";
 import { Button } from "@/components/ui/button";
 import { Star, Globe, Waves, ChevronDown } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState, type ReactNode } from "react";
 
 /* ──────────────────────────────────────────────
@@ -111,19 +111,39 @@ export function HeroSectionClient({
   surfCampsLabel: string;
   scrollLabel: string;
 }) {
+  const { scrollY } = useScroll();
+  // Parallax: imagen se mueve 120px hacia abajo cuando el usuario scrollea 600px
+  const yBg = useTransform(scrollY, [0, 600], [0, 120]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* ── Background: poster image + video overlay ── */}
-      <div className="absolute inset-0">
-        {/* Poster image (visible immediately, acts as fallback) */}
-        <Image
-          src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
-          alt="Costa Rica surf beach"
-          fill
-          className="object-cover"
-          priority
-          quality={90}
-        />
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Poster image — parallax only on desktop (md+) */}
+        <motion.div
+          className="absolute inset-0 hidden md:block"
+          style={{ y: yBg }}
+        >
+          <Image
+            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
+            alt="Costa Rica surf beach"
+            fill
+            className="object-cover"
+            priority
+            quality={90}
+          />
+        </motion.div>
+        {/* Static fallback on mobile — no parallax to avoid scroll jank */}
+        <div className="absolute inset-0 block md:hidden">
+          <Image
+            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
+            alt="Costa Rica surf beach"
+            fill
+            className="object-cover"
+            priority
+            quality={90}
+          />
+        </div>
 
         {/* Video background — loaded after poster */}
         <video

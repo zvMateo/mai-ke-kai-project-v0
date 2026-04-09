@@ -482,7 +482,8 @@ export async function fetchCalendarBookings(
   };
 
   return (bookings || []).flatMap((booking) => {
-    const user = booking.users as { full_name: string | null } | null;
+    const userRaw = booking.users as unknown;
+    const user = (Array.isArray(userRaw) ? userRaw[0] : userRaw) as { full_name: string | null } | null;
     const rooms = booking.booking_rooms || [];
 
     return rooms.map((br: any) => {
@@ -653,7 +654,8 @@ export async function fetchServicesSales(
   const serviceMap: Record<string, { name: string; category: string; sold: number; revenue: number }> = {};
 
   bookingServices?.forEach((bs) => {
-    const service = bs.services as { id: string; name: string; category: string } | null;
+    const serviceRaw = bs.services as unknown;
+    const service = (Array.isArray(serviceRaw) ? serviceRaw[0] : serviceRaw) as { id: string; name: string; category: string } | null;
     if (!service) return;
 
     const quantity = bs.quantity || 1;

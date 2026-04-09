@@ -5,7 +5,9 @@ import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "./providers";
+import { PageTransitionProvider } from "@/components/providers/page-transition-provider";
 import { WhatsAppFloatingButton } from "@/components/ui/whatsapp-floating";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import "./globals.css";
 
 // <CHANGE> Using Poppins for headings and Inter for body text - tropical/modern feel
@@ -35,19 +37,30 @@ export const metadata: Metadata = {
     "surf house",
   ],
   authors: [{ name: "Mai Ke Kai Surf House" }],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Mai Ke Kai",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Mai Ke Kai Surf House",
     description: "Your surf paradise in Costa Rica",
     type: "website",
     locale: "en_US",
   },
-  generator: "v0.app",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2B96CB",
+  themeColor: "#0BA4A4",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
+  colorScheme: "light",
 };
 
 import { TabTravelScript } from "@/components/booking/tab-travel-script";
@@ -65,11 +78,14 @@ export default async function RootLayout({
       <body className="font-sans antialiased" suppressHydrationWarning>
         <Providers>
           <NextIntlClientProvider messages={messages}>
-            {children}
+            <PageTransitionProvider>
+              {children}
+            </PageTransitionProvider>
           </NextIntlClientProvider>
         </Providers>
         <Analytics />
         <WhatsAppFloatingButton />
+        <ScrollToTop />
         <TabTravelScript />
       </body>
     </html>
