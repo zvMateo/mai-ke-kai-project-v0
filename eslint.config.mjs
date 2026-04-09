@@ -1,23 +1,23 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   {
     rules: {
-      'react-hooks/set-state-in-effect': 'off',
-      'react-hooks/error-boundaries': 'off',
-      'react-hooks/purity': 'off',
-      'react/no-unescaped-entities': 'off',
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/error-boundaries": "off",
+      "react-hooks/purity": "off",
+      "react/no-unescaped-entities": "off",
     },
   },
   globalIgnores([
-    '.next/**',
-    'out/**',
-    'build/**',
-    'next-env.d.ts',
-    '.opencode/**',
-    '.windsurf/**',
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    ".opencode/**",
+    ".windsurf/**",
   ]),
 ]);
 
