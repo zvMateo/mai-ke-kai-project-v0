@@ -7,24 +7,15 @@
  * - Route Handlers
  *
  * DO NOT import this file in client components.
+ *
+ * Trimmed during Phase 0 cleanup — only content prefetchers remain.
  */
 
-// Prefetch utilities for Server Components
 export {
-  prefetchRoomsList,
-  prefetchServicesList,
-  prefetchPackagesList,
-  prefetchRewardsList,
   prefetchUsersList,
-  prefetchAdminDashboard,
   prefetchBlogPostsList,
+  prefetchAdminDashboard,
 } from "./admin-prefetch";
-
-export {
-  prefetchUserDashboard,
-  prefetchUserBookings,
-  prefetchUserLoyalty,
-} from "./dashboard-prefetch";
 
 // Server Component wrapper for hydration
 export { withQueryClient } from "./with-query-client";
