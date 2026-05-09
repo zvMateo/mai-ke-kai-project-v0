@@ -1,6 +1,6 @@
 import type React from "react";
 import type { Metadata, Viewport } from "next";
-import { Poppins, Inter } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -8,18 +8,26 @@ import { Providers } from "./providers";
 import { PageTransitionProvider } from "@/components/providers/page-transition-provider";
 import { WhatsAppFloatingButton } from "@/components/ui/whatsapp-floating";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { TabTravelScript } from "@/components/booking/tab-travel-script";
 import "./globals.css";
 
-// <CHANGE> Using Poppins for headings and Inter for body text - tropical/modern feel
-const poppins = Poppins({
+// Phase 1 — Cinematic Surf Magazine typography:
+// Fraunces (variable serif w/ optical-size axis) for editorial display,
+// Inter (variable sans) for body and UI. Both load via next/font with
+// subset=latin and display=swap to keep CWV happy on slow connections.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
+  variable: "--font-fraunces",
+  display: "swap",
+  // Variable font: omit `weight` so the wght axis is included by default,
+  // then opt into the optical-size and softness axes for editorial polish.
+  axes: ["opsz", "SOFT"],
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -63,8 +71,6 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-import { TabTravelScript } from "@/components/booking/tab-travel-script";
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -74,13 +80,14 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${poppins.variable} ${inter.variable}`}>
+    <html
+      lang={locale}
+      className={`${fraunces.variable} ${inter.variable}`}
+    >
       <body className="font-sans antialiased" suppressHydrationWarning>
         <Providers>
           <NextIntlClientProvider messages={messages}>
-            <PageTransitionProvider>
-              {children}
-            </PageTransitionProvider>
+            <PageTransitionProvider>{children}</PageTransitionProvider>
           </NextIntlClientProvider>
         </Providers>
         <Analytics />

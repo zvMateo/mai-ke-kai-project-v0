@@ -39,15 +39,13 @@
     "bookNow": "Buchen"
   },
   "hero": {
-    "title": "Ihr Surf-Paradies",
-    "titleHighlight": "in Costa Rica",
-    "subtitle": "Surfhotel mit Weltklasse-Wellen, professionellen Kursen und authentischer Pura Vida Atmosphäre",
-    "bookYourStay": "Jetzt Buchen",
-    "exploreSurfCamps": "Surf Camps Entdecken",
-    "reviews": "Bewertungen",
-    "nationalities": "Nationalitäten",
-    "surfCamps": "Surf Camps",
-    "scrollDown": "Scrollen zum Entdecken"
+    "eyebrow": "Tamarindo · Costa Rica",
+    "headline": "Leb die Welle.",
+    "subheadline": "Surfcamps für jedes Level, goldene Stunde jeden Abend. Pura vida, jede Welle.",
+    "ctaPrimary": "Surfcamp buchen",
+    "ctaSecondary": "Camps ansehen",
+    "trustLine": "★ 4,9 von 213 Surfer:innen · 30+ Nationalitäten",
+    "scrollHint": "Scrollen"
   },
   "rooms": {
     "title": "Unsere Zimmer",
