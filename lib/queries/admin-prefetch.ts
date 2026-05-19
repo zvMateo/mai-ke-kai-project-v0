@@ -1,73 +1,22 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/server";
-import type { Service, User } from "@/types/database";
-import {
-  fetchRooms,
-  fetchServices,
-  fetchPackages,
-  fetchRewards,
-  fetchUsers,
-  fetchAdminDashboardStats,
-  fetchBlogPosts,
-  type BasicFilter,
-} from "./admin-fetchers";
-import { queryKeys } from "./keys";
+import type { User } from "@/types/database";
+import { fetchUsers, fetchBlogPosts } from "@/lib/queries/admin-fetchers";
+import { queryKeys } from "@/lib/queries/keys";
 
-export async function prefetchRoomsList(
-  queryClient: QueryClient,
-  filters?: BasicFilter
-) {
-  const supabase = await createClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.rooms.list(filters),
-    queryFn: () => fetchRooms(supabase, filters),
-  });
-}
-
-export async function prefetchServicesList(
-  queryClient: QueryClient,
-  filters?: {
-    category?: Service["category"];
-    isActive?: boolean;
-  }
-) {
-  const supabase = await createClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.services.list(filters),
-    queryFn: () => fetchServices(supabase, filters),
-  });
-}
-
-export async function prefetchPackagesList(
-  queryClient: QueryClient,
-  filters?: BasicFilter
-) {
-  const supabase = await createClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.packages.list(filters),
-    queryFn: () => fetchPackages(supabase, filters),
-  });
-}
-
-export async function prefetchRewardsList(
-  queryClient: QueryClient,
-  filters?: BasicFilter
-) {
-  const supabase = await createClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.loyalty.rewards(),
-    queryFn: () => fetchRewards(supabase, filters),
-  });
-}
+/**
+ * Server-side prefetchers for admin content.
+ *
+ * Trimmed during Phase 0 cleanup to only the routes that survive: users
+ * and blog posts. The admin dashboard prefetch is now a no-op because
+ * the placeholder dashboard renders synchronously without query data.
+ * Phase 6.9 of the plan will restore prefetch for the new content stats.
+ */
 
 export async function prefetchUsersList(
   queryClient: QueryClient,
-  filters?: { role?: User["role"] }
-) {
+  filters?: { role?: User["role"] },
+): Promise<void> {
   const supabase = await createClient();
 
   await queryClient.prefetchQuery({
@@ -76,23 +25,24 @@ export async function prefetchUsersList(
   });
 }
 
-export async function prefetchAdminDashboard(queryClient: QueryClient) {
-  const supabase = await createClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.admin.dashboard(),
-    queryFn: () => fetchAdminDashboardStats(supabase),
-  });
-}
-
 export async function prefetchBlogPostsList(
   queryClient: QueryClient,
-  filters?: { isPublished?: boolean }
-) {
+  filters?: { isPublished?: boolean },
+): Promise<void> {
   const supabase = await createClient();
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.blogPosts.list(filters),
     queryFn: () => fetchBlogPosts(supabase, filters),
   });
+}
+
+/**
+ * No-op until Phase 6.9 restores content-stats prefetching.
+ * Kept as a stable export so `app/admin/page.tsx` keeps compiling.
+ */
+export async function prefetchAdminDashboard(
+  _queryClient: QueryClient,
+): Promise<void> {
+  // Intentionally empty.
 }

@@ -2,7 +2,16 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import type { User, LoyaltyTransaction } from "@/types/database";
+import type { User } from "@/types/database";
+
+/**
+ * User actions — admin auth + email confirmation only.
+ *
+ * Phase 0 cleanup removed loyalty functions (getLoyaltyTransactions,
+ * redeemLoyaltyPoints, addLoyaltyPoints) because Tab.Travel handles
+ * customer accounts. Email confirmation flow is preserved for the admin
+ * invite + login experience.
+ */
 
 // Get current user profile
 export async function getCurrentUser() {
@@ -48,79 +57,7 @@ export async function updateUserProfile(data: Partial<User>) {
     throw new Error("Failed to update profile");
   }
 
-  revalidatePath("/dashboard");
   return user as User;
-}
-
-// Get user loyalty transactions
-export async function getLoyaltyTransactions() {
-  const supabase = await createClient();
-
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-  if (!authUser) throw new Error("Not authenticated");
-
-  const { data: transactions, error } = await supabase
-    .from("loyalty_transactions")
-    .select("*")
-    .eq("user_id", authUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching loyalty transactions:", error);
-    throw new Error("Failed to fetch loyalty transactions");
-  }
-
-  return transactions as LoyaltyTransaction[];
-}
-
-// Redeem loyalty points
-export async function redeemLoyaltyPoints(points: number, description: string) {
-  const supabase = await createClient();
-
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
-  if (!authUser) throw new Error("Not authenticated");
-
-  // Get current points
-  const { data: user } = await supabase
-    .from("users")
-    .select("loyalty_points")
-    .eq("id", authUser.id)
-    .single();
-
-  if (!user || user.loyalty_points < points) {
-    throw new Error("Insufficient loyalty points");
-  }
-
-  // Deduct points
-  const { error: updateError } = await supabase
-    .from("users")
-    .update({ loyalty_points: user.loyalty_points - points })
-    .eq("id", authUser.id);
-
-  if (updateError) {
-    console.error("Error deducting points:", updateError);
-    throw new Error("Failed to redeem points");
-  }
-
-  // Record transaction
-  const { error: transactionError } = await supabase
-    .from("loyalty_transactions")
-    .insert({
-      user_id: authUser.id,
-      points: -points,
-      description,
-    });
-
-  if (transactionError) {
-    console.error("Error recording transaction:", transactionError);
-  }
-
-  revalidatePath("/dashboard");
-  return { success: true, remainingPoints: user.loyalty_points - points };
 }
 
 // Admin: Get all users
@@ -141,7 +78,7 @@ export async function getAllUsers(filters?: {
 
   if (filters?.search) {
     query = query.or(
-      `full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
+      `full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`,
     );
   }
 
@@ -169,46 +106,7 @@ export async function updateUserRole(userId: string, role: User["role"]) {
     throw new Error("Failed to update user role");
   }
 
-  revalidatePath("/admin/guests");
-  return { success: true };
-}
-
-// Admin: Add loyalty points manually
-export async function addLoyaltyPoints(
-  userId: string,
-  points: number,
-  description: string
-) {
-  const supabase = await createClient();
-
-  // Get current points
-  const { data: user } = await supabase
-    .from("users")
-    .select("loyalty_points")
-    .eq("id", userId)
-    .single();
-
-  if (!user) throw new Error("User not found");
-
-  // Add points
-  const { error: updateError } = await supabase
-    .from("users")
-    .update({ loyalty_points: user.loyalty_points + points })
-    .eq("id", userId);
-
-  if (updateError) {
-    console.error("Error adding points:", updateError);
-    throw new Error("Failed to add points");
-  }
-
-  // Record transaction
-  await supabase.from("loyalty_transactions").insert({
-    user_id: userId,
-    points,
-    description,
-  });
-
-  revalidatePath("/admin/guests");
+  revalidatePath("/admin/users");
   return { success: true };
 }
 
@@ -219,7 +117,7 @@ export async function addLoyaltyPoints(
 // Generate a confirmation token for a user
 export async function generateConfirmationToken(
   userId: string,
-  email: string
+  email: string,
 ): Promise<string> {
   const supabase = await createClient();
 
@@ -250,7 +148,7 @@ export async function generateConfirmationToken(
 
 // Verify a confirmation token and confirm the user's email
 export async function confirmEmail(
-  token: string
+  token: string,
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = await createClient();
 
@@ -287,7 +185,7 @@ export async function confirmEmail(
     tokenData.user_id,
     {
       email_confirm: true,
-    }
+    },
   );
 
   if (authError) {
@@ -300,7 +198,7 @@ export async function confirmEmail(
 
 // Resend confirmation email with rate limiting
 export async function resendConfirmationEmail(
-  email: string
+  email: string,
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = await createClient();
 

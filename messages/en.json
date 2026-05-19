@@ -39,15 +39,13 @@
     "bookNow": "Book Now"
   },
   "hero": {
-    "title": "YOUR SURF HOUSE IN",
-    "titleHighlight": "TAMARINDO COSTA RICA",
-    "subtitle": "Surf hotel with world-class waves, expert lessons, and authentic pura vida vibes",
-    "bookYourStay": "Book Your Stay",
-    "exploreSurfCamps": "Explore Surf Camps",
-    "reviews": "reviews",
-    "nationalities": "nationalities",
-    "surfCamps": "surf camps",
-    "scrollDown": "Scroll to explore"
+    "eyebrow": "Tamarindo · Costa Rica",
+    "headline": "Live the swell.",
+    "subheadline": "Surf camps for every level, golden hour every evening. Pura vida, every wave.",
+    "ctaPrimary": "Book Surf Camp",
+    "ctaSecondary": "See the camps",
+    "trustLine": "★ 4.9 from 213 surfers · 30+ nationalities",
+    "scrollHint": "Scroll"
   },
   "rooms": {
     "title": "Our Rooms",

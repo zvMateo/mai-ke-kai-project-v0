@@ -76,11 +76,11 @@ export function UsersClient() {
 
   const stats = useMemo(() => {
     const admins = users.filter((u: User) => u.role === "admin").length;
-    const volunteers = users.filter((u: User) => u.role === "volunteer").length;
+    const guests = users.filter((u: User) => u.role === "guest").length;
     return {
       total: users.length,
       admins,
-      volunteers,
+      guests,
     };
   }, [users]);
 
@@ -140,11 +140,11 @@ export function UsersClient() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Voluntarios</CardTitle>
+            <CardTitle className="text-sm font-medium">Invitados</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.volunteers}</div>
+            <div className="text-2xl font-bold">{stats.guests}</div>
           </CardContent>
         </Card>
       </div>
@@ -185,19 +185,9 @@ export function UsersClient() {
                       <td className="py-3 px-4">{user.email}</td>
                       <td className="py-3 px-4">
                         <Badge
-                          variant={
-                            user.role === "admin"
-                              ? "default"
-                              : user.role === "volunteer"
-                              ? "secondary"
-                              : "outline"
-                          }
+                          variant={user.role === "admin" ? "default" : "outline"}
                         >
-                          {user.role === "admin"
-                            ? "Administrador"
-                            : user.role === "volunteer"
-                            ? "Voluntario"
-                            : "Usuario"}
+                          {user.role === "admin" ? "Administrador" : "Invitado"}
                         </Badge>
                       </td>
                       <td className="py-3 px-4">

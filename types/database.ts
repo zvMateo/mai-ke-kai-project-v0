@@ -1,36 +1,35 @@
 // Mai Ke Kai Database Types
+//
+// Phase 0 cleanup removed PMS-specific types (Booking, BookingRoom,
+// BookingService, SeasonPricing, SeasonDate, RoomAvailability, CheckInData,
+// LoyaltyTransaction, PaymentWebhook, payment status enums).
+// Tab.Travel owns booking/payment data externally.
+//
+// Marketing-content tables (rooms, beds, services, service_categories,
+// surf_packages) keep their types — the public landing reads from them.
 
-export type Season = "high" | "low" | "mid";
 export type RoomType = "dorm" | "private" | "family" | "female";
 export type SellUnit = "bed" | "room" | "group";
-export type BookingStatus =
-  | "pending_payment"
-  | "confirmed"
-  | "checked_in"
-  | "checked_out"
-  | "cancelled"
-  | "no_show";
-export type PaymentStatus = "pending" | "partial" | "paid" | "refunded";
-export type UserRole = "guest" | "volunteer" | "staff" | "admin";
+export type UserRole = "guest" | "admin";
 
-// Service Category - Now stored in database for full customization
+// Service Category — stored in DB for full customization
 export interface ServiceCategoryEntity {
   id: string;
-  name: string;           // Display name (e.g., "Surf Lessons")
-  slug: string;           // URL-friendly identifier (e.g., "surf")
+  name: string; // Display name (e.g., "Surf Lessons")
+  slug: string; // URL-friendly identifier (e.g., "surf")
   description: string | null;
-  icon: string | null;    // Lucide icon name (e.g., "waves", "car", "ship")
-  color: string | null;   // Tailwind color class (e.g., "blue", "orange")
+  icon: string | null; // Lucide icon name (e.g., "waves", "car", "ship")
+  color: string | null; // Tailwind color class (e.g., "blue", "orange")
   display_order: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
-// Type alias for compatibility - category field in forms/queries uses slug string
+// Type alias for compatibility — category field uses slug string in forms/queries
 export type ServiceCategory = string;
 
-// Room/Inventory Types
+// Room / Inventory Types (marketing content)
 export interface Room {
   id: string;
   name: string;
@@ -54,78 +53,26 @@ export interface Bed {
   is_active: boolean;
 }
 
-// Pricing Types
-export interface SeasonPricing {
-  id: string;
-  room_id: string;
-  season: Season;
-  base_price: number; // Price per night per unit (bed or room)
-  rack_rate: number; // Standard rate (60+ days)
-  competitive_rate: number; // Discounted rate (<60 days)
-  last_minute_rate: number; // Last minute (<10 days)
-  valid_from: string;
-  valid_to: string;
-}
-
-export interface SeasonDate {
-  id: string;
-  season: Season;
-  start_date: string; // MM-DD format
-  end_date: string; // MM-DD format
-  year: number | null; // null = recurring every year
-}
-
-// User Types
+// User Types (admin auth only after PMS cleanup)
 export interface User {
   id: string;
   email: string;
   full_name: string | null;
   phone: string | null;
   nationality: string | null;
-  passport_number: string | null;
-  passport_expiry: string | null;
-  date_of_birth: string | null;
-  emergency_contact: string | null;
   role: UserRole;
-  loyalty_points: number;
   created_at: string;
   updated_at: string;
 }
 
-// Booking Types
-export interface Booking {
-  id: string;
-  booking_reference: string | null;
-  user_id: string;
-  check_in: string;
-  check_out: string;
-  guests_count: number;
-  status: BookingStatus;
-  payment_status: PaymentStatus;
-  total_amount: number;
-  paid_amount: number;
-  special_requests: string | null;
-  source: "direct" | "walk_in" | "phone" | "ota";
-  created_at: string;
-  updated_at: string;
-}
-
-export interface BookingRoom {
-  id: string;
-  booking_id: string;
-  room_id: string;
-  bed_id: string | null; // null if booking whole room
-  price_per_night: number;
-}
-
-// Extras/Services Types
+// Service / Activity Types (marketing content)
 export interface Service {
   id: string;
   name: string;
   description: string | null;
-  category: ServiceCategory;          // Category slug (for backwards compatibility)
-  category_id?: string;               // FK to service_categories.id (new)
-  category_data?: ServiceCategoryEntity; // Joined category data (optional)
+  category: ServiceCategory; // Category slug
+  category_id?: string; // FK to service_categories.id
+  category_data?: ServiceCategoryEntity; // Joined category data
   price: number;
   duration_hours: number | null;
   max_participants: number | null;
@@ -135,48 +82,7 @@ export interface Service {
   updated_at?: string;
 }
 
-export interface BookingService {
-  id: string;
-  booking_id: string;
-  service_id: string;
-  quantity: number;
-  scheduled_date: string | null;
-  scheduled_time: string | null;
-  price_at_booking: number;
-  notes: string | null;
-}
-
-// Availability Types
-export interface RoomAvailability {
-  date: string;
-  room_id: string;
-  available_beds: number;
-  total_beds: number;
-  is_blocked: boolean;
-  block_reason: string | null;
-}
-
-// Check-in Types
-export interface CheckInData {
-  id: string;
-  booking_id: string;
-  passport_photo_url: string | null;
-  signature_url: string | null;
-  terms_accepted: boolean;
-  completed_at: string | null;
-}
-
-// Loyalty Types
-export interface LoyaltyTransaction {
-  id: string;
-  user_id: string;
-  points: number; // positive = earned, negative = redeemed
-  description: string;
-  booking_id: string | null;
-  created_at: string;
-}
-
-// Surf Package Types
+// Surf Package Types (marketing content — the hero product)
 export interface SurfPackage {
   id: string;
   name: string;
@@ -215,7 +121,13 @@ export interface BlogPost {
 }
 
 // Gallery Types
-export type GalleryCategory = "surf" | "rooms" | "community" | "nature" | "lifestyle" | "general";
+export type GalleryCategory =
+  | "surf"
+  | "rooms"
+  | "community"
+  | "nature"
+  | "lifestyle"
+  | "general";
 
 export interface GalleryItem {
   id: string;
@@ -303,7 +215,13 @@ export interface NewsletterCampaign {
   subject: string;
   content_html: string;
   preview_text: string | null;
-  template_type: "promo" | "news" | "cta" | "surf_camp" | "accommodation" | "informative";
+  template_type:
+    | "promo"
+    | "news"
+    | "cta"
+    | "surf_camp"
+    | "accommodation"
+    | "informative";
   audience_country_code: string | null;
   status: NewsletterCampaignStatus;
   recipients_count: number;
@@ -311,22 +229,6 @@ export interface NewsletterCampaign {
   failed_sends: number;
   sent_at: string | null;
   created_by: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-// Payment Webhook Types
-export type PaymentGateway = "tab" | "manual" | "astropay" | "tilopay" | "stripe";
-export type WebhookStatus = "pending" | "processed" | "failed";
-
-export interface PaymentWebhook {
-  id: string;
-  gateway: PaymentGateway;
-  transaction_id: string;
-  status: WebhookStatus;
-  payload: Record<string, any> | null;
-  booking_id: string | null;
-  processed_at: string | null;
   created_at: string;
   updated_at: string;
 }

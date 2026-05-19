@@ -39,15 +39,13 @@
     "bookNow": "Reservar"
   },
   "hero": {
-    "title": "TU SURF HOUSE EN",
-    "titleHighlight": "TAMARINDO COSTA RICA",
-    "subtitle": "Vive la experiencia de surf definitiva en Costa Rica",
-    "bookYourStay": "Reserva Tu Estadía",
-    "exploreSurfCamps": "Explorar Surf Camps",
-    "reviews": "reseñas",
-    "nationalities": "nacionalidades",
-    "surfCamps": "surf camps",
-    "scrollDown": "Desplázate para explorar"
+    "eyebrow": "Tamarindo · Costa Rica",
+    "headline": "Viví el oleaje.",
+    "subheadline": "Surf camps para todos los niveles, atardeceres dorados cada tarde. Pura vida, cada ola.",
+    "ctaPrimary": "Reservá tu Surf Camp",
+    "ctaSecondary": "Ver los camps",
+    "trustLine": "★ 4.9 de 213 surfistas · 30+ nacionalidades",
+    "scrollHint": "Bajá"
   },
   "rooms": {
     "title": "Nuestras Habitaciones",

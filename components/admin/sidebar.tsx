@@ -6,21 +6,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  Calendar,
-  Users,
   UserPlus,
-  Bed,
-  Waves,
-  DollarSign,
   Settings,
-  BarChart3,
   Menu,
   X,
-  Lock,
-  FileText,
-  Package,
-  Gift,
-  Tags,
   Newspaper,
   Images,
   MessageSquare,
@@ -30,6 +19,8 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
+// Content-focused admin: blog, newsletter, gallery, testimonials,
+// about, settings, users. Tab.Travel handles all booking/PMS workflows.
 const navItems = [
   {
     title: "Dashboard",
@@ -37,59 +28,14 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Calendar",
-    href: "/admin/calendar",
-    icon: Calendar,
+    title: "Blog",
+    href: "/admin/blog",
+    icon: Newspaper,
   },
   {
-    title: "Bookings",
-    href: "/admin/bookings",
-    icon: BarChart3,
-  },
-  {
-    title: "Guests",
-    href: "/admin/guests",
-    icon: Users,
-  },
-  {
-    title: "Users",
-    href: "/admin/users",
-    icon: UserPlus,
-  },
-  {
-    title: "Rooms & Beds",
-    href: "/admin/rooms",
-    icon: Bed,
-  },
-  {
-    title: "Services",
-    href: "/admin/services",
-    icon: Waves,
-  },
-  {
-    title: "Service Categories",
-    href: "/admin/service-categories",
-    icon: Tags,
-  },
-  {
-    title: "Surf Packages",
-    href: "/admin/packages",
-    icon: Package,
-  },
-  {
-    title: "Pricing",
-    href: "/admin/pricing",
-    icon: DollarSign,
-  },
-  {
-    title: "Loyalty Rewards",
-    href: "/admin/loyalty",
-    icon: Gift,
-  },
-  {
-    title: "Date Blocks",
-    href: "/admin/blocks",
-    icon: Lock,
+    title: "Newsletter",
+    href: "/admin/newsletter",
+    icon: Mail,
   },
   {
     title: "Gallery",
@@ -107,24 +53,14 @@ const navItems = [
     icon: Info,
   },
   {
-    title: "Blog",
-    href: "/admin/blog",
-    icon: Newspaper,
-  },
-  {
-    title: "Newsletter",
-    href: "/admin/newsletter",
-    icon: Mail,
-  },
-  {
-    title: "Reports",
-    href: "/admin/reports",
-    icon: FileText,
-  },
-  {
     title: "Settings",
     href: "/admin/settings",
     icon: Settings,
+  },
+  {
+    title: "Users",
+    href: "/admin/users",
+    icon: UserPlus,
   },
 ];
 

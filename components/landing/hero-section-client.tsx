@@ -2,281 +2,301 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { HeroBookNowButton } from "@/components/landing/hero-book-now-button";
-import { Button } from "@/components/ui/button";
-import { Star, Globe, Waves, ChevronDown } from "lucide-react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState, type ReactNode } from "react";
+import { useMotionPolicy } from "@/hooks/use-motion-policy";
 
-/* ──────────────────────────────────────────────
-   Animated counter
-────────────────────────────────────────────── */
-function AnimatedCounter({
-  target,
-  suffix = "",
-  duration = 2,
-}: {
-  target: number;
-  suffix?: string;
-  duration?: number;
-}) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+interface HeroSectionClientProps {
+  eyebrow: string;
+  headline: string;
+  subheadline: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+  trustLine: string;
+  scrollHint: string;
+}
 
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const increment = target / (duration * 60);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 1000 / 60);
-    return () => clearInterval(timer);
-  }, [inView, target, duration]);
+/**
+ * Hero — Cinematic Surf Magazine.
+ *
+ * Signature moment #1: "Wave Reveal" — the headline rises out of a clipped
+ * baseline on mount, easing-wave for 900ms, while subhead/CTAs fade up on
+ * a staggered delay. Uses Framer Motion only; gated by `useMotionPolicy()`
+ * so reduced-motion / save-data users get the static final state.
+ *
+ * Background is a poster JPG with a slow translateY drift; a Cloudinary
+ * eco-encoded video crossfades in once `canplay` fires (skipped on
+ * `static` policy and on `<480px` to spare battery / data).
+ */
+export function HeroSectionClient({
+  eyebrow,
+  headline,
+  subheadline,
+  ctaPrimary,
+  ctaSecondary,
+  trustLine,
+  scrollHint,
+}: HeroSectionClientProps) {
+  const policy = useMotionPolicy();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Subtle parallax on poster (desktop only) — mobile keeps it still.
+  const { scrollY } = useScroll();
+  const posterY = useTransform(scrollY, [0, 600], [0, 80]);
+
+  // Animation gating
+  const animate = policy !== "static";
+  const allowsHeavy = policy === "full";
 
   return (
-    <span ref={ref} className="tabular-nums">
-      {count}
-      {suffix}
-    </span>
+    <section
+      ref={sectionRef}
+      className="relative isolate flex min-h-[100svh] max-h-[900px] items-center overflow-hidden bg-deep text-white"
+    >
+      {/* ── Background ── */}
+      <div className="absolute inset-0 -z-10">
+        {/* Poster — parallax on desktop, static on mobile */}
+        <motion.div
+          className="absolute inset-0 hidden md:block"
+          style={allowsHeavy ? { y: posterY } : undefined}
+        >
+          <Image
+            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
+            alt=""
+            fill
+            priority
+            quality={88}
+            sizes="100vw"
+            className="object-cover"
+          />
+        </motion.div>
+        <div className="absolute inset-0 md:hidden">
+          <Image
+            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
+            alt=""
+            fill
+            priority
+            quality={80}
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+
+        {/* Cloudinary eco video — only on `full` policy and md+ viewports */}
+        {allowsHeavy && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
+            className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition-opacity duration-[var(--dur-cinematic)] md:block"
+            ref={(el) => {
+              if (!el) return;
+              el.addEventListener("canplay", () => {
+                el.style.opacity = "1";
+              });
+            }}
+          >
+            <source
+              src="https://res.cloudinary.com/mai-ke-kai/video/upload/q_auto:eco,f_auto,w_1920,c_fill/mai-ke-kai/hero-surf.mp4"
+              type="video/mp4"
+            />
+          </video>
+        )}
+
+        {/* Atmospheric gradient — keeps headline contrast above 4.5:1 */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, oklch(0.20 0.06 230 / 0.55) 0%, oklch(0.20 0.06 230 / 0.20) 38%, oklch(0.20 0.06 230 / 0.78) 100%)",
+          }}
+        />
+
+        {/* Noise texture — adds film grain for editorial feel */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 mix-blend-overlay opacity-60"
+          style={{ backgroundImage: "var(--noise-bg)", backgroundSize: "200px 200px" }}
+        />
+      </div>
+
+      {/* ── Content ── */}
+      <div className="relative mx-auto w-full max-w-7xl px-[var(--space-gutter)] pt-32 pb-24 sm:pt-36 sm:pb-28">
+        <div className="max-w-3xl">
+          {/* Eyebrow */}
+          <FadeUp delay={0.05} animate={animate}>
+            <p className="mb-7 inline-flex items-center gap-3 text-[var(--font-eyebrow)] uppercase tracking-[0.28em] text-white/75">
+              <span className="h-px w-8 bg-white/40" aria-hidden="true" />
+              {eyebrow}
+            </p>
+          </FadeUp>
+
+          {/* Headline — Wave Reveal */}
+          <h1
+            className="font-[family-name:var(--font-display)] font-semibold tracking-[-0.02em] leading-[0.98] text-balance"
+            style={{ fontSize: "var(--font-display-xl)" }}
+          >
+            <ClipReveal animate={animate}>{headline}</ClipReveal>
+          </h1>
+
+          {/* Subhead */}
+          <FadeUp delay={0.55} animate={animate}>
+            <p
+              className="mt-8 max-w-xl text-white/85 text-balance"
+              style={{ fontSize: "var(--font-body-lg)", lineHeight: 1.55 }}
+            >
+              {subheadline}
+            </p>
+          </FadeUp>
+
+          {/* CTAs */}
+          <FadeUp delay={0.7} animate={animate}>
+            <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <HeroBookNowButton label={ctaPrimary} />
+              <Link
+                href="#packages"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/[0.04] px-7 py-4 text-sm font-medium text-white/90 backdrop-blur-sm transition-all duration-[var(--dur-base)] ease-[var(--ease-wave)] hover:border-white/70 hover:bg-white/10 hover:text-white"
+                aria-label={ctaSecondary}
+              >
+                {ctaSecondary}
+                <span aria-hidden="true" className="text-base">→</span>
+              </Link>
+            </div>
+          </FadeUp>
+
+          {/* Trust line */}
+          <FadeUp delay={0.9} animate={animate}>
+            <p className="mt-10 text-sm text-white/65 tracking-wide">
+              {trustLine}
+            </p>
+          </FadeUp>
+        </div>
+      </div>
+
+      {/* ── Scroll hint ── */}
+      <ScrollHint label={scrollHint} animate={animate} />
+    </section>
   );
 }
 
 /* ──────────────────────────────────────────────
-   Stagger wrapper
+   Building blocks
 ────────────────────────────────────────────── */
-function Stagger({
-  children,
-  delay = 0,
-}: {
-  children: ReactNode;
-  delay?: number;
-}) {
+
+interface FadeUpProps {
+  children: React.ReactNode;
+  delay: number;
+  animate: boolean;
+}
+
+function FadeUp({ children, delay, animate }: FadeUpProps) {
+  if (!animate) return <>{children}</>;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
     >
       {children}
     </motion.div>
   );
 }
 
-/* ──────────────────────────────────────────────
-   Stat pill
-────────────────────────────────────────────── */
-function StatPill({
-  icon,
-  value,
-  suffix,
-  label,
-}: {
-  icon: ReactNode;
-  value: number;
-  suffix?: string;
-  label: string;
-}) {
+interface ClipRevealProps {
+  children: string;
+  animate: boolean;
+}
+
+/**
+ * Wave Reveal — the headline lifts out of a clipped baseline.
+ * Each whitespace-separated word is wrapped in an overflow-clip span
+ * with an inner translate from y=105% to y=0, staggered by 80ms per
+ * word so multi-word headlines feel deliberate, not jumpy.
+ */
+function ClipReveal({ children, animate }: ClipRevealProps) {
+  const words = children.split(" ");
+
+  if (!animate) {
+    return <span>{children}</span>;
+  }
+
   return (
-    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2.5 border border-white/10 hover:bg-white/15 transition-colors">
-      {icon}
-      <span className="text-white/90 text-sm font-medium">
-        <AnimatedCounter target={value} suffix={suffix} /> {label}
-      </span>
-    </div>
+    <span className="block">
+      {words.map((word, i) => (
+        <span
+          key={`${word}-${i}`}
+          className="relative mr-[0.18em] inline-block overflow-hidden align-baseline"
+          style={{ paddingBottom: "0.05em" }}
+        >
+          <motion.span
+            className="inline-block"
+            initial={{ y: "105%" }}
+            animate={{ y: "0%" }}
+            transition={{
+              duration: 0.95,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.15 + i * 0.08,
+            }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
   );
 }
 
-/* ──────────────────────────────────────────────
-   Hero Section (client component for animations)
-────────────────────────────────────────────── */
-export function HeroSectionClient({
-  bookLabel,
-  exploreLabel,
-  reviewsLabel,
-  nationalitiesLabel,
-  surfCampsLabel,
-  scrollLabel,
-}: {
-  bookLabel: string;
-  exploreLabel: string;
-  reviewsLabel: string;
-  nationalitiesLabel: string;
-  surfCampsLabel: string;
-  scrollLabel: string;
-}) {
-  const { scrollY } = useScroll();
-  // Parallax: imagen se mueve 120px hacia abajo cuando el usuario scrollea 600px
-  const yBg = useTransform(scrollY, [0, 600], [0, 120]);
+interface ScrollHintProps {
+  label: string;
+  animate: boolean;
+}
+
+function ScrollHint({ label, animate }: ScrollHintProps) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setShow(true), 1400);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const handleClick = () => {
+    document
+      .querySelector("#packages")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* ── Background: poster image + video overlay ── */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Poster image — parallax only on desktop (md+) */}
-        <motion.div
-          className="absolute inset-0 hidden md:block"
-          style={{ y: yBg }}
-        >
-          <Image
-            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
-            alt="Costa Rica surf beach"
-            fill
-            className="object-cover"
-            priority
-            quality={90}
-          />
-        </motion.div>
-        {/* Static fallback on mobile — no parallax to avoid scroll jank */}
-        <div className="absolute inset-0 block md:hidden">
-          <Image
-            src="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
-            alt="Costa Rica surf beach"
-            fill
-            className="object-cover"
-            priority
-            quality={90}
-          />
-        </div>
-
-        {/* Video background — loaded after poster */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000"
-          poster="/beautiful-costa-rica-surf-beach-with-palm-trees-an.jpg"
-          ref={(el) => {
-            if (el) {
-              el.addEventListener("canplay", () => {
-                el.style.opacity = "1";
-              });
-            }
-          }}
-        >
-          {/* Cloudinary-optimized WebM (free tier) */}
-          <source
-            src="https://res.cloudinary.com/mai-ke-kai/video/upload/q_auto:eco,f_auto,w_1920,c_fill/mai-ke-kai/hero-surf.mp4"
-            type="video/webm"
-          />
-          <source
-            src="https://res.cloudinary.com/mai-ke-kai/video/upload/q_auto:eco,f_mp4,w_1920,c_fill/mai-ke-kai/hero-surf.mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        {/* Gradient overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.65) 100%)",
-          }}
-        />
-      </div>
-
-      {/* ── Content ── */}
-      <div className="relative z-10 container mx-auto px-4 pt-28 pb-20">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          {/* Heading — clip reveal animation */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <motion.h1
-              className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-balance leading-tight"
-              initial={{ clipPath: "inset(0 100% 0 0)" }}
-              animate={{ clipPath: "inset(0 0% 0 0)" }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-            >
-              YOUR SURF HOUSE IN
-              <br />
-              <span className="text-seafoam">TAMARINDO COSTA RICA</span>
-            </motion.h1>
-          </motion.div>
-
-          {/* Subtitle */}
-          <Stagger delay={0.6}>
-            <p className="text-base sm:text-lg md:text-xl text-white/85 max-w-2xl mx-auto mb-8 px-2 text-pretty leading-relaxed">
-              Surf hotel with world-class waves, expert lessons, and authentic
-              pura vida vibes
-            </p>
-          </Stagger>
-
-          {/* Social proof — animated counters */}
-          <Stagger delay={0.9}>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-5 mb-10">
-              <StatPill
-                icon={<Star className="w-4 h-4 text-amber-400 fill-amber-400" />}
-                value={213}
-                label={reviewsLabel}
-              />
-              <StatPill
-                icon={<Globe className="w-4 h-4 text-seafoam" />}
-                value={30}
-                suffix="+"
-                label={nationalitiesLabel}
-              />
-              <StatPill
-                icon={<Waves className="w-4 h-4 text-seafoam" />}
-                value={500}
-                suffix="+"
-                label={surfCampsLabel}
-              />
-            </div>
-          </Stagger>
-
-          {/* CTAs */}
-          <Stagger delay={1.2}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <HeroBookNowButton
-                label={bookLabel}
-                className="group relative overflow-hidden"
-              />
-              <Link href="#packages">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white/60 text-white hover:bg-white/10 bg-transparent hover:text-white px-8 py-6 rounded-full text-base font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  {exploreLabel}
-                </Button>
-              </Link>
-            </div>
-          </Stagger>
-        </div>
-      </div>
-
-      {/* ── Scroll indicator ── */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 cursor-pointer"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.8 }}
-        onClick={() => {
-          document
-            .querySelector("#rooms")
-            ?.scrollIntoView({ behavior: "smooth" });
-        }}
-      >
-        <span className="text-xs tracking-wider uppercase">{scrollLabel}</span>
-        <motion.div
-          className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5"
-          animate={{ y: [0, 6, 0] }}
+    <button
+      type="button"
+      onClick={handleClick}
+      aria-label={label}
+      className={`absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/55 transition-opacity duration-[var(--dur-cinematic)] hover:text-white/85 ${
+        show && animate ? "opacity-100" : show ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      <span className="text-[var(--font-eyebrow)] uppercase tracking-[0.28em]">
+        {label}
+      </span>
+      {animate ? (
+        <motion.span
+          className="flex h-9 w-5 items-start justify-center rounded-full border border-white/30 pt-1.5"
+          animate={{ y: [0, 5, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-3 h-3 text-white/60" />
-        </motion.div>
-      </motion.div>
-    </section>
+          <ChevronDown className="h-3 w-3 text-white/55" />
+        </motion.span>
+      ) : (
+        <span className="flex h-9 w-5 items-start justify-center rounded-full border border-white/30 pt-1.5">
+          <ChevronDown className="h-3 w-3 text-white/55" />
+        </span>
+      )}
+    </button>
   );
 }
+
